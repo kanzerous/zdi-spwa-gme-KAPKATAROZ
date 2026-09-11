@@ -3,161 +3,183 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Özel Lobi & Görüntülü Sohbet (Pro)</title>
+    <title>KAPKATAROZ | Kesintisiz İletişim Sanatı</title>
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap');
+
         /* --- TEMA RENK DEĞİŞKENLERİ --- */
         :root, body.theme-dark {
-            --bg-main: #202225;
-            --bg-sec: #2f3136;
-            --bg-ter: #36393f;
-            --text-main: #dcddde;
-            --text-muted: #b9bbbe;
-            --accent: #5865F2;
-            --accent-hover: #4752C4;
-            --border: #202225;
-            --input-bg: #40444b;
-            --msg-local: #40444b;
+            --bg-main: #202225; --bg-sec: #2f3136; --bg-ter: #36393f;
+            --text-main: #dcddde; --text-muted: #b9bbbe;
+            --accent: #5865F2; --accent-hover: #4752C4;
+            --border: #202225; --input-bg: #40444b; --msg-local: #40444b;
         }
         body.theme-light {
-            --bg-main: #e3e5e8;
-            --bg-sec: #f2f3f5;
-            --bg-ter: #ffffff;
-            --text-main: #2e3338;
-            --text-muted: #4f5660;
-            --accent: #5865F2;
-            --accent-hover: #4752C4;
-            --border: #cccccc;
-            --input-bg: #ebedef;
-            --msg-local: #e3e5e8;
+            --bg-main: #e3e5e8; --bg-sec: #f2f3f5; --bg-ter: #ffffff;
+            --text-main: #2e3338; --text-muted: #4f5660;
+            --accent: #5865F2; --accent-hover: #4752C4;
+            --border: #cccccc; --input-bg: #ebedef; --msg-local: #e3e5e8;
         }
         body.theme-yellow {
-            --bg-main: #1f1b14;
-            --bg-sec: #2e281d;
-            --bg-ter: #3d3527;
-            --text-main: #f0e6d2;
-            --text-muted: #c4b595;
-            --accent: #d4a017;
-            --accent-hover: #b8860b;
-            --border: #1f1b14;
-            --input-bg: #4a4131;
-            --msg-local: #4a4131;
+            --bg-main: #1f1b14; --bg-sec: #2e281d; --bg-ter: #3d3527;
+            --text-main: #f0e6d2; --text-muted: #c4b595;
+            --accent: #d4a017; --accent-hover: #b8860b;
+            --border: #1f1b14; --input-bg: #4a4131; --msg-local: #4a4131;
         }
         body.theme-red {
-            --bg-main: #241616;
-            --bg-sec: #331e1e;
-            --bg-ter: #472727;
-            --text-main: #f0d4d4;
-            --text-muted: #c99b9b;
-            --accent: #e53935;
-            --accent-hover: #c62828;
-            --border: #241616;
-            --input-bg: #5e3232;
-            --msg-local: #5e3232;
+            --bg-main: #241616; --bg-sec: #331e1e; --bg-ter: #472727;
+            --text-main: #f0d4d4; --text-muted: #c99b9b;
+            --accent: #e53935; --accent-hover: #c62828;
+            --border: #241616; --input-bg: #5e3232; --msg-local: #5e3232;
         }
 
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; display: flex; transition: background-color 0.3s, color 0.3s; }
         
-        /* TEMA SEÇİCİ PALET */
-        .theme-switcher { position: absolute; top: 15px; right: 25px; display: flex; gap: 10px; z-index: 100; }
-        .theme-dot { width: 20px; height: 20px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .theme-dot:hover { transform: scale(1.2); }
-        .dot-dark { background-color: #2f3136; }
-        .dot-light { background-color: #f2f3f5; }
-        .dot-yellow { background-color: #d4a017; }
-        .dot-red { background-color: #e53935; }
+        /* --- MARKA İMZASI --- */
+        #brand-signature { position: absolute; top: 15px; left: 25px; z-index: 1000; display: flex; flex-direction: column; pointer-events: none; }
+        .brand-top { display: flex; align-items: center; gap: 8px; }
+        .brand-logo-svg { width: 26px; height: 26px; stroke: var(--accent); transition: stroke 0.3s; }
+        .brand-name { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: var(--text-main); text-transform: uppercase; }
+        .brand-slogan { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; margin-top: 2px; font-style: italic; margin-left: 34px; }
 
-        /* GİRİŞ VE LOBİ EKRANLARI */
-        #auth-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--bg-sec); position: absolute; z-index: 50; transition: background-color 0.3s; }
-        .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.4); width: 320px; text-align: center; transition: background-color 0.3s; }
+        /* TEMA SEÇİCİ PALET */
+        .theme-switcher { position: absolute; top: 22px; right: 25px; display: flex; gap: 10px; z-index: 100; }
+        .theme-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
+        .theme-dot:hover { transform: scale(1.2); }
+        .dot-dark { background-color: #2f3136; } .dot-light { background-color: #f2f3f5; } .dot-yellow { background-color: #d4a017; } .dot-red { background-color: #e53935; }
+
+        /* GİRİŞ EKRANLARI */
+        #auth-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--bg-sec); position: absolute; z-index: 50; transition: background-color 0.3s; flex-direction: column; gap: 30px; }
+        .auth-logo-container { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: fadeIn 1s ease; }
+        .auth-logo-container .brand-name { font-size: 32px; }
+        .auth-logo-container .brand-slogan { font-size: 13px; letter-spacing: 4px; }
+        .auth-logo-container svg { width: 60px; height: 60px; }
+        .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); width: 320px; text-align: center; transition: background-color 0.3s; }
         .auth-box h2 { color: var(--text-main); margin-top: 0; margin-bottom: 25px; font-weight: 600; }
-        .auth-box p { color: var(--text-muted); font-size: 14px; margin-bottom: 20px; }
         
         input { width: 90%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; }
         input:focus { border-color: var(--accent); }
         button { background-color: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-bottom: 10px; font-size: 14px; }
         button:hover { background-color: var(--accent-hover); }
-        
         .btn-green { background-color: #3ba55d; } .btn-green:hover { background-color: #2d7d46; }
-        .btn-red { background-color: #ed4245; } .btn-red:hover { background-color: #c9383b; }
         .btn-dark { background-color: var(--input-bg); color: var(--text-main); } .btn-dark:hover { filter: brightness(1.2); }
 
-        /* ANA SOHBET EKRANI DÜZENİ */
+        /* ANA SOHBET EKRANI */
         #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: #000000; position: relative; }
-        #call-header { padding: 15px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; }
-        #call-header h2 { margin: 0; color: var(--text-main); font-size: 16px; font-weight: 600; }
+        #call-header { padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-start; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; gap: 20px; }
+        
+        #brand-container { display: flex; align-items: center; gap: 12px; user-select: none; }
+        .brand-logo-svg { width: 38px; height: 38px; filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.4)); }
+        .brand-text-block { display: flex; flex-direction: column; justify-content: center; margin-top: 2px; }
+        .brand-name { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; background: linear-gradient(45deg, #FF3CAC, #784BA0, #2B86C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
+        .brand-slogan { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; line-height: 1; }
+        
+        .header-divider { width: 2px; height: 28px; background-color: var(--border); border-radius: 2px; }
+        #current-room-title { margin: 0; color: var(--text-main); font-size: 16px; font-weight: 600; letter-spacing: 0.5px; font-family: 'Poppins', sans-serif; }
 
-        /* ORTA ALAN: VİDEO VE SOHBET YAN YANA */
         #call-body { flex-grow: 1; display: flex; flex-direction: row; overflow: hidden; position: relative; }
         #main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; padding-bottom: 90px; }
 
-        /* EKRAN/KAMERA PAYLAŞIMI */
         #video-container { flex-grow: 1; display: none; background-color: #000; padding: 0; }
         #screen-video { width: 100%; height: 100%; object-fit: contain; }
 
-        /* KULLANICI YUVARLAKLARI */
+        /* --- KULLANICI YUVARLAKLARI VE DALGA (RIPPLE) ANİMASYONU --- */
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 50px; padding: 40px; transition: all 0.3s ease; }
-        .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .circle { width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: var(--text-main); border: 4px solid transparent; transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
-        .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); }
-        .speaking .circle { border-color: #3ba55d; box-shadow: 0 0 25px rgba(59, 165, 93, 0.8); }
+        .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
+        
+        .circle { 
+            width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); 
+            display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; 
+            color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.3); pointer-events: none;
+            position: relative; z-index: 2; /* Dalgalar arkasında kalsın diye */
+        }
+        .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
+        
+        /* Dalga (Ripple) Elementleri */
+        .circle::before, .circle::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            border-radius: 50%; border: 2px solid #3ba55d; opacity: 0; z-index: -1;
+        }
 
+        /* Konuşurken Dalgaları Tetikle */
+        .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
+        .speaking .circle::after { animation: ripple 1.5s infinite ease-out; animation-delay: 0.75s; }
+
+        @keyframes ripple {
+            0% { transform: scale(1); opacity: 0.8; border-width: 4px; box-shadow: 0 0 15px #3ba55d; }
+            100% { transform: scale(1.6); opacity: 0; border-width: 0px; box-shadow: 0 0 30px transparent; }
+        }
+
+        /* Küçültülmüş Ekran (Ekran Paylaşımı Açıkken) Dalga Ayarı */
         .minimized-participants { flex-grow: 0 !important; padding: 10px 20px !important; background-color: transparent; gap: 20px !important; position: absolute; top: 10px; left: 10px; z-index: 5; }
-        .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; border-width: 2px; }
+        .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; }
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; }
         .minimized-participants .name-tag { font-size: 12px; padding: 0; background: none; }
+        @keyframes ripple-minimized {
+            0% { transform: scale(1); opacity: 0.8; border-width: 2px; }
+            100% { transform: scale(1.8); opacity: 0; border-width: 0px; }
+        }
+        .minimized-participants .speaking .circle::before { animation: ripple-minimized 1.5s infinite ease-out; }
+        .minimized-participants .speaking .circle::after { animation: ripple-minimized 1.5s infinite ease-out; animation-delay: 0.75s; }
 
-        /* --- SOHBETİ BOYUTLANDIRMA (RESIZER) --- */
+        /* SOHBETİ BOYUTLANDIRMA */
         #resizer { width: 6px; background-color: var(--border); cursor: ew-resize; display: none; z-index: 20; transition: 0.2s; }
         #resizer:hover, #resizer.resizing { background-color: var(--accent); }
 
-        /* --- YAZILI SOHBET (SAĞ PANEL) --- */
+        /* YAZILI SOHBET (SAĞ PANEL) */
         #chat-sidebar { width: 340px; min-width: 250px; max-width: 600px; background-color: var(--bg-sec); display: none; flex-direction: column; z-index: 15; transition: background-color 0.3s; }
-        #chat-header { padding: 15px; background-color: var(--bg-ter); font-weight: bold; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        #chat-header { padding: 15px; background-color: var(--bg-ter); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
-        
         .msg { background-color: var(--bg-ter); padding: 10px 14px; border-radius: 8px; font-size: 13.5px; line-height: 1.4; word-break: break-word; box-shadow: 0 1px 3px rgba(0,0,0,0.2); color: var(--text-main); }
         .msg-sender { font-weight: bold; color: #3ba55d; margin-bottom: 5px; display: block; font-size: 12px; }
         .msg.local { background-color: var(--msg-local); border-bottom-right-radius: 0; margin-left: 20px; }
         .msg.remote { border-bottom-left-radius: 0; margin-right: 20px; }
         .msg.local .msg-sender { color: var(--accent); filter: brightness(1.3); }
-        
         .file-link { color: #00aff4; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 8px; margin-top: 8px; background: var(--border); padding: 10px; border-radius: 5px; transition: 0.2s; }
         .file-link:hover { filter: brightness(1.2); }
 
-        /* Mesaj Yazma Alanı & Emojiler */
         #chat-input-area { padding: 15px; background-color: var(--bg-ter); display: flex; align-items: center; gap: 10px; position: relative; border-top: 1px solid var(--border); }
         #chat-input-area input[type="text"] { width: 100%; margin: 0; padding: 12px 15px; background-color: var(--input-bg); border-radius: 24px; font-size: 13px; border: none; color: var(--text-main); }
-        
         .chat-btn { background: none; border: none; cursor: pointer; padding: 6px; width: auto; color: var(--text-muted); transition: 0.2s; margin: 0; display: flex; align-items: center; justify-content: center; }
         .chat-btn svg { width: 20px; height: 20px; }
         .chat-btn:hover { color: var(--text-main); transform: scale(1.1); }
-        
         #emoji-picker { display: none; position: absolute; bottom: 70px; right: 15px; background-color: var(--bg-sec); border: 1px solid var(--border); border-radius: 8px; padding: 10px; width: 240px; flex-wrap: wrap; gap: 5px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); z-index: 20; }
         .emoji-item { font-size: 20px; cursor: pointer; padding: 6px; transition: 0.1s; border-radius: 6px; }
         .emoji-item:hover { background-color: var(--bg-ter); }
 
-        /* --- YÜZEN ALT KONTROL ÇUBUĞU (ESTETİK İKONLAR) --- */
+        /* YÜZEN ALT KONTROL ÇUBUĞU */
         #controls-wrapper { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 10; }
         #controls-bar { background-color: var(--bg-ter); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); border: 1px solid var(--border); pointer-events: auto; }
-        
         .ctrl-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; background-color: var(--bg-sec); color: var(--text-main); transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
         .ctrl-btn svg { width: 22px; height: 22px; stroke-width: 2; }
         .ctrl-btn:hover { background-color: var(--input-bg); transform: translateY(-3px); }
-        
         .ctrl-btn.active-red { background-color: #ed4245 !important; color: white !important; }
         .ctrl-btn.active-red:hover { background-color: #c9383b !important; }
         .ctrl-btn.active-green { background-color: #3ba55d !important; color: white !important; }
-        
         #leave-btn { width: auto; padding: 0 20px; border-radius: 25px; background-color: #ed4245; color: white; }
         #leave-btn:hover { background-color: #c9383b; }
-        
         #quality-selector { padding: 8px 12px; border-radius: 8px; background-color: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); font-size: 13px; margin: 0 5px; outline: none; cursor: pointer; height: 40px; transition: 0.3s; }
+
+        /* SAĞ TIK MENÜSÜ */
+        #context-menu {
+            display: none; position: absolute; background-color: var(--bg-ter); border: 1px solid var(--border);
+            border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); padding: 15px; z-index: 1000; width: 200px; color: var(--text-main);
+        }
+        #context-menu h4 { margin: 0 0 12px 0; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .context-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .context-item label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+        .context-item input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
+        #context-mute-btn { background-color: var(--bg-sec); color: var(--text-main); padding: 10px; font-size: 13px; margin-bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px; border-radius: 6px; }
+        #context-mute-btn:hover { background-color: var(--input-bg); }
+        #context-mute-btn.muted { background-color: #ed4245; color: white; }
+        #context-mute-btn.muted:hover { background-color: #c9383b; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="theme-dark">
 
-    <!-- TEMA SEÇİCİ PALET (HER YERDEN ERİŞİLEBİLİR) -->
     <div class="theme-switcher">
         <div class="theme-dot dot-dark" onclick="setTheme('theme-dark')" title="Koyu Tema"></div>
         <div class="theme-dot dot-light" onclick="setTheme('theme-light')" title="Açık Tema"></div>
@@ -167,12 +189,22 @@
 
     <!-- GİRİŞ EKRANLARI -->
     <div id="auth-container">
+        <div class="auth-logo-container">
+            <svg class="brand-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs><linearGradient id="gradMain" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF3CAC" /><stop offset="50%" stop-color="#784BA0" /><stop offset="100%" stop-color="#2B86C5" /></linearGradient></defs>
+                <path d="M 30 15 C 30 15, 45 50, 30 85" stroke="url(#gradMain)" stroke-width="12" stroke-linecap="round" />
+                <path d="M 75 15 C 40 40, 40 60, 75 85" stroke="url(#gradMain)" stroke-width="12" stroke-linecap="round" />
+                <path d="M 35 50 L 52 50" stroke="url(#gradMain)" stroke-width="12" stroke-linecap="round" />
+            </svg>
+            <div class="brand-text-block" style="align-items: center;">
+                <span class="brand-name">KAPKATAROZ</span>
+                <span class="brand-slogan">KESİNTİSİZ İLETİŞİM SANATI</span>
+            </div>
+        </div>
         <div class="auth-box" id="menu-main">
-            <h2>Özel Ses Odası</h2>
             <button onclick="showMenu('menu-create')">Lobi Oluştur</button>
             <button class="btn-green" onclick="showMenu('menu-join')">Lobiye Katıl</button>
         </div>
-
         <div class="auth-box" id="menu-create" style="display: none;">
             <h2>Lobi Oluştur</h2>
             <input type="text" id="create-nick" placeholder="Kullanıcı Adın">
@@ -180,7 +212,6 @@
             <button class="btn-green" id="create-btn" onclick="createLobby()">Oluştur ve Başla</button>
             <button class="btn-dark" onclick="showMenu('menu-main')">Geri Dön</button>
         </div>
-
         <div class="auth-box" id="menu-join" style="display: none;">
             <h2>Lobiye Katıl</h2>
             <input type="text" id="join-nick" placeholder="Kullanıcı Adın">
@@ -193,6 +224,19 @@
     <!-- SOHBET EKRANI -->
     <div id="call-screen">
         <div id="call-header">
+            <div id="brand-container">
+                <svg class="brand-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs><linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF3CAC" /><stop offset="50%" stop-color="#784BA0" /><stop offset="100%" stop-color="#2B86C5" /></linearGradient></defs>
+                    <path d="M 30 15 C 30 15, 45 50, 30 85" stroke="url(#gradHeader)" stroke-width="12" stroke-linecap="round" />
+                    <path d="M 75 15 C 40 40, 40 60, 75 85" stroke="url(#gradHeader)" stroke-width="12" stroke-linecap="round" />
+                    <path d="M 35 50 L 52 50" stroke="url(#gradHeader)" stroke-width="12" stroke-linecap="round" />
+                </svg>
+                <div class="brand-text-block">
+                    <span class="brand-name">KAPKATAROZ</span>
+                    <span class="brand-slogan">KESİNTİSİZ İLETİŞİM SANATI</span>
+                </div>
+            </div>
+            <div class="header-divider"></div>
             <h2 id="current-room-title">Bekleme Odası</h2>
         </div>
         
@@ -201,30 +245,24 @@
                 <div id="video-container"><video id="screen-video" autoplay playsinline></video></div>
                 <div id="participants-area"></div>
                 
-                <!-- YÜZEN ALT KONTROL BAR -->
                 <div id="controls-wrapper">
                     <div id="controls-bar">
                         <button id="mute-btn" onclick="toggleMute()" class="ctrl-btn" title="Sustur">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                         </button>
-                        
                         <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn" title="Kamera Aç/Kapat">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </button>
-                        
                         <select id="quality-selector" title="Yayın Kalitesi">
                             <option value="480">480p</option><option value="720">720p</option>
                             <option value="1080">1080p</option><option value="1440" selected>2K</option>
                         </select>
-                        
                         <button id="share-btn" onclick="toggleScreenShare()" class="ctrl-btn" title="Ekran Paylaş">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                         </button>
-                        
                         <button id="chat-toggle-btn" onclick="toggleChat()" class="ctrl-btn" title="Sohbeti Aç">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </button>
-                        
                         <button id="leave-btn" onclick="leaveRoom()" class="ctrl-btn active-red" title="Odadan Çık">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"></path></svg>
                         </button>
@@ -232,22 +270,17 @@
                 </div>
             </div>
 
-            <!-- BOYUTLANDIRICI (RESIZER) -->
             <div id="resizer"></div>
 
-            <!-- YAZILI SOHBET PANELİ -->
             <div id="chat-sidebar">
                 <div id="chat-header">
                     <span style="display: flex; align-items: center; gap: 8px;">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-                        Sohbet
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Sohbet
                     </span>
                     <button class="chat-btn" onclick="toggleChat()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></button>
                 </div>
-                
                 <div id="chat-messages"></div>
                 <div id="emoji-picker"></div>
-
                 <div id="chat-input-area">
                     <input type="file" id="file-input" style="display: none;" onchange="handleFileSelect(event)">
                     <button class="chat-btn" onclick="document.getElementById('file-input').click()" title="Dosya Gönder">
@@ -265,6 +298,16 @@
         </div>
     </div>
 
+    <!-- SAĞ TIK MENÜSÜ -->
+    <div id="context-menu">
+        <h4 id="cm-name">Kullanıcı Adı</h4>
+        <div class="context-item">
+            <label>Kişisel Ses Seviyesi</label>
+            <input type="range" id="cm-volume" min="0" max="1" step="0.05" value="1" oninput="changeRemoteVolume(this.value)">
+        </div>
+        <button id="context-mute-btn" onclick="toggleRemoteMute()">🔇 Kendimde Sustur</button>
+    </div>
+
     <audio id="remote-audio" autoplay></audio>
 
     <script>
@@ -272,21 +315,34 @@
         let peer = null, myStream = null, currentAudioCall = null, dataConnection = null, remotePeerId = null, audioContext = null;
         let localUsername = "", isMuted = false, isCameraOn = false, cameraStream = null, cameraCall = null, isScreenSharing = false, screenStream = null, screenCall = null;
 
-        // --- TEMA YÖNETİMİ ---
-        function setTheme(themeName) {
-            document.body.className = themeName;
-            localStorage.setItem('chat_theme', themeName);
-        }
-        window.addEventListener('DOMContentLoaded', () => {
-            const savedTheme = localStorage.getItem('chat_theme') || 'theme-dark';
-            setTheme(savedTheme);
-        });
+        function setTheme(themeName) { document.body.className = themeName; localStorage.setItem('chat_theme', themeName); }
+        window.addEventListener('DOMContentLoaded', () => { setTheme(localStorage.getItem('chat_theme') || 'theme-dark'); });
 
-        // --- BOYUTLANDIRMA (RESIZER) MANTIĞI ---
+        function handleRightClick(e, id, name) {
+            e.preventDefault();
+            if (id === 'local-user') return;
+            const menu = document.getElementById('context-menu');
+            document.getElementById('cm-name').innerText = name;
+            const audioEl = document.getElementById('remote-audio');
+            document.getElementById('cm-volume').value = audioEl.volume;
+            const muteBtn = document.getElementById('context-mute-btn');
+            if (audioEl.muted) { muteBtn.classList.add('muted'); muteBtn.innerHTML = "🔊 Sesi Geri Aç"; } 
+            else { muteBtn.classList.remove('muted'); muteBtn.innerHTML = "🔇 Kendimde Sustur"; }
+            menu.style.display = 'block'; menu.style.left = e.pageX + 'px'; menu.style.top = e.pageY + 'px';
+        }
+
+        document.addEventListener('click', () => { document.getElementById('context-menu').style.display = 'none'; });
+        function changeRemoteVolume(val) { document.getElementById('remote-audio').volume = val; }
+        function toggleRemoteMute() {
+            const audioEl = document.getElementById('remote-audio'), muteBtn = document.getElementById('context-mute-btn');
+            audioEl.muted = !audioEl.muted;
+            if (audioEl.muted) { muteBtn.classList.add('muted'); muteBtn.innerHTML = "🔊 Sesi Geri Aç"; } 
+            else { muteBtn.classList.remove('muted'); muteBtn.innerHTML = "🔇 Kendimde Sustur"; }
+        }
+
         const resizer = document.getElementById('resizer');
         const chatSidebar = document.getElementById('chat-sidebar');
         let isResizing = false;
-
         resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'ew-resize'; resizer.classList.add('resizing'); });
         document.addEventListener('mousemove', (e) => {
             if (!isResizing) return;
@@ -295,20 +351,17 @@
         });
         document.addEventListener('mouseup', () => { if (isResizing) { isResizing = false; document.body.style.cursor = 'default'; resizer.classList.remove('resizing'); } });
 
-        // Emoji Yükleme
         const emojis = ["😀","😂","🤣","😍","😎","😭","😡","👍","👎","👏","🙏","👀","🔥","💯","❤️","🎉","✨","🤔"];
         window.onload = () => {
             const picker = document.getElementById('emoji-picker');
             emojis.forEach(e => {
-                let span = document.createElement('span');
-                span.className = 'emoji-item'; span.innerText = e;
+                let span = document.createElement('span'); span.className = 'emoji-item'; span.innerText = e;
                 span.onclick = () => { document.getElementById('chat-input').value += e; toggleEmojiPicker(); };
                 picker.appendChild(span);
             });
         };
 
         function showMenu(menuId) { document.querySelectorAll('.auth-box').forEach(b => b.style.display = 'none'); document.getElementById(menuId).style.display = 'block'; }
-
         async function setupMicrophone() {
             if(myStream) return true;
             try { myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false }); return true; } 
@@ -336,10 +389,8 @@
 
         async function createLobby() {
             const nick = document.getElementById('create-nick').value.trim(), pass = document.getElementById('create-pass').value.trim();
-            if(!nick || !pass) return;
-            document.getElementById('create-btn').innerText = "Lobi Kuruluyor..."; localUsername = nick;
+            if(!nick || !pass) return; document.getElementById('create-btn').innerText = "Kuruluyor..."; localUsername = nick;
             if(!(await setupMicrophone())) { document.getElementById('create-btn').innerText = "Oluştur ve Başla"; return; }
-
             peer = new Peer(ROOM_PREFIX + pass);
             peer.on('open', function(id) { setupPeerEvents(); switchToCallScreen("Lobi: Bekleniyor (Şifre: " + pass + ")"); });
             peer.on('error', function(err) { alert("Bu şifre kullanımda!"); document.getElementById('create-btn').innerText = "Oluştur"; });
@@ -347,41 +398,32 @@
 
         async function joinLobby() {
             const nick = document.getElementById('join-nick').value.trim(), pass = document.getElementById('join-pass').value.trim();
-            if(!nick || !pass) return;
-            document.getElementById('join-btn').innerText = "Bağlanılıyor..."; localUsername = nick;
+            if(!nick || !pass) return; document.getElementById('join-btn').innerText = "Bağlanılıyor..."; localUsername = nick;
             if(!(await setupMicrophone())) { document.getElementById('join-btn').innerText = "Lobiye Bağlan"; return; }
-
             peer = new Peer();
             peer.on('open', function(id) {
                 setupPeerEvents(); switchToCallScreen("Bağlanılıyor..."); remotePeerId = ROOM_PREFIX + pass;
                 const call = peer.call(remotePeerId, myStream, { metadata: { type: 'audio', callerName: localUsername } });
-                setupCallEvents(call, "Oda Kurucusu");
-                const conn = peer.connect(remotePeerId); setupDataConnection(conn);
+                setupCallEvents(call, "Oda Kurucusu"); const conn = peer.connect(remotePeerId); setupDataConnection(conn);
             });
             peer.on('error', function(err) { alert("Lobi bulunamadı!"); leaveRoom(); });
         }
 
         function toggleChat() {
             const btn = document.getElementById('chat-toggle-btn');
-            if (chatSidebar.style.display === 'flex') {
-                chatSidebar.style.display = 'none'; resizer.style.display = 'none'; btn.classList.remove('active-green');
-            } else {
-                chatSidebar.style.display = 'flex'; resizer.style.display = 'block'; btn.classList.add('active-green');
-            }
+            if (chatSidebar.style.display === 'flex') { chatSidebar.style.display = 'none'; resizer.style.display = 'none'; btn.classList.remove('active-green'); } 
+            else { chatSidebar.style.display = 'flex'; resizer.style.display = 'block'; btn.classList.add('active-green'); }
         }
 
         function toggleEmojiPicker() { const picker = document.getElementById('emoji-picker'); picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex'; }
 
         function sendMessage() {
-            const input = document.getElementById('chat-input'), text = input.value.trim();
-            if (!text || !dataConnection) return;
-            dataConnection.send({ type: 'text', sender: localUsername, content: text });
-            renderMessage(localUsername, text, 'local'); input.value = ''; document.getElementById('emoji-picker').style.display = 'none';
+            const input = document.getElementById('chat-input'), text = input.value.trim(); if (!text || !dataConnection) return;
+            dataConnection.send({ type: 'text', sender: localUsername, content: text }); renderMessage(localUsername, text, 'local'); input.value = ''; document.getElementById('emoji-picker').style.display = 'none';
         }
 
         function handleFileSelect(event) {
-            const file = event.target.files[0];
-            if(!file || !dataConnection) return;
+            const file = event.target.files[0]; if(!file || !dataConnection) return;
             if(file.size > 50 * 1024 * 1024) return alert("Maksimum 50MB gönderebilirsiniz.");
             dataConnection.send({ type: 'file', sender: localUsername, fileName: file.name, fileType: file.type, fileData: file });
             renderFile(localUsername, file.name, file, file.type, 'local'); event.target.value = '';
@@ -389,14 +431,12 @@
 
         function renderMessage(sender, text, type) {
             const box = document.getElementById('chat-messages'), div = document.createElement('div');
-            div.className = `msg ${type}`; div.innerHTML = `<span class="msg-sender">${sender}</span><span>${text}</span>`;
-            box.appendChild(div); box.scrollTop = box.scrollHeight;
+            div.className = `msg ${type}`; div.innerHTML = `<span class="msg-sender">${sender}</span><span>${text}</span>`; box.appendChild(div); box.scrollTop = box.scrollHeight;
         }
 
         function renderFile(sender, fileName, fileBlob, fileType, type) {
             const box = document.getElementById('chat-messages'), url = URL.createObjectURL(new Blob([fileBlob], { type: fileType })), div = document.createElement('div');
-            div.className = `msg ${type}`;
-            div.innerHTML = `<span class="msg-sender">${sender}</span><span style="font-size:12px; opacity:0.7;">Dosya paylaştı:</span><a href="${url}" download="${fileName}" class="file-link"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> ${fileName}</a>`;
+            div.className = `msg ${type}`; div.innerHTML = `<span class="msg-sender">${sender}</span><span style="font-size:12px; opacity:0.7;">Dosya paylaştı:</span><a href="${url}" download="${fileName}" class="file-link"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path><polyline points="13 2 13 9 20 9"></polyline></svg> ${fileName}</a>`;
             box.appendChild(div); box.scrollTop = box.scrollHeight;
         }
 
@@ -472,7 +512,9 @@
 
         function addParticipant(name, initials, id) {
             const area = document.getElementById('participants-area'), div = document.createElement('div');
-            div.className = 'participant'; div.id = id; div.innerHTML = `<div class="circle">${initials}</div><div class="name-tag">${name}</div>`; area.appendChild(div);
+            div.className = 'participant'; div.id = id;
+            div.setAttribute('oncontextmenu', `handleRightClick(event, '${id}', '${name}')`);
+            div.innerHTML = `<div class="circle">${initials}</div><div class="name-tag">${name}</div>`; area.appendChild(div);
         }
 
         function monitorSpeech(stream, elementId) {
