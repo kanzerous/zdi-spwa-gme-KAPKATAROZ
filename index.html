@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- FANDOM VE WIKIPEDIA GÖRSELLERİNİN BOZULMAMASI İÇİN GİZLİLİK ZIRHI (Referrer Korumasını Aşar) -->
+    <meta name="referrer" content="no-referrer">
+    
     <title>KAPKATAROZ | Kesintisiz İletişim Sanatı</title>
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
@@ -260,7 +264,6 @@
         
         <div id="call-body">
             <div id="main-content">
-                <!-- ÇOKLU YAYIN GALERİSİ -->
                 <div id="video-gallery"></div>
                 
                 <div id="participants-area"></div>
@@ -272,8 +275,6 @@
                         <button id="mute-btn" onclick="toggleMute()" class="ctrl-btn" title="Sustur">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                         </button>
-                        
-                        <!-- Gürültü engelleme butonu kaldırıldı -->
                         
                         <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn" title="Kamera Aç/Kapat">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -352,23 +353,28 @@
         let callStartTime = null, timerInterval = null;
         let isLeavingLobby = false;
         
+        let currentRoomPassword = "";
+        let migrationInterval = null;
+        
         let peers = {};
         let isHost = false;
         let speechMonitors = {}; 
 
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
         
-        // --- CDN/PROXY İLE HOTLINK KORUMASI AŞILDI ---
+        // --- MEDIAWIKI SPECIAL:FILEPATH KULLANIMI (TAM KADRO) ---
+        // Bu sistem resimleri doğrudan en saf kaynaklarından (Fandom/Wiki veritabanı) çeker.
+        // Yukarýdaki no-referrer etiketiyle birleşince asla engellenmez.
         const AVATARS = [
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/spongebob/images/a/ac/SpongeBob_SquarePants_Render.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/spongebob/images/7/7e/Patrick_Star_Render.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/flintstones/images/a/a2/Fred_Flintstone.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/phineasandferb/images/a/a3/Phineas_Flynn.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/phineasandferb/images/1/13/Ferb_Fletcher_promo.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/ben10/images/6/6b/Ben_Omniverse_Render.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/theamazingworldofgumball/images/1/18/Gumball_Season_3_design.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/theamazingworldofgumball/images/9/90/Darwin_Watterson_Season_3_design.png",
-            "https://wsrv.nl/?url=static.wikia.nocookie.net/looneytunes/images/b/b5/Bugs_Bunny.png"
+            "https://en.wikipedia.org/wiki/Special:FilePath/Lucky_Luke.png", // Red Kit
+            "https://en.wikipedia.org/wiki/Special:FilePath/Fred_Flintstone.png", // Fred Çakmaktaş
+            "https://ben10.fandom.com/wiki/Special:FilePath/Four_Arms_(Classic).png", // 4 Kol (Ben 10)
+            "https://spongebob.fandom.com/wiki/Special:FilePath/SpongeBob_SquarePants.png", // Sponge Bob
+            "https://spongebob.fandom.com/wiki/Special:FilePath/Patrick_Star.png", // Patrick
+            "https://phineasandferb.fandom.com/wiki/Special:FilePath/Phineas_Flynn.png", // Fineas
+            "https://phineasandferb.fandom.com/wiki/Special:FilePath/Ferb_Fletcher.png", // Ferb
+            "https://theamazingworldofgumball.fandom.com/wiki/Special:FilePath/Gumball_Watterson.png", // Gumball
+            "https://theamazingworldofgumball.fandom.com/wiki/Special:FilePath/Darwin_Watterson.png" // Darwin
         ];
 
         function initAvatars() {
@@ -509,7 +515,6 @@
         async function setupMicrophone() {
             if(myStream) return true;
             try { 
-                // Tarayıcının varsayılan en stabil ses kalitesi ayarları eklendi, gürültü engelleme otomatik devrede
                 myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); 
                 return true; 
             } catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
@@ -518,7 +523,7 @@
         function setupPeerEvents() {
             peer.on('error', function(err) {
                 if (err.type === 'unavailable-id') {
-                    alert("Bu şifre kullanımda!");
+                    alert("Bu şifre kullanımda! (Eğer düştüyseniz 'Lobiye Katıl' butonunu kullanarak yeniden giriş yapın)");
                     if(document.getElementById('call-screen').style.display !== 'flex') leaveRoom();
                 } else if (err.type === 'peer-unavailable' || err.type === 'network' || err.type === 'browser-incompatible') {
                 } else {
@@ -631,6 +636,42 @@
             checkGalleryEmpty();
 
             delete peers[id]; updateRoomTitle();
+
+            if (id === ROOM_PREFIX + currentRoomPassword && !isLeavingLobby) {
+                triggerHostMigration();
+            }
+        }
+
+        function triggerHostMigration() {
+            let allIds = Object.keys(peers);
+            allIds.push(peer.id);
+            allIds.sort();
+
+            const hostId = ROOM_PREFIX + currentRoomPassword;
+
+            if (allIds[0] === peer.id) {
+                if(peer) peer.destroy(); 
+                
+                setTimeout(() => {
+                    isHost = true;
+                    peer = new Peer(hostId); 
+                    peer.on('open', function(id) {
+                        setupPeerEvents();
+                    });
+                    peer.on('error', function(err) {});
+                }, 1000);
+            } else {
+                if(migrationInterval) clearInterval(migrationInterval);
+                let retries = 0;
+                migrationInterval = setInterval(() => {
+                    if (retries > 6 || peers[hostId] || isLeavingLobby) {
+                        clearInterval(migrationInterval);
+                        return;
+                    }
+                    connectToPeer(hostId, "Lobi Kurucusu (Yeni)", AVATARS[0]);
+                    retries++;
+                }, 2500);
+            }
         }
 
         function updateParticipantUI(id, name, avatarUrl) {
@@ -647,6 +688,7 @@
         async function createLobby() {
             const nick = document.getElementById('create-nick').value.trim(), pass = document.getElementById('create-pass').value.trim();
             if(!nick || !pass) return; document.getElementById('create-btn').innerText = "Kuruluyor..."; localUsername = nick;
+            currentRoomPassword = pass; 
             if(!(await setupMicrophone())) { document.getElementById('create-btn').innerText = "Oluştur ve Başla"; return; }
             
             isHost = true; peer = new Peer(ROOM_PREFIX + pass);
@@ -656,6 +698,7 @@
         async function joinLobby() {
             const nick = document.getElementById('join-nick').value.trim(), pass = document.getElementById('join-pass').value.trim();
             if(!nick || !pass) return; document.getElementById('join-btn').innerText = "Bağlanılıyor..."; localUsername = nick;
+            currentRoomPassword = pass; 
             if(!(await setupMicrophone())) { document.getElementById('join-btn').innerText = "Lobiye Bağlan"; return; }
             
             isHost = false; peer = new Peer();
@@ -707,6 +750,7 @@
 
         function leaveRoom() {
             isLeavingLobby = true;
+            if(migrationInterval) clearInterval(migrationInterval); 
             stopTimer(); if(isScreenSharing) stopScreenShare(); if(isCameraOn) toggleCamera();
             Object.keys(peers).forEach(id => handlePeerDisconnect(id)); peers = {};
             if(peer) peer.destroy(); document.getElementById('video-gallery').innerHTML = ""; checkGalleryEmpty();
@@ -714,6 +758,7 @@
             Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; 
             document.getElementById('call-screen').style.display = 'none'; document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan";
+            currentRoomPassword = ""; 
             isLeavingLobby = false;
         }
 
