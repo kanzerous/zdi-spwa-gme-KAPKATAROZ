@@ -3,92 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Özel Sesli Sohbet ve Yayın (Pro)</title>
+    <title>Özel Lobi & Sesli Sohbet</title>
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; background-color: #36393f; color: #dcddde; overflow: hidden; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; background-color: #202225; color: #dcddde; overflow: hidden; display: flex; }
         
-        /* Sol Menü */
-        #sidebar { width: 320px; background-color: #2f3136; display: flex; flex-direction: column; padding: 20px; border-right: 1px solid #202225; z-index: 10; overflow-y: auto; }
-        #sidebar h3 { color: #96989d; font-size: 12px; text-transform: uppercase; margin-bottom: 8px; margin-top: 15px; border-bottom: 1px solid #40444b; padding-bottom: 5px; }
+        /* GİRİŞ VE LOBİ EKRANLARI */
+        #auth-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: #2f3136; position: absolute; z-index: 50; }
+        .auth-box { background-color: #36393f; padding: 40px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.3); width: 320px; text-align: center; }
+        .auth-box h2 { color: white; margin-top: 0; margin-bottom: 25px; }
+        .auth-box p { color: #b9bbbe; font-size: 14px; margin-bottom: 20px; }
         
-        .info-box { background-color: #202225; padding: 8px; border-radius: 5px; font-family: monospace; color: #3ba55d; margin-bottom: 10px; font-size: 13px; word-break: break-all;}
-        input, select { width: 90%; padding: 8px; border-radius: 4px; border: 1px solid #202225; background-color: #202225; color: white; margin-bottom: 8px; outline: none; }
-        
-        button { background-color: #5865F2; color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-bottom: 8px; font-size: 13px; }
+        input { width: 90%; padding: 12px; border-radius: 4px; border: 1px solid #202225; background-color: #202225; color: white; margin-bottom: 15px; outline: none; font-size: 14px; }
+        button { background-color: #5865F2; color: white; border: none; padding: 12px; border-radius: 4px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-bottom: 10px; font-size: 14px; }
         button:hover { background-color: #4752C4; }
-        button:disabled { background-color: #4f545c; cursor: not-allowed; }
         
-        /* Buton Renkleri */
         .btn-green { background-color: #3ba55d; } .btn-green:hover { background-color: #2d7d46; }
         .btn-red { background-color: #ed4245; } .btn-red:hover { background-color: #c9383b; }
-        .btn-dark { background-color: #202225; color: #b9bbbe; } .btn-dark:hover { background-color: #4f545c; color: white; }
+        .btn-dark { background-color: #4f545c; color: white; } .btn-dark:hover { background-color: #72767d; }
 
-        /* Arkadaş Listesi */
-        #friends-list { list-style: none; padding: 0; margin: 0; }
-        .friend-item { display: flex; justify-content: space-between; align-items: center; background-color: #202225; padding: 8px; border-radius: 4px; margin-bottom: 5px; }
-        .friend-item span { font-size: 13px; font-weight: bold; }
-        .friend-item button { width: auto; padding: 5px 10px; margin: 0; font-size: 11px; background-color: #3ba55d; }
-
-        /* Arayüz / Ana Ekran */
-        #main { flex-grow: 1; display: flex; flex-direction: column; background-color: #000000; position: relative; }
-        #call-header { padding: 15px 25px; background-color: #36393f; border-bottom: 1px solid #202225; z-index: 10; display: flex; justify-content: space-between; align-items: center;}
+        /* ARAYÜZ / GÖRÜŞME EKRANI */
+        #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: #000000; position: relative; }
+        #call-header { padding: 15px 25px; background-color: #36393f; border-bottom: 1px solid #202225; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         #call-header h2 { margin: 0; color: white; font-size: 16px; }
-        #controls { display: none; gap: 10px; align-items: center; }
+        
+        #controls { display: flex; gap: 10px; align-items: center; }
+        #controls select { width: auto; padding: 8px; margin: 0; }
+        #controls button { width: auto; margin: 0; padding: 10px 15px; }
 
-        /* Ekran Paylaşımı */
+        /* EKRAN PAYLAŞIMI */
         #video-container { flex-grow: 1; display: none; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
         #screen-video { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; }
 
-        /* Yuvarlaklar */
-        #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 40px; padding: 40px; transition: all 0.3s ease; }
+        /* KULLANICI YUVARLAKLARI */
+        #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 50px; padding: 40px; transition: all 0.3s ease; }
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; }
-        .circle { width: 110px; height: 110px; border-radius: 50%; background-color: #2f3136; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: bold; color: white; border: 4px solid transparent; transition: all 0.2s; }
-        .name-tag { background-color: rgba(0, 0, 0, 0.6); padding: 5px 15px; border-radius: 12px; font-size: 13px; color: white; }
-        .speaking .circle { border-color: #3ba55d; box-shadow: 0 0 15px rgba(59, 165, 93, 0.7); }
+        .circle { width: 120px; height: 120px; border-radius: 50%; background-color: #2f3136; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: white; border: 4px solid transparent; transition: all 0.2s; }
+        .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; }
+        .speaking .circle { border-color: #3ba55d; box-shadow: 0 0 20px rgba(59, 165, 93, 0.8); }
 
-        .minimized-participants { flex-grow: 0 !important; padding: 10px !important; background-color: #18191c; border-top: 1px solid #202225; }
-        .minimized-participants .circle { width: 40px; height: 40px; font-size: 16px; border-width: 2px; }
-        .minimized-participants .participant { gap: 5px; }
-        .minimized-participants .name-tag { font-size: 10px; padding: 2px 6px; }
+        .minimized-participants { flex-grow: 0 !important; padding: 15px !important; background-color: #18191c; border-top: 1px solid #202225; gap: 20px !important; }
+        .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; border-width: 2px; }
+        .minimized-participants .participant { gap: 8px; }
+        .minimized-participants .name-tag { font-size: 11px; padding: 3px 8px; }
     </style>
 </head>
 <body>
 
-    <div id="sidebar">
-        <h3>Profilin</h3>
-        <input type="text" id="my-username" placeholder="Kullanıcı Adın (Örn: Juggernaut)">
-        <button onclick="saveProfile()" class="btn-dark">Profili Kaydet</button>
+    <!-- GİRİŞ EKRANLARI -->
+    <div id="auth-container">
         
-        <h3>Durum: <span id="status-text" style="color: #faa61a;">Bağlanıyor...</span></h3>
-        <div class="info-box" id="my-id">Yükleniyor...</div>
-        <button onclick="copyMyId()">ID Kodumu Kopyala</button>
+        <!-- Ana Menü -->
+        <div class="auth-box" id="menu-main">
+            <h2>Özel Ses Odası</h2>
+            <p>Sunucusuz, şifreli ve doğrudan bağlantı.</p>
+            <button onclick="showMenu('menu-create')">Lobi Oluştur</button>
+            <button class="btn-green" onclick="showMenu('menu-join')">Lobiye Katıl</button>
+        </div>
 
-        <h3>Arkadaş Ekle</h3>
-        <input type="text" id="new-friend-name" placeholder="Arkadaşın Adı">
-        <input type="text" id="new-friend-id" placeholder="Arkadaşın ID Kodu">
-        <button onclick="addFriend()" class="btn-dark">Listeye Ekle</button>
+        <!-- Lobi Oluşturma Ekranı -->
+        <div class="auth-box" id="menu-create" style="display: none;">
+            <h2>Lobi Oluştur</h2>
+            <input type="text" id="create-nick" placeholder="Kullanıcı Adın">
+            <input type="password" id="create-pass" placeholder="Lobi Şifresi Belirle">
+            <button class="btn-green" id="create-btn" onclick="createLobby()">Oluştur ve Başla</button>
+            <button class="btn-dark" onclick="showMenu('menu-main')">Geri Dön</button>
+        </div>
 
-        <h3>Arkadaşlarım</h3>
-        <ul id="friends-list">
-            <!-- Kayıtlı arkadaşlar buraya gelecek -->
-        </ul>
+        <!-- Lobiye Katılma Ekranı -->
+        <div class="auth-box" id="menu-join" style="display: none;">
+            <h2>Lobiye Katıl</h2>
+            <input type="text" id="join-nick" placeholder="Kullanıcı Adın">
+            <input type="password" id="join-pass" placeholder="Lobi Şifresini Gir">
+            <button class="btn-green" id="join-btn" onclick="joinLobby()">Lobiye Bağlan</button>
+            <button class="btn-dark" onclick="showMenu('menu-main')">Geri Dön</button>
+        </div>
+
     </div>
 
-    <div id="main">
+    <!-- SOHBET EKRANI -->
+    <div id="call-screen">
         <div id="call-header">
             <h2 id="current-room-title">Bekleme Odası</h2>
             <div id="controls">
-                <button id="mute-btn" onclick="toggleMute()" style="width: auto;">🎙️ Sustur</button>
-                <select id="quality-selector" style="width: auto; margin: 0;">
+                <button id="mute-btn" onclick="toggleMute()" class="btn-dark">🎙️ Sustur</button>
+                <select id="quality-selector">
                     <option value="360">360p (60fps)</option>
                     <option value="480">480p (60fps)</option>
                     <option value="720">720p (60fps)</option>
                     <option value="1080">1080p (60fps)</option>
                     <option value="1440" selected>2K (60fps)</option>
                 </select>
-                <button id="share-btn" onclick="startScreenShare()" class="btn-green" style="width: auto;">🖥️ Ekran Paylaş</button>
-                <button id="leave-btn" onclick="endCall()" class="btn-red" style="width: auto;">☎️ Kapat</button>
+                <button id="share-btn" onclick="startScreenShare()" class="btn-green">🖥️ Ekran Paylaş</button>
+                <button id="leave-btn" onclick="leaveRoom()" class="btn-red">☎️ Odadan Çık</button>
             </div>
         </div>
         
@@ -97,77 +104,124 @@
         </div>
 
         <div id="participants-area">
-            <!-- Yuvarlaklar -->
+            <!-- Yuvarlaklar JavaScript ile eklenecek -->
         </div>
     </div>
 
     <audio id="remote-audio" autoplay></audio>
 
     <script>
-        let peer;
-        let myStream;
-        let currentAudioCall;
+        const ROOM_PREFIX = "gizli_lobi_";
+        let peer = null;
+        let myStream = null;
+        let currentAudioCall = null;
         let remotePeerId = null; 
-        let audioContext;
+        let audioContext = null;
         let isMuted = false;
-        let localUsername = localStorage.getItem('chat_username') || 'Sen';
+        let localUsername = "";
 
-        async function init() {
-            document.getElementById('my-username').value = localUsername === 'Sen' ? '' : localUsername;
-            loadFriends();
+        // Menü Geçişleri
+        function showMenu(menuId) {
+            document.getElementById('menu-main').style.display = 'none';
+            document.getElementById('menu-create').style.display = 'none';
+            document.getElementById('menu-join').style.display = 'none';
+            document.getElementById(menuId).style.display = 'block';
+        }
 
+        // Mikrofon İzni Alma
+        async function setupMicrophone() {
+            if(myStream) return true;
             try {
-                // Mikrofonu al
                 myStream = await navigator.mediaDevices.getUserMedia({ 
                     audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, 
                     video: false 
                 });
-                
-                addParticipant(localUsername, localUsername.charAt(0).toUpperCase(), 'local-user');
-                monitorSpeech(myStream, 'local-user');
-
-                peer = new Peer(); 
-
-                peer.on('open', function(id) {
-                    document.getElementById('my-id').innerText = id;
-                    document.getElementById('status-text').innerText = "Bağlantıya Hazır";
-                    document.getElementById('status-text').style.color = "#3ba55d";
-                });
-
-                // Arama Geldiğinde
-                peer.on('call', function(call) {
-                    if (call.metadata && call.metadata.type === 'screen') {
-                        call.answer(); 
-                        call.on('stream', function(screenStream) {
-                            showScreenVideo(screenStream, false);
-                        });
-                        call.on('close', hideScreenVideo);
-                    } else {
-                        remotePeerId = call.peer;
-                        call.answer(myStream);
-                        setupCallEvents(call, call.metadata ? call.metadata.callerName : 'Arkadaşın');
-                    }
-                });
-            } catch (err) {
-                alert("Mikrofon izni alınamadı!");
+                return true;
+            } catch(e) {
+                alert("Mikrofon izni alınamadı! Uygulamanın çalışması için mikrofona izin vermelisiniz.");
+                return false;
             }
         }
 
-        // Aramayı Başlat
-        function callFriend(friendId, friendName) {
-            remotePeerId = friendId;
-            document.getElementById('current-room-title').innerText = friendName + " Aranıyor...";
-            const call = peer.call(friendId, myStream, { metadata: { type: 'audio', callerName: localUsername } });
-            setupCallEvents(call, friendName);
+        // LOBİ OLUŞTURAN KİŞİ
+        async function createLobby() {
+            const nick = document.getElementById('create-nick').value.trim();
+            const pass = document.getElementById('create-pass').value.trim();
+            if(!nick || !pass) return alert("Kullanıcı adı ve şifre boş bırakılamaz!");
+
+            const btn = document.getElementById('create-btn');
+            btn.innerText = "Lobi Kuruluyor...";
+
+            localUsername = nick;
+            const hasMic = await setupMicrophone();
+            if(!hasMic) { btn.innerText = "Oluştur ve Başla"; return; }
+
+            // Şifreyi Peer ID olarak ayarlıyoruz (Böylece arkadaşın bu şifreyi arayacak)
+            peer = new Peer(ROOM_PREFIX + pass);
+
+            peer.on('open', function(id) {
+                switchToCallScreen("Lobi: Katılımcı Bekleniyor... (Şifre: " + pass + ")");
+            });
+
+            // Arkadaş Lobiye Bağlandığında
+            peer.on('call', function(call) {
+                if (call.metadata && call.metadata.type === 'screen') {
+                    call.answer(); 
+                    call.on('stream', function(screenStream) { showScreenVideo(screenStream, false); });
+                    call.on('close', hideScreenVideo);
+                } else {
+                    remotePeerId = call.peer;
+                    call.answer(myStream);
+                    setupCallEvents(call, call.metadata.callerName);
+                }
+            });
+
+            peer.on('error', function(err) {
+                if(err.type === 'unavailable-id') {
+                    alert("Bu şifreyle kurulmuş aktif bir lobi zaten var! Lütfen başka bir şifre belirleyin.");
+                    btn.innerText = "Oluştur ve Başla";
+                }
+            });
         }
 
+        // LOBİYE KATILAN KİŞİ
+        async function joinLobby() {
+            const nick = document.getElementById('join-nick').value.trim();
+            const pass = document.getElementById('join-pass').value.trim();
+            if(!nick || !pass) return alert("Kullanıcı adı ve şifre boş bırakılamaz!");
+
+            const btn = document.getElementById('join-btn');
+            btn.innerText = "Bağlanılıyor...";
+
+            localUsername = nick;
+            const hasMic = await setupMicrophone();
+            if(!hasMic) { btn.innerText = "Lobiye Bağlan"; return; }
+
+            peer = new Peer();
+
+            peer.on('open', function(id) {
+                switchToCallScreen("Lobiye Bağlanılıyor...");
+                
+                // Belirtilen şifreyi arayarak lobiye giriyor
+                remotePeerId = ROOM_PREFIX + pass;
+                const call = peer.call(remotePeerId, myStream, { metadata: { type: 'audio', callerName: localUsername } });
+                setupCallEvents(call, "Oda Kurucusu");
+            });
+
+            peer.on('error', function(err) {
+                if(err.type === 'peer-unavailable') {
+                    alert("Bu şifreye ait aktif bir lobi bulunamadı! Şifreyi kontrol edin veya arkadaşınızın lobiyi kurduğundan emin olun.");
+                    leaveRoom();
+                }
+            });
+        }
+
+        // Arama Olayları
         function setupCallEvents(call, remoteName) {
             currentAudioCall = call;
 
             call.on('stream', function(remoteStream) {
-                document.getElementById('current-room-title').innerText = remoteName + " ile Görüşülüyor";
-                document.getElementById('controls').style.display = "flex";
-
+                document.getElementById('current-room-title').innerText = remoteName + " odaya katıldı!";
                 document.getElementById('remote-audio').srcObject = remoteStream;
 
                 if(!document.getElementById('remote-user')) {
@@ -176,54 +230,59 @@
                 }
             });
 
-            call.on('close', endCallUI);
+            call.on('close', leaveRoom);
         }
 
-        // Kendini Susturma
+        // Arayüz Değişiklikleri
+        function switchToCallScreen(titleText) {
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('call-screen').style.display = 'flex';
+            document.getElementById('current-room-title').innerText = titleText;
+            
+            // Ekranı temizle ve kendi yuvarlağımızı ekle
+            document.getElementById('participants-area').innerHTML = "";
+            addParticipant(localUsername, localUsername.charAt(0).toUpperCase(), 'local-user');
+            monitorSpeech(myStream, 'local-user');
+        }
+
+        // Odadan Çıkış (Reset)
+        function leaveRoom() {
+            if(currentAudioCall) currentAudioCall.close();
+            if(peer) peer.destroy();
+            hideScreenVideo();
+            
+            document.getElementById('call-screen').style.display = 'none';
+            document.getElementById('auth-container').style.display = 'flex';
+            
+            document.getElementById('create-btn').innerText = "Oluştur ve Başla";
+            document.getElementById('join-btn').innerText = "Lobiye Bağlan";
+        }
+
+        // --- EKRAN PAYLAŞIMI VE SUSTURMA KODLARI (Aynı Kaldı) ---
         function toggleMute() {
             isMuted = !isMuted;
             myStream.getAudioTracks()[0].enabled = !isMuted;
             const muteBtn = document.getElementById('mute-btn');
-            
-            if (isMuted) {
-                muteBtn.innerText = "🔇 Sesim Kapalı";
-                muteBtn.style.backgroundColor = "#ed4245";
-            } else {
-                muteBtn.innerText = "🎙️ Sustur";
-                muteBtn.style.backgroundColor = "#5865F2";
-            }
+            if (isMuted) { muteBtn.innerText = "🔇 Sesim Kapalı"; muteBtn.style.backgroundColor = "#ed4245"; } 
+            else { muteBtn.innerText = "🎙️ Sustur"; muteBtn.style.backgroundColor = "#4f545c"; }
         }
 
-        // Ekran Paylaşımı (Kalite Seçenekli)
         async function startScreenShare() {
-            if (!remotePeerId) return alert("Önce sesli bağlantı kurmalısın.");
-            
-            const quality = document.getElementById('quality-selector').value;
-            const resolutions = {
-                '360': { w: 640, h: 360 },
-                '480': { w: 854, h: 480 },
-                '720': { w: 1280, h: 720 },
-                '1080': { w: 1920, h: 1080 },
-                '1440': { w: 2560, h: 1440 }
-            };
-            const res = resolutions[quality];
+            if (!remotePeerId) return alert("Şu an odada ekranını paylaşabileceğin kimse yok.");
+            const res = {
+                '360': { w: 640, h: 360 }, '480': { w: 854, h: 480 }, '720': { w: 1280, h: 720 },
+                '1080': { w: 1920, h: 1080 }, '1440': { w: 2560, h: 1440 }
+            }[document.getElementById('quality-selector').value];
 
             try {
                 const screenStream = await navigator.mediaDevices.getDisplayMedia({
                     video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: 60, max: 60 } },
                     audio: true
                 });
-
                 showScreenVideo(screenStream, true);
                 const screenCall = peer.call(remotePeerId, screenStream, { metadata: { type: 'screen' } });
-
-                screenStream.getVideoTracks()[0].onended = () => {
-                    screenCall.close();
-                    hideScreenVideo();
-                };
-            } catch (err) {
-                console.error("Ekran paylaşılamadı:", err);
-            }
+                screenStream.getVideoTracks()[0].onended = () => { screenCall.close(); hideScreenVideo(); };
+            } catch (err) { console.error("Ekran paylaşılamadı:", err); }
         }
 
         function showScreenVideo(stream, isLocal) {
@@ -238,19 +297,6 @@
             document.getElementById('screen-video').srcObject = null;
             document.getElementById('video-container').style.display = 'none';
             document.getElementById('participants-area').classList.remove('minimized-participants');
-        }
-
-        function endCall() {
-            if(currentAudioCall) currentAudioCall.close();
-            endCallUI();
-        }
-
-        function endCallUI() {
-            document.getElementById('current-room-title').innerText = "Bekleme Odası";
-            document.getElementById('controls').style.display = "none";
-            hideScreenVideo();
-            let remoteNode = document.getElementById('remote-user');
-            if(remoteNode) remoteNode.remove();
         }
 
         function addParticipant(name, initials, id) {
@@ -277,72 +323,12 @@
                 let average = sum / dataArray.length;
 
                 let el = document.getElementById(elementId);
-                // Eğer kullanıcı kendini susturduysa kendi yeşil ışığını da yakma
                 if(el) {
                     if (average > 15 && !(elementId === 'local-user' && isMuted)) el.classList.add('speaking');
                     else el.classList.remove('speaking');
                 }
             }, 100);
         }
-
-        // --- PROFİL VE ARKADAŞ SİSTEMİ (LocalStorage) ---
-        function saveProfile() {
-            const nameInput = document.getElementById('my-username').value.trim();
-            if(nameInput) {
-                localStorage.setItem('chat_username', nameInput);
-                localUsername = nameInput;
-                document.querySelector('#local-user .name-tag').innerText = localUsername;
-                document.querySelector('#local-user .circle').innerText = localUsername.charAt(0).toUpperCase();
-                alert("Profil kaydedildi!");
-            }
-        }
-
-        function addFriend() {
-            const name = document.getElementById('new-friend-name').value.trim();
-            const id = document.getElementById('new-friend-id').value.trim();
-            if(!name || !id) return alert("İsim ve ID boş bırakılamaz.");
-
-            let friends = JSON.parse(localStorage.getItem('chat_friends') || '[]');
-            friends.push({ name, id });
-            localStorage.setItem('chat_friends', JSON.stringify(friends));
-            
-            document.getElementById('new-friend-name').value = '';
-            document.getElementById('new-friend-id').value = '';
-            loadFriends();
-        }
-
-        function loadFriends() {
-            const list = document.getElementById('friends-list');
-            list.innerHTML = '';
-            let friends = JSON.parse(localStorage.getItem('chat_friends') || '[]');
-            
-            friends.forEach((friend, index) => {
-                let li = document.createElement('li');
-                li.className = 'friend-item';
-                li.innerHTML = `
-                    <span>${friend.name}</span>
-                    <div>
-                        <button onclick="callFriend('${friend.id}', '${friend.name}')">Ara</button>
-                        <button onclick="deleteFriend(${index})" class="btn-red" style="padding: 5px;">Sil</button>
-                    </div>
-                `;
-                list.appendChild(li);
-            });
-        }
-
-        function deleteFriend(index) {
-            let friends = JSON.parse(localStorage.getItem('chat_friends') || '[]');
-            friends.splice(index, 1);
-            localStorage.setItem('chat_friends', JSON.stringify(friends));
-            loadFriends();
-        }
-
-        function copyMyId() {
-            navigator.clipboard.writeText(document.getElementById('my-id').innerText);
-            alert("ID Kodun kopyalandı!");
-        }
-
-        window.onload = init;
     </script>
 </body>
 </html>
