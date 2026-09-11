@@ -51,14 +51,20 @@
         .auth-logo-container .brand-slogan { font-size: 13px; letter-spacing: 4px; font-family: 'Poppins', sans-serif; color: var(--text-muted); font-weight: 600;}
         .auth-logo-container svg { width: 60px; height: 60px; }
         
-        .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); width: 320px; text-align: center; transition: background-color 0.3s; }
+        .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); width: 340px; text-align: center; transition: background-color 0.3s; }
         .auth-box h2 { color: var(--text-main); margin-top: 0; margin-bottom: 25px; font-weight: 600; }
-        input { width: 90%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; }
+        input { width: 90%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; box-sizing: border-box; width: 100%;}
         input:focus { border-color: var(--accent); }
         button { background-color: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-bottom: 10px; font-size: 14px; }
         button:hover { background-color: var(--accent-hover); }
         .btn-green { background-color: #3ba55d; } .btn-green:hover { background-color: #2d7d46; }
         .btn-dark { background-color: var(--input-bg); color: var(--text-main); } .btn-dark:hover { filter: brightness(1.2); }
+
+        /* AVATAR SEÇİM ALANI */
+        .avatar-selection { display: flex; justify-content: space-between; margin-bottom: 20px; padding: 0 5px; }
+        .avatar-option { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; opacity: 0.5; background-color: var(--input-bg); padding: 2px;}
+        .avatar-option:hover { opacity: 0.8; }
+        .avatar-option.selected { border-color: var(--accent); opacity: 1; transform: scale(1.15); box-shadow: 0 0 10px var(--accent); }
 
         #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: var(--call-bg); position: relative; transition: background-color 0.3s; }
         #call-header { position: relative; padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; }
@@ -90,34 +96,27 @@
         .circle { 
             width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; 
             font-size: 36px; font-weight: bold; color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5); pointer-events: none; 
-            position: relative; z-index: 2; border: 4px solid transparent; 
+            position: relative; z-index: 2; border: 4px solid transparent; overflow: hidden;
         }
+        .circle img { width: 100%; height: 100%; object-fit: cover; pointer-events: none; }
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
         
-        /* OPTİMİZE EDİLMİŞ CSS ANİMASYONLARI (GPU HIZLANDIRMALI) */
         .circle::before, .circle::after { 
             content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
             border-radius: 50%; border: 2px solid #3ba55d; box-shadow: 0 0 15px #3ba55d; 
-            opacity: 0; z-index: -1; 
-            will-change: transform, opacity; /* Tarayıcıya performans uyarısı */
+            opacity: 0; z-index: -1; will-change: transform, opacity; 
         }
         .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
         .speaking .circle::after { animation: ripple 1.5s infinite ease-out; animation-delay: 0.75s; }
 
-        @keyframes ripple { 
-            0% { transform: scale(1); opacity: 0.8; } 
-            100% { transform: scale(1.6); opacity: 0; } 
-        }
+        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
 
         .minimized-participants { flex-grow: 0 !important; padding: 10px 20px !important; background-color: transparent; gap: 20px !important; position: absolute; top: 10px; left: 10px; z-index: 5; flex-wrap: nowrap !important; overflow-x: auto; max-width: 90%; }
         .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; }
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; }
         .minimized-participants .name-tag { font-size: 12px; padding: 0; background: none; }
         
-        @keyframes ripple-minimized { 
-            0% { transform: scale(1); opacity: 0.8; } 
-            100% { transform: scale(1.8); opacity: 0; } 
-        }
+        @keyframes ripple-minimized { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.8); opacity: 0; } }
         .minimized-participants .speaking .circle::before { animation: ripple-minimized 1.5s infinite ease-out; }
         .minimized-participants .speaking .circle::after { animation: ripple-minimized 1.5s infinite ease-out; animation-delay: 0.75s; }
 
@@ -195,19 +194,28 @@
                 <span class="brand-slogan">KESİNTİSİZ İLETİŞİM SANATI</span>
             </div>
         </div>
+        
         <div class="auth-box" id="menu-main">
             <button onclick="showMenu('menu-create')">Lobi Oluştur</button>
             <button class="btn-green" onclick="showMenu('menu-join')">Lobiye Katıl</button>
         </div>
+
         <div class="auth-box" id="menu-create" style="display: none;">
             <h2>Lobi Oluştur</h2>
+            <div class="avatar-selection" id="create-avatars">
+                <!-- Avatarlar JS ile yüklenecek -->
+            </div>
             <input type="text" id="create-nick" placeholder="Kullanıcı Adın">
             <input type="password" id="create-pass" placeholder="Lobi Şifresi Belirle">
             <button class="btn-green" id="create-btn" onclick="createLobby()">Oluştur ve Başla</button>
             <button class="btn-dark" onclick="showMenu('menu-main')">Geri Dön</button>
         </div>
+
         <div class="auth-box" id="menu-join" style="display: none;">
             <h2>Lobiye Katıl</h2>
+            <div class="avatar-selection" id="join-avatars">
+                <!-- Avatarlar JS ile yüklenecek -->
+            </div>
             <input type="text" id="join-nick" placeholder="Kullanıcı Adın">
             <input type="password" id="join-pass" placeholder="Lobi Şifresini Gir">
             <button class="btn-green" id="join-btn" onclick="joinLobby()">Lobiye Bağlan</button>
@@ -329,7 +337,7 @@
     <script>
         const ROOM_PREFIX = "gizli_lobi_";
         let peer = null, myStream = null, audioContext = null;
-        let localUsername = "", isMuted = false, isCameraOn = false, cameraStream = null, isScreenSharing = false, screenStream = null;
+        let localUsername = "", localAvatar = "", isMuted = false, isCameraOn = false, cameraStream = null, isScreenSharing = false, screenStream = null;
         
         let callStartTime = null, timerInterval = null;
         let isNoiseFilterActive = false;
@@ -337,6 +345,61 @@
         // MESH NETWORK DATA
         let peers = {};
         let isHost = false;
+
+        // --- AVATAR LİSTESİ (DICEBEAR BOTS) ---
+        const AVATARS = [
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Alpha&backgroundColor=5865F2",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Beta&backgroundColor=3ba55d",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Gamma&backgroundColor=f38686",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Delta&backgroundColor=f4c84b",
+            "https://api.dicebear.com/7.x/bottts/svg?seed=Epsilon&backgroundColor=8848c4"
+        ];
+
+        function initAvatars() {
+            // Başlangıçta rastgele bir avatar seç
+            const randomIndex = Math.floor(Math.random() * AVATARS.length);
+            localAvatar = AVATARS[randomIndex];
+
+            const createContainer = document.getElementById('create-avatars');
+            const joinContainer = document.getElementById('join-avatars');
+
+            AVATARS.forEach((url, index) => {
+                const isSelected = index === randomIndex ? 'selected' : '';
+                createContainer.innerHTML += `<img src="${url}" class="avatar-option ${isSelected}" onclick="selectAvatar(${index}, 'create-avatars')" id="create-av-${index}">`;
+                joinContainer.innerHTML += `<img src="${url}" class="avatar-option ${isSelected}" onclick="selectAvatar(${index}, 'join-avatars')" id="join-av-${index}">`;
+            });
+        }
+
+        function selectAvatar(index, containerId) {
+            localAvatar = AVATARS[index];
+            const container = document.getElementById(containerId);
+            container.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
+            container.querySelector(`#${containerId === 'create-avatars' ? 'create' : 'join'}-av-${index}`).classList.add('selected');
+        }
+
+        // BİLDİRİM SESİ (Zararsız, Dosyasız Ping Sesi)
+        function playJoinSound() {
+            if (!audioContext) return; 
+            try {
+                const osc = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+                osc.connect(gain);
+                gain.connect(audioContext.destination);
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioContext.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                gain.gain.setValueAtTime(0, audioContext.currentTime);
+                gain.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc.start(audioContext.currentTime);
+                osc.stop(audioContext.currentTime + 0.2);
+            } catch(e) { console.error("Ses çalınamadı", e); }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => { 
+            setTheme(localStorage.getItem('chat_theme') || 'theme-dark'); 
+            initAvatars();
+        });
 
         setInterval(() => {
             const now = new Date();
@@ -361,7 +424,6 @@
         }
 
         function setTheme(themeName) { document.body.className = themeName; localStorage.setItem('chat_theme', themeName); }
-        window.addEventListener('DOMContentLoaded', () => { setTheme(localStorage.getItem('chat_theme') || 'theme-dark'); });
 
         let currentContextMenuPeerId = null;
         function handleRightClick(e, id, name) {
@@ -421,26 +483,18 @@
 
             try {
                 const newStream = await navigator.mediaDevices.getUserMedia({
-                    audio: {
-                        echoCancellation: true,
-                        noiseSuppression: isNoiseFilterActive,
-                        autoGainControl: true
-                    },
-                    video: false
+                    audio: { echoCancellation: true, noiseSuppression: isNoiseFilterActive, autoGainControl: true }, video: false
                 });
 
                 const newAudioTrack = newStream.getAudioTracks()[0];
                 const oldAudioTrack = myStream.getAudioTracks()[0];
-
                 newAudioTrack.enabled = !isMuted;
 
                 Object.values(peers).forEach(p => {
                     if (p.call && p.call.peerConnection) {
                         const senders = p.call.peerConnection.getSenders();
                         const audioSender = senders.find(s => s.track && s.track.kind === 'audio');
-                        if (audioSender) {
-                            audioSender.replaceTrack(newAudioTrack);
-                        }
+                        if (audioSender) { audioSender.replaceTrack(newAudioTrack); }
                     }
                 });
 
@@ -452,16 +506,34 @@
                 else btn.classList.remove('active-green');
 
             } catch (error) {
-                console.error("Gürültü filtresi uygulanırken hata:", error);
                 isNoiseFilterActive = !isNoiseFilterActive;
                 alert("Mikrofon ayarlarına erişilemedi!");
             }
         }
         
         function setupPeerEvents() {
+            // HATA YÖNETİMİ (Kopmaları engelleyen en kritik kısım)
+            peer.on('error', function(err) {
+                console.warn("PeerJS Uyarısı:", err.type, err);
+                if (err.type === 'unavailable-id') {
+                    alert("Bu şifre kullanımda!");
+                    if(document.getElementById('call-screen').style.display !== 'flex') leaveRoom();
+                } else if (err.type === 'peer-unavailable') {
+                    // Bağlanmaya çalıştığımız kişi düşmüş, yoksay lobi kapanmasın.
+                } else if (err.type === 'network' || err.type === 'browser-incompatible') {
+                    // Ciddi olmayan anlık kopmaları tolere et.
+                } else {
+                    // Yalnızca giriş yapamamışsak ve kritik bir hata varsa lobiden at.
+                    if (document.getElementById('auth-container').style.display !== 'none') {
+                        alert("Bağlantı Hatası: " + err.type);
+                        leaveRoom();
+                    }
+                }
+            });
+
             peer.on('connection', conn => {
                 const id = conn.peer;
-                if (!peers[id]) peers[id] = { username: "Katılımcı" };
+                if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0] };
                 setupDataConn(conn, id);
             });
 
@@ -472,7 +544,7 @@
                 } else if (call.metadata && call.metadata.type === 'camera') {
                     call.answer(); call.on('stream', stream => showVideo(stream, false)); call.on('close', hideVideo);
                 } else {
-                    if (!peers[id]) peers[id] = { username: "Katılımcı" };
+                    if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0] };
                     peers[id].call = call;
                     call.answer(myStream);
                     setupCall(call, id);
@@ -480,9 +552,10 @@
             });
         }
 
-        function connectToPeer(targetId, targetName = "Katılımcı") {
+        function connectToPeer(targetId, targetName = "Katılımcı", targetAvatar = AVATARS[0]) {
             if (peers[targetId] || targetId === peer.id) return;
-            peers[targetId] = { username: targetName };
+            peers[targetId] = { username: targetName, avatar: targetAvatar };
+            
             const conn = peer.connect(targetId); setupDataConn(conn, targetId);
             const call = peer.call(targetId, myStream, { metadata: { type: 'audio' } }); setupCall(call, targetId);
             
@@ -493,18 +566,23 @@
         function setupDataConn(conn, id) {
             peers[id].conn = conn;
             conn.on('open', () => {
-                conn.send({ type: 'handshake', username: localUsername });
+                // Bağlantı kurulduğunda kimliğimizi ve avatarımızı bildiriyoruz.
+                conn.send({ type: 'handshake', username: localUsername, avatar: localAvatar });
+                
+                // Eğer odayı kuran bizsek, yeni gelene odadaki herkesi (avatarlarıyla birlikte) fısıldıyoruz.
                 if (isHost) {
-                    const existing = Object.keys(peers).filter(k => k !== id).map(k => ({ id: k, username: peers[k].username }));
+                    const existing = Object.keys(peers).filter(k => k !== id).map(k => ({ id: k, username: peers[k].username, avatar: peers[k].avatar }));
                     if (existing.length > 0) conn.send({ type: 'peer-list', list: existing });
                 }
             });
 
             conn.on('data', data => {
                 if (data.type === 'handshake') {
-                    peers[id].username = data.username; updateParticipantUI(id, data.username);
+                    peers[id].username = data.username; 
+                    if(data.avatar) peers[id].avatar = data.avatar;
+                    updateParticipantUI(id, data.username, peers[id].avatar);
                 } else if (data.type === 'peer-list') {
-                    data.list.forEach(p => connectToPeer(p.id, p.username));
+                    data.list.forEach(p => connectToPeer(p.id, p.username, p.avatar));
                 } else if (data.type === 'text') {
                     renderMessage(data.sender, data.content, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat();
                 } else if (data.type === 'file') {
@@ -518,7 +596,9 @@
             peers[id].call = call;
             call.on('stream', remoteStream => {
                 if (!peers[id].streamActive) {
-                    peers[id].streamActive = true; addParticipant(peers[id].username, id, remoteStream);
+                    peers[id].streamActive = true; 
+                    addParticipant(peers[id].username, id, remoteStream, peers[id].avatar);
+                    playJoinSound(); // Yeni ses akışı başladığında bildirim sesi çal.
                 }
             });
             call.on('close', () => handlePeerDisconnect(id));
@@ -531,9 +611,12 @@
             delete peers[id]; updateRoomTitle();
         }
 
-        function updateParticipantUI(id, name) {
+        function updateParticipantUI(id, name, avatarUrl) {
             const el = document.getElementById('user-' + id);
-            if (el) { el.querySelector('.name-tag').innerText = name; el.querySelector('.circle').innerText = name.charAt(0).toUpperCase(); }
+            if (el) { 
+                el.querySelector('.name-tag').innerText = name; 
+                if (avatarUrl) el.querySelector('.circle').innerHTML = `<img src="${avatarUrl}">`;
+            }
             updateRoomTitle();
         }
 
@@ -546,7 +629,6 @@
             
             isHost = true; peer = new Peer(ROOM_PREFIX + pass);
             peer.on('open', function(id) { setupPeerEvents(); switchToCallScreen("Lobi (" + pass + ")"); });
-            peer.on('error', function(err) { alert("Bu şifre kullanımda!"); document.getElementById('create-btn').innerText = "Oluştur"; });
         }
 
         async function joinLobby() {
@@ -556,9 +638,10 @@
             
             isHost = false; peer = new Peer();
             peer.on('open', function(id) {
-                setupPeerEvents(); connectToPeer(ROOM_PREFIX + pass, "Lobi Kurucusu"); switchToCallScreen("Bağlanılıyor...");
+                setupPeerEvents(); 
+                connectToPeer(ROOM_PREFIX + pass, "Lobi Kurucusu"); 
+                switchToCallScreen("Bağlanılıyor...");
             });
-            peer.on('error', function(err) { alert("Bağlantı Hatası!"); leaveRoom(); });
         }
 
         function toggleChat() {
@@ -596,7 +679,8 @@
         function switchToCallScreen(titleText) {
             document.getElementById('auth-container').style.display = 'none'; document.getElementById('call-screen').style.display = 'flex';
             document.getElementById('current-room-title').innerText = titleText; document.getElementById('participants-area').innerHTML = "";
-            addParticipant(localUsername, 'local-user', myStream); startTimer();
+            addParticipant(localUsername, 'local-user', myStream, localAvatar); 
+            startTimer();
         }
 
         function leaveRoom() {
@@ -662,9 +746,8 @@
             document.getElementById('participants-area').classList.remove('minimized-participants');
         }
 
-        function addParticipant(name, id, stream) {
+        function addParticipant(name, id, stream, avatarUrl = AVATARS[0]) {
             if(document.getElementById('user-' + id)) return;
-            const initials = name ? name.charAt(0).toUpperCase() : '?';
             const area = document.getElementById('participants-area');
             const div = document.createElement('div'); div.className = 'participant'; div.id = 'user-' + id;
             
@@ -672,16 +755,19 @@
                 div.setAttribute('oncontextmenu', `handleRightClick(event, '${id}', '${name}')`);
                 const audio = document.createElement('audio'); audio.id = 'audio-' + id; audio.srcObject = stream; audio.autoplay = true; document.body.appendChild(audio);
             }
-            div.innerHTML = `<div class="circle">${initials}</div><div class="name-tag">${name}</div>`; area.appendChild(div);
-            monitorSpeech(stream, 'user-' + id); updateRoomTitle();
+            
+            div.innerHTML = `<div class="circle"><img src="${avatarUrl}"></div><div class="name-tag">${name}</div>`; 
+            area.appendChild(div);
+            
+            monitorSpeech(stream, 'user-' + id); 
+            updateRoomTitle();
         }
 
-        /* --- OPTİMİZE EDİLMİŞ SES ANALİZ FONKSİYONU --- */
         function monitorSpeech(stream, elementId) {
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioContext.createMediaStreamSource(stream);
             const analyser = audioContext.createAnalyser(); 
-            analyser.fftSize = 256; // İşlem yükünü azaltmak için düşürüldü
+            analyser.fftSize = 256; 
             source.connect(analyser); 
             const dataArray = new Uint8Array(analyser.frequencyBinCount);
             
@@ -690,8 +776,6 @@
             
             function checkAudioLevel(time) {
                 requestAnimationFrame(checkAudioLevel);
-                
-                // Saniyede 10-15 kez kontrol et (performans tasarrufu)
                 if (time - lastTime < 80) return;
                 lastTime = time;
 
@@ -705,7 +789,6 @@
                 
                 const shouldBeSpeaking = average > 15 && !(elementId === 'user-local-user' && isMuted);
                 
-                // DOM manipülasyonunu sadece durum değiştiğinde yap
                 if (shouldBeSpeaking !== isCurrentlySpeaking) {
                     isCurrentlySpeaking = shouldBeSpeaking;
                     if (isCurrentlySpeaking) el.classList.add('speaking');
