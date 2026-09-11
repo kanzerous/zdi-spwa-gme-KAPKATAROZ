@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Özel Lobi & Sesli Sohbet</title>
+    <title>Özel Lobi & Görüntülü Sohbet (Pro)</title>
     <script src="https://unpkg.com/peerjs@1.5.1/dist/peerjs.min.js"></script>
     <style>
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; background-color: #202225; color: #dcddde; overflow: hidden; display: flex; }
@@ -22,18 +22,18 @@
         .btn-red { background-color: #ed4245; } .btn-red:hover { background-color: #c9383b; }
         .btn-dark { background-color: #4f545c; color: white; } .btn-dark:hover { background-color: #72767d; }
 
-        /* ARAYÜZ / GÖRÜŞME EKRANI */
+        /* ANA SOHBET EKRANI DÜZENİ */
         #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: #000000; position: relative; }
         #call-header { padding: 15px 25px; background-color: #36393f; border-bottom: 1px solid #202225; display: flex; justify-content: space-between; align-items: center; z-index: 10; }
         #call-header h2 { margin: 0; color: white; font-size: 16px; }
-        
-        #controls { display: flex; gap: 10px; align-items: center; }
-        #controls select { width: auto; padding: 8px; margin: 0; }
-        #controls button { width: auto; margin: 0; padding: 10px 15px; }
 
-        /* EKRAN PAYLAŞIMI */
-        #video-container { flex-grow: 1; display: none; justify-content: center; align-items: center; padding: 20px; overflow: hidden; }
-        #screen-video { max-width: 100%; max-height: 100%; border-radius: 8px; object-fit: contain; }
+        /* ORTA ALAN: VİDEO VE SOHBET YAN YANA */
+        #call-body { flex-grow: 1; display: flex; flex-direction: row; overflow: hidden; }
+        #main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; }
+
+        /* EKRAN/KAMERA PAYLAŞIMI */
+        #video-container { flex-grow: 1; display: none; background-color: #000; padding: 0; }
+        #screen-video { width: 100%; height: 100%; object-fit: contain; }
 
         /* KULLANICI YUVARLAKLARI */
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 50px; padding: 40px; transition: all 0.3s ease; }
@@ -42,26 +42,56 @@
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; }
         .speaking .circle { border-color: #3ba55d; box-shadow: 0 0 20px rgba(59, 165, 93, 0.8); }
 
-        .minimized-participants { flex-grow: 0 !important; padding: 15px !important; background-color: #18191c; border-top: 1px solid #202225; gap: 20px !important; }
-        .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; border-width: 2px; }
-        .minimized-participants .participant { gap: 8px; }
-        .minimized-participants .name-tag { font-size: 11px; padding: 3px 8px; }
+        .minimized-participants { flex-grow: 0 !important; padding: 10px 20px !important; background-color: #18191c; gap: 20px !important; border-top: 1px solid #202225; }
+        .minimized-participants .circle { width: 45px; height: 45px; font-size: 18px; border-width: 2px; }
+        .minimized-participants .participant { gap: 8px; flex-direction: row; }
+        .minimized-participants .name-tag { font-size: 12px; padding: 4px 10px; }
+
+        /* --- YAZILI SOHBET (SAĞ PANEL) --- */
+        #chat-sidebar { width: 320px; background-color: #2f3136; display: none; flex-direction: column; border-left: 1px solid #202225; }
+        #chat-header { padding: 15px; background-color: #202225; font-weight: bold; font-size: 14px; color: white; border-bottom: 1px solid #40444b; display: flex; justify-content: space-between; align-items: center; }
+        #chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; }
+        
+        .msg { background-color: #36393f; padding: 10px; border-radius: 8px; font-size: 13px; line-height: 1.4; word-break: break-word; }
+        .msg-sender { font-weight: bold; color: #3ba55d; margin-bottom: 5px; display: block; font-size: 12px; }
+        .msg.local { background-color: #40444b; }
+        .msg.local .msg-sender { color: #faa61a; }
+        
+        .file-link { color: #00aff4; text-decoration: none; font-weight: bold; display: flex; align-items: center; gap: 5px; margin-top: 5px; background: #202225; padding: 10px; border-radius: 5px; }
+        .file-link:hover { text-decoration: underline; }
+
+        /* Mesaj Yazma Alanı & Emojiler */
+        #chat-input-area { padding: 15px; background-color: #36393f; display: flex; align-items: center; gap: 8px; position: relative; }
+        #chat-input-area input[type="text"] { width: 100%; margin: 0; padding: 10px; background-color: #40444b; border-radius: 20px; }
+        
+        .chat-btn { background: none; border: none; font-size: 20px; cursor: pointer; padding: 5px; width: auto; color: #b9bbbe; transition: 0.2s; margin: 0; }
+        .chat-btn:hover { color: white; transform: scale(1.1); }
+        
+        #emoji-picker { display: none; position: absolute; bottom: 65px; right: 15px; background-color: #2f3136; border: 1px solid #202225; border-radius: 8px; padding: 10px; width: 220px; flex-wrap: wrap; gap: 5px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); z-index: 20; }
+        .emoji-item { font-size: 20px; cursor: pointer; padding: 5px; transition: 0.1s; }
+        .emoji-item:hover { background-color: #40444b; border-radius: 5px; }
+
+        /* ALT KONTROL ÇUBUĞU */
+        #controls-bar { background-color: #292b2f; padding: 15px 30px; display: flex; justify-content: center; align-items: center; gap: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); z-index: 10; }
+        .ctrl-btn { width: auto; padding: 12px 20px; border-radius: 8px; display: flex; align-items: center; gap: 8px; font-size: 14px; margin: 0; background-color: #4f545c; }
+        .ctrl-btn:hover { background-color: #5d6269; }
+        .ctrl-btn.active-red { background-color: #ed4245 !important; }
+        .ctrl-btn.active-red:hover { background-color: #c9383b !important; }
+        .ctrl-btn.active-blue { background-color: #5865F2 !important; }
+        
+        #quality-selector { padding: 12px; border-radius: 8px; background-color: #202225; color: white; border: 1px solid #40444b; font-size: 14px; margin: 0; outline: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <!-- GİRİŞ EKRANLARI -->
     <div id="auth-container">
-        
-        <!-- Ana Menü -->
         <div class="auth-box" id="menu-main">
             <h2>Özel Ses Odası</h2>
-            <p>Sunucusuz, şifreli ve doğrudan bağlantı.</p>
             <button onclick="showMenu('menu-create')">Lobi Oluştur</button>
             <button class="btn-green" onclick="showMenu('menu-join')">Lobiye Katıl</button>
         </div>
 
-        <!-- Lobi Oluşturma Ekranı -->
         <div class="auth-box" id="menu-create" style="display: none;">
             <h2>Lobi Oluştur</h2>
             <input type="text" id="create-nick" placeholder="Kullanıcı Adın">
@@ -70,7 +100,6 @@
             <button class="btn-dark" onclick="showMenu('menu-main')">Geri Dön</button>
         </div>
 
-        <!-- Lobiye Katılma Ekranı -->
         <div class="auth-box" id="menu-join" style="display: none;">
             <h2>Lobiye Katıl</h2>
             <input type="text" id="join-nick" placeholder="Kullanıcı Adın">
@@ -78,33 +107,58 @@
             <button class="btn-green" id="join-btn" onclick="joinLobby()">Lobiye Bağlan</button>
             <button class="btn-dark" onclick="showMenu('menu-main')">Geri Dön</button>
         </div>
-
     </div>
 
     <!-- SOHBET EKRANI -->
     <div id="call-screen">
         <div id="call-header">
             <h2 id="current-room-title">Bekleme Odası</h2>
-            <div id="controls">
-                <button id="mute-btn" onclick="toggleMute()" class="btn-dark">🎙️ Sustur</button>
-                <select id="quality-selector">
-                    <option value="360">360p (60fps)</option>
-                    <option value="480">480p (60fps)</option>
-                    <option value="720">720p (60fps)</option>
-                    <option value="1080">1080p (60fps)</option>
-                    <option value="1440" selected>2K (60fps)</option>
-                </select>
-                <button id="share-btn" onclick="startScreenShare()" class="btn-green">🖥️ Ekran Paylaş</button>
-                <button id="leave-btn" onclick="leaveRoom()" class="btn-red">☎️ Odadan Çık</button>
-            </div>
         </div>
         
-        <div id="video-container">
-            <video id="screen-video" autoplay playsinline></video>
+        <!-- YENİ: Orta Alan Düzeni (Video ve Yazılı Chat Yan Yana) -->
+        <div id="call-body">
+            <div id="main-content">
+                <div id="video-container"><video id="screen-video" autoplay playsinline></video></div>
+                <div id="participants-area"></div>
+            </div>
+
+            <!-- YAZILI SOHBET PANELİ -->
+            <div id="chat-sidebar">
+                <div id="chat-header">
+                    <span>💬 Yazılı Sohbet</span>
+                    <button class="chat-btn" onclick="toggleChat()" style="font-size: 14px;">✖</button>
+                </div>
+                
+                <div id="chat-messages">
+                    <!-- Mesajlar buraya düşecek -->
+                </div>
+
+                <div id="emoji-picker"></div>
+
+                <div id="chat-input-area">
+                    <input type="file" id="file-input" style="display: none;" onchange="handleFileSelect(event)">
+                    <button class="chat-btn" onclick="document.getElementById('file-input').click()" title="Dosya Gönder">📎</button>
+                    <input type="text" id="chat-input" placeholder="Mesaj yaz..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="chat-btn" onclick="toggleEmojiPicker()" title="Emoji Seç">😀</button>
+                    <button class="chat-btn" onclick="sendMessage()" style="color: #3ba55d;" title="Gönder">➤</button>
+                </div>
+            </div>
         </div>
 
-        <div id="participants-area">
-            <!-- Yuvarlaklar JavaScript ile eklenecek -->
+        <!-- ALT KONTROL BAR -->
+        <div id="controls-bar">
+            <button id="mute-btn" onclick="toggleMute()" class="ctrl-btn"><span>🎙️</span> Sustur</button>
+            <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn"><span>📷</span> Kamera Aç</button>
+            
+            <select id="quality-selector">
+                <option value="480">480p</option><option value="720">720p</option>
+                <option value="1080">1080p</option><option value="1440" selected>2K (60fps)</option>
+            </select>
+            
+            <button id="share-btn" onclick="toggleScreenShare()" class="ctrl-btn btn-green"><span>🖥️</span> Ekran Paylaş</button>
+            
+            <button id="chat-toggle-btn" onclick="toggleChat()" class="ctrl-btn"><span>💬</span> Sohbeti Aç</button>
+            <button id="leave-btn" onclick="leaveRoom()" class="ctrl-btn active-red"><span>☎️</span> Odadan Çık</button>
         </div>
     </div>
 
@@ -115,185 +169,282 @@
         let peer = null;
         let myStream = null;
         let currentAudioCall = null;
+        let dataConnection = null; // Yazı ve Dosya transferi kanalı
         let remotePeerId = null; 
         let audioContext = null;
-        let isMuted = false;
         let localUsername = "";
+        
+        let isMuted = false;
+        let isCameraOn = false; let cameraStream = null; let cameraCall = null;
+        let isScreenSharing = false; let screenStream = null; let screenCall = null;
 
-        // Menü Geçişleri
+        // Emoji Yükleme
+        const emojis = ["😀","😂","🤣","😍","🥰","😎","😭","😡","👍","👎","👏","🙏","👀","🔥","💯","❤️","🎉","✨","🤔","💩"];
+        window.onload = () => {
+            const picker = document.getElementById('emoji-picker');
+            emojis.forEach(e => {
+                let span = document.createElement('span');
+                span.className = 'emoji-item';
+                span.innerText = e;
+                span.onclick = () => {
+                    document.getElementById('chat-input').value += e;
+                    toggleEmojiPicker();
+                };
+                picker.appendChild(span);
+            });
+        };
+
         function showMenu(menuId) {
-            document.getElementById('menu-main').style.display = 'none';
-            document.getElementById('menu-create').style.display = 'none';
-            document.getElementById('menu-join').style.display = 'none';
+            document.querySelectorAll('.auth-box').forEach(b => b.style.display = 'none');
             document.getElementById(menuId).style.display = 'block';
         }
 
-        // Mikrofon İzni Alma
         async function setupMicrophone() {
             if(myStream) return true;
             try {
-                myStream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, 
-                    video: false 
-                });
+                myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true }, video: false });
                 return true;
-            } catch(e) {
-                alert("Mikrofon izni alınamadı! Uygulamanın çalışması için mikrofona izin vermelisiniz.");
-                return false;
-            }
+            } catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
         }
 
-        // LOBİ OLUŞTURAN KİŞİ
-        async function createLobby() {
-            const nick = document.getElementById('create-nick').value.trim();
-            const pass = document.getElementById('create-pass').value.trim();
-            if(!nick || !pass) return alert("Kullanıcı adı ve şifre boş bırakılamaz!");
-
-            const btn = document.getElementById('create-btn');
-            btn.innerText = "Lobi Kuruluyor...";
-
-            localUsername = nick;
-            const hasMic = await setupMicrophone();
-            if(!hasMic) { btn.innerText = "Oluştur ve Başla"; return; }
-
-            // Şifreyi Peer ID olarak ayarlıyoruz (Böylece arkadaşın bu şifreyi arayacak)
-            peer = new Peer(ROOM_PREFIX + pass);
-
-            peer.on('open', function(id) {
-                switchToCallScreen("Lobi: Katılımcı Bekleniyor... (Şifre: " + pass + ")");
+        // --- VERİ (CHAT & DOSYA) BAĞLANTISI YÖNETİMİ ---
+        function setupDataConnection(conn) {
+            dataConnection = conn;
+            dataConnection.on('data', function(data) {
+                if(data.type === 'text') {
+                    renderMessage(data.sender, data.content, 'remote');
+                    if(document.getElementById('chat-sidebar').style.display !== 'flex') toggleChat();
+                } else if(data.type === 'file') {
+                    renderFile(data.sender, data.fileName, data.fileData, data.fileType, 'remote');
+                    if(document.getElementById('chat-sidebar').style.display !== 'flex') toggleChat();
+                }
             });
+        }
 
-            // Arkadaş Lobiye Bağlandığında
+        function setupPeerEvents() {
             peer.on('call', function(call) {
-                if (call.metadata && call.metadata.type === 'screen') {
+                if (call.metadata && (call.metadata.type === 'screen' || call.metadata.type === 'camera')) {
                     call.answer(); 
-                    call.on('stream', function(screenStream) { showScreenVideo(screenStream, false); });
-                    call.on('close', hideScreenVideo);
+                    call.on('stream', function(stream) { showVideo(stream, false); });
+                    call.on('close', hideVideo);
                 } else {
                     remotePeerId = call.peer;
                     call.answer(myStream);
-                    setupCallEvents(call, call.metadata.callerName);
+                    setupCallEvents(call, call.metadata ? call.metadata.callerName : "Arkadaşın");
                 }
             });
 
-            peer.on('error', function(err) {
-                if(err.type === 'unavailable-id') {
-                    alert("Bu şifreyle kurulmuş aktif bir lobi zaten var! Lütfen başka bir şifre belirleyin.");
-                    btn.innerText = "Oluştur ve Başla";
-                }
-            });
+            // Gelen Chat Bağlantısını Dinle (Lobi Kuran İçin)
+            peer.on('connection', function(conn) { setupDataConnection(conn); });
         }
 
-        // LOBİYE KATILAN KİŞİ
+        async function createLobby() {
+            const nick = document.getElementById('create-nick').value.trim();
+            const pass = document.getElementById('create-pass').value.trim();
+            if(!nick || !pass) return;
+
+            document.getElementById('create-btn').innerText = "Lobi Kuruluyor...";
+            localUsername = nick;
+            if(!(await setupMicrophone())) { document.getElementById('create-btn').innerText = "Oluştur ve Başla"; return; }
+
+            peer = new Peer(ROOM_PREFIX + pass);
+            peer.on('open', function(id) {
+                setupPeerEvents();
+                switchToCallScreen("Lobi: Katılımcı Bekleniyor... (Şifre: " + pass + ")");
+            });
+            peer.on('error', function(err) { alert("Bu şifre kullanımda!"); document.getElementById('create-btn').innerText = "Oluştur"; });
+        }
+
         async function joinLobby() {
             const nick = document.getElementById('join-nick').value.trim();
             const pass = document.getElementById('join-pass').value.trim();
-            if(!nick || !pass) return alert("Kullanıcı adı ve şifre boş bırakılamaz!");
+            if(!nick || !pass) return;
 
-            const btn = document.getElementById('join-btn');
-            btn.innerText = "Bağlanılıyor...";
-
+            document.getElementById('join-btn').innerText = "Bağlanılıyor...";
             localUsername = nick;
-            const hasMic = await setupMicrophone();
-            if(!hasMic) { btn.innerText = "Lobiye Bağlan"; return; }
+            if(!(await setupMicrophone())) { document.getElementById('join-btn').innerText = "Lobiye Bağlan"; return; }
 
             peer = new Peer();
-
             peer.on('open', function(id) {
+                setupPeerEvents();
                 switchToCallScreen("Lobiye Bağlanılıyor...");
-                
-                // Belirtilen şifreyi arayarak lobiye giriyor
                 remotePeerId = ROOM_PREFIX + pass;
+                
+                // Ses Bağlantısını Başlat
                 const call = peer.call(remotePeerId, myStream, { metadata: { type: 'audio', callerName: localUsername } });
                 setupCallEvents(call, "Oda Kurucusu");
-            });
 
-            peer.on('error', function(err) {
-                if(err.type === 'peer-unavailable') {
-                    alert("Bu şifreye ait aktif bir lobi bulunamadı! Şifreyi kontrol edin veya arkadaşınızın lobiyi kurduğundan emin olun.");
-                    leaveRoom();
-                }
+                // Yazı/Dosya Bağlantısını Başlat
+                const conn = peer.connect(remotePeerId);
+                setupDataConnection(conn);
             });
+            peer.on('error', function(err) { alert("Lobi bulunamadı!"); leaveRoom(); });
         }
 
-        // Arama Olayları
+        // --- YAZILI CHAT VE DOSYA GÖNDERME FONKSİYONLARI ---
+        function toggleChat() {
+            const sidebar = document.getElementById('chat-sidebar');
+            const btn = document.getElementById('chat-toggle-btn');
+            if (sidebar.style.display === 'flex') {
+                sidebar.style.display = 'none';
+                btn.classList.remove('active-blue');
+            } else {
+                sidebar.style.display = 'flex';
+                btn.classList.add('active-blue');
+            }
+        }
+
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            picker.style.display = picker.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const text = input.value.trim();
+            if (!text || !dataConnection) return;
+            
+            dataConnection.send({ type: 'text', sender: localUsername, content: text });
+            renderMessage(localUsername, text, 'local');
+            input.value = '';
+            document.getElementById('emoji-picker').style.display = 'none';
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if(!file || !dataConnection) return;
+            
+            // Maksimum dosya boyutu sınırı (50 MB)
+            if(file.size > 50 * 1024 * 1024) return alert("Dosya boyutu çok yüksek! Maksimum 50MB gönderebilirsiniz.");
+
+            // PeerJS blobları doğrudan iletebilir
+            dataConnection.send({ type: 'file', sender: localUsername, fileName: file.name, fileType: file.type, fileData: file });
+            renderFile(localUsername, file.name, file, file.type, 'local');
+            event.target.value = ''; // Aynı dosyayı tekrar seçebilmek için sıfırla
+        }
+
+        function renderMessage(sender, text, type) {
+            const box = document.getElementById('chat-messages');
+            const div = document.createElement('div');
+            div.className = `msg ${type}`;
+            div.innerHTML = `<span class="msg-sender">${sender}</span><span>${text}</span>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function renderFile(sender, fileName, fileBlob, fileType, type) {
+            const box = document.getElementById('chat-messages');
+            const url = URL.createObjectURL(new Blob([fileBlob], { type: fileType }));
+            const div = document.createElement('div');
+            div.className = `msg ${type}`;
+            
+            // Dosyaya tıklanabilir indirme linki oluştur
+            div.innerHTML = `
+                <span class="msg-sender">${sender}</span>
+                <span style="font-size:12px; color:#b9bbbe;">Bir dosya paylaştı:</span>
+                <a href="${url}" download="${fileName}" class="file-link">
+                    📄 ${fileName} (İndir)
+                </a>`;
+            box.appendChild(div);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        // --- DİĞER FONKSİYONLAR (SES, VİDEO, ARAYÜZ) ---
         function setupCallEvents(call, remoteName) {
             currentAudioCall = call;
-
             call.on('stream', function(remoteStream) {
                 document.getElementById('current-room-title').innerText = remoteName + " odaya katıldı!";
                 document.getElementById('remote-audio').srcObject = remoteStream;
-
                 if(!document.getElementById('remote-user')) {
                     addParticipant(remoteName, remoteName.charAt(0).toUpperCase(), 'remote-user');
                     monitorSpeech(remoteStream, 'remote-user');
                 }
             });
-
             call.on('close', leaveRoom);
         }
 
-        // Arayüz Değişiklikleri
         function switchToCallScreen(titleText) {
             document.getElementById('auth-container').style.display = 'none';
             document.getElementById('call-screen').style.display = 'flex';
             document.getElementById('current-room-title').innerText = titleText;
-            
-            // Ekranı temizle ve kendi yuvarlağımızı ekle
             document.getElementById('participants-area').innerHTML = "";
             addParticipant(localUsername, localUsername.charAt(0).toUpperCase(), 'local-user');
             monitorSpeech(myStream, 'local-user');
         }
 
-        // Odadan Çıkış (Reset)
         function leaveRoom() {
+            if(isScreenSharing) toggleScreenShare();
+            if(isCameraOn) toggleCamera();
             if(currentAudioCall) currentAudioCall.close();
+            if(dataConnection) dataConnection.close();
             if(peer) peer.destroy();
-            hideScreenVideo();
-            
+            hideVideo();
+            document.getElementById('chat-messages').innerHTML = "";
             document.getElementById('call-screen').style.display = 'none';
             document.getElementById('auth-container').style.display = 'flex';
-            
             document.getElementById('create-btn').innerText = "Oluştur ve Başla";
             document.getElementById('join-btn').innerText = "Lobiye Bağlan";
         }
 
-        // --- EKRAN PAYLAŞIMI VE SUSTURMA KODLARI (Aynı Kaldı) ---
         function toggleMute() {
             isMuted = !isMuted;
             myStream.getAudioTracks()[0].enabled = !isMuted;
-            const muteBtn = document.getElementById('mute-btn');
-            if (isMuted) { muteBtn.innerText = "🔇 Sesim Kapalı"; muteBtn.style.backgroundColor = "#ed4245"; } 
-            else { muteBtn.innerText = "🎙️ Sustur"; muteBtn.style.backgroundColor = "#4f545c"; }
+            const btn = document.getElementById('mute-btn');
+            if (isMuted) { btn.innerHTML = "<span>🔇</span> Sesim Kapalı"; btn.classList.add('active-red'); } 
+            else { btn.innerHTML = "<span>🎙️</span> Sustur"; btn.classList.remove('active-red'); }
         }
 
-        async function startScreenShare() {
-            if (!remotePeerId) return alert("Şu an odada ekranını paylaşabileceğin kimse yok.");
-            const res = {
-                '360': { w: 640, h: 360 }, '480': { w: 854, h: 480 }, '720': { w: 1280, h: 720 },
-                '1080': { w: 1920, h: 1080 }, '1440': { w: 2560, h: 1440 }
-            }[document.getElementById('quality-selector').value];
-
-            try {
-                const screenStream = await navigator.mediaDevices.getDisplayMedia({
-                    video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: 60, max: 60 } },
-                    audio: true
-                });
-                showScreenVideo(screenStream, true);
-                const screenCall = peer.call(remotePeerId, screenStream, { metadata: { type: 'screen' } });
-                screenStream.getVideoTracks()[0].onended = () => { screenCall.close(); hideScreenVideo(); };
-            } catch (err) { console.error("Ekran paylaşılamadı:", err); }
+        async function toggleCamera() {
+            if (!remotePeerId) return alert("Odada kimse yok!");
+            const btn = document.getElementById('camera-btn');
+            if (isCameraOn) {
+                if (cameraCall) cameraCall.close();
+                if (cameraStream) cameraStream.getTracks().forEach(t => t.stop());
+                hideVideo(); isCameraOn = false;
+                btn.innerHTML = "<span>📷</span> Kamera Aç"; btn.classList.remove('active-red');
+            } else {
+                if (isScreenSharing) toggleScreenShare();
+                try {
+                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
+                    showVideo(cameraStream, true);
+                    cameraCall = peer.call(remotePeerId, cameraStream, { metadata: { type: 'camera' } });
+                    cameraCall.on('close', hideVideo);
+                    isCameraOn = true;
+                    btn.innerHTML = "<span>📷</span> Kamerayı Kapat"; btn.classList.add('active-red');
+                } catch (err) { alert("Kamera izni alınamadı!"); }
+            }
         }
 
-        function showScreenVideo(stream, isLocal) {
+        async function toggleScreenShare() {
+            if (!remotePeerId) return alert("Odada kimse yok!");
+            const btn = document.getElementById('share-btn');
+            if (isScreenSharing) {
+                if (screenCall) screenCall.close();
+                if (screenStream) screenStream.getTracks().forEach(t => t.stop());
+                hideVideo(); isScreenSharing = false;
+                btn.innerHTML = "<span>🖥️</span> Ekran Paylaş"; btn.classList.remove('active-red'); btn.classList.add('btn-green');
+            } else {
+                if (isCameraOn) toggleCamera();
+                const res = { '480': { w: 854, h: 480 }, '720': { w: 1280, h: 720 }, '1080': { w: 1920, h: 1080 }, '1440': { w: 2560, h: 1440 } }[document.getElementById('quality-selector').value];
+                try {
+                    screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: 60, max: 60 } }, audio: true });
+                    showVideo(screenStream, true);
+                    screenCall = peer.call(remotePeerId, screenStream, { metadata: { type: 'screen' } });
+                    screenStream.getVideoTracks()[0].onended = () => { if(isScreenSharing) toggleScreenShare(); };
+                    isScreenSharing = true;
+                    btn.innerHTML = "<span>🖥️</span> Paylaşımı Durdur"; btn.classList.remove('btn-green'); btn.classList.add('active-red');
+                } catch (err) { console.error(err); }
+            }
+        }
+
+        function showVideo(stream, isLocal) {
             const videoEl = document.getElementById('screen-video');
-            videoEl.srcObject = stream;
-            videoEl.muted = isLocal; 
-            document.getElementById('video-container').style.display = 'flex';
+            videoEl.srcObject = stream; videoEl.muted = isLocal; 
+            document.getElementById('video-container').style.display = 'block';
             document.getElementById('participants-area').classList.add('minimized-participants');
         }
 
-        function hideScreenVideo() {
+        function hideVideo() {
             document.getElementById('screen-video').srcObject = null;
             document.getElementById('video-container').style.display = 'none';
             document.getElementById('participants-area').classList.remove('minimized-participants');
@@ -302,8 +453,7 @@
         function addParticipant(name, initials, id) {
             const area = document.getElementById('participants-area');
             let div = document.createElement('div');
-            div.className = 'participant';
-            div.id = id;
+            div.className = 'participant'; div.id = id;
             div.innerHTML = `<div class="circle">${initials}</div><div class="name-tag">${name}</div>`;
             area.appendChild(div);
         }
@@ -311,22 +461,14 @@
         function monitorSpeech(stream, elementId) {
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioContext.createMediaStreamSource(stream);
-            const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 512;
-            source.connect(analyser); 
+            const analyser = audioContext.createAnalyser(); analyser.fftSize = 512; source.connect(analyser); 
             const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
             setInterval(() => {
                 analyser.getByteFrequencyData(dataArray);
-                let sum = 0;
-                for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+                let sum = 0; for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
                 let average = sum / dataArray.length;
-
                 let el = document.getElementById(elementId);
-                if(el) {
-                    if (average > 15 && !(elementId === 'local-user' && isMuted)) el.classList.add('speaking');
-                    else el.classList.remove('speaking');
-                }
+                if(el) { if (average > 15 && !(elementId === 'local-user' && isMuted)) el.classList.add('speaking'); else el.classList.remove('speaking'); }
             }, 100);
         }
     </script>
