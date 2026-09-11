@@ -14,35 +14,32 @@
             --text-main: #dcddde; --text-muted: #b9bbbe;
             --accent: #5865F2; --accent-hover: #4752C4;
             --border: #202225; --input-bg: #40444b; --msg-local: #40444b;
+            --call-bg: #0a1128; /* Şık Koyu Lacivert (Navy) */
         }
         body.theme-light {
             --bg-main: #e3e5e8; --bg-sec: #f2f3f5; --bg-ter: #ffffff;
             --text-main: #2e3338; --text-muted: #4f5660;
             --accent: #5865F2; --accent-hover: #4752C4;
             --border: #cccccc; --input-bg: #ebedef; --msg-local: #e3e5e8;
+            --call-bg: #22262b; /* Yumuşak Koyu Gri (Açık tema için göz yormayan video arkası) */
         }
         body.theme-yellow {
             --bg-main: #1f1b14; --bg-sec: #2e281d; --bg-ter: #3d3527;
             --text-main: #f0e6d2; --text-muted: #c4b595;
             --accent: #d4a017; --accent-hover: #b8860b;
             --border: #1f1b14; --input-bg: #4a4131; --msg-local: #4a4131;
+            --call-bg: #14110a; /* Koyu Toprak/Kahve */
         }
         body.theme-red {
             --bg-main: #241616; --bg-sec: #331e1e; --bg-ter: #472727;
             --text-main: #f0d4d4; --text-muted: #c99b9b;
             --accent: #e53935; --accent-hover: #c62828;
             --border: #241616; --input-bg: #5e3232; --msg-local: #5e3232;
+            --call-bg: #1a0b0b; /* Derin Bordo */
         }
 
         body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; display: flex; transition: background-color 0.3s, color 0.3s; }
         
-        /* --- MARKA İMZASI --- */
-        #brand-signature { position: absolute; top: 15px; left: 25px; z-index: 1000; display: flex; flex-direction: column; pointer-events: none; }
-        .brand-top { display: flex; align-items: center; gap: 8px; }
-        .brand-logo-svg { width: 26px; height: 26px; stroke: var(--accent); transition: stroke 0.3s; }
-        .brand-name { font-size: 20px; font-weight: 800; letter-spacing: 2px; color: var(--text-main); text-transform: uppercase; }
-        .brand-slogan { font-size: 11px; color: var(--text-muted); letter-spacing: 1.5px; margin-top: 2px; font-style: italic; margin-left: 34px; }
-
         /* TEMA SEÇİCİ PALET */
         .theme-switcher { position: absolute; top: 22px; right: 25px; display: flex; gap: 10px; z-index: 100; }
         .theme-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
@@ -52,9 +49,10 @@
         /* GİRİŞ EKRANLARI */
         #auth-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--bg-sec); position: absolute; z-index: 50; transition: background-color 0.3s; flex-direction: column; gap: 30px; }
         .auth-logo-container { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: fadeIn 1s ease; }
-        .auth-logo-container .brand-name { font-size: 32px; }
-        .auth-logo-container .brand-slogan { font-size: 13px; letter-spacing: 4px; }
+        .auth-logo-container .brand-name { font-size: 32px; font-family: 'Poppins', sans-serif; font-weight: 800; background: linear-gradient(45deg, #FF3CAC, #784BA0, #2B86C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 2px;}
+        .auth-logo-container .brand-slogan { font-size: 13px; letter-spacing: 4px; font-family: 'Poppins', sans-serif; color: var(--text-muted); font-weight: 600;}
         .auth-logo-container svg { width: 60px; height: 60px; }
+        
         .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); width: 320px; text-align: center; transition: background-color 0.3s; }
         .auth-box h2 { color: var(--text-main); margin-top: 0; margin-bottom: 25px; font-weight: 600; }
         
@@ -66,43 +64,73 @@
         .btn-dark { background-color: var(--input-bg); color: var(--text-main); } .btn-dark:hover { filter: brightness(1.2); }
 
         /* ANA SOHBET EKRANI */
-        #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: #000000; position: relative; }
-        #call-header { padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: flex-start; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; gap: 20px; }
+        #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: var(--call-bg); position: relative; transition: background-color 0.3s; }
         
-        #brand-container { display: flex; align-items: center; gap: 12px; user-select: none; }
+        /* HEADER */
+        #call-header { position: relative; padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; }
+        
+        .header-left { display: flex; align-items: center; gap: 12px; }
         .brand-logo-svg { width: 38px; height: 38px; filter: drop-shadow(0px 4px 8px rgba(0,0,0,0.4)); }
         .brand-text-block { display: flex; flex-direction: column; justify-content: center; margin-top: 2px; }
         .brand-name { font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 1.5px; background: linear-gradient(45deg, #FF3CAC, #784BA0, #2B86C5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
         .brand-slogan { font-family: 'Poppins', sans-serif; font-size: 10px; font-weight: 600; color: var(--text-muted); letter-spacing: 2px; text-transform: uppercase; margin-top: 4px; line-height: 1; }
         
+        .header-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 15px; }
         .header-divider { width: 2px; height: 28px; background-color: var(--border); border-radius: 2px; }
         #current-room-title { margin: 0; color: var(--text-main); font-size: 16px; font-weight: 600; letter-spacing: 0.5px; font-family: 'Poppins', sans-serif; }
+
+        /* GÜNCEL SÜRE (TIMER) */
+        .header-right { display: flex; align-items: center; margin-right: 110px; /* Tema tuşlarına alan bırakır */ }
+        #call-timer {
+            background: rgba(88, 101, 242, 0.15);
+            color: #7289da;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-family: 'Poppins', monospace;
+            font-size: 14px;
+            font-weight: 600;
+            border: 1px solid rgba(88, 101, 242, 0.3);
+            display: none; /* Odadayken aktif olur */
+        }
 
         #call-body { flex-grow: 1; display: flex; flex-direction: row; overflow: hidden; position: relative; }
         #main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; padding-bottom: 90px; }
 
-        #video-container { flex-grow: 1; display: none; background-color: #000; padding: 0; }
+        /* GÜNCEL SAAT (FLOATING CLOCK) */
+        #floating-clock {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-family: 'Poppins', monospace;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 10;
+            border: 1px solid rgba(255,255,255,0.1);
+            pointer-events: none;
+            display: none; /* Odadayken aktif olur */
+        }
+
+        #video-container { flex-grow: 1; display: none; background-color: transparent; padding: 0; }
         #screen-video { width: 100%; height: 100%; object-fit: contain; }
 
-        /* --- KULLANICI YUVARLAKLARI VE DALGA (RIPPLE) ANİMASYONU --- */
+        /* KULLANICI YUVARLAKLARI VE DALGA */
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 50px; padding: 40px; transition: all 0.3s ease; }
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
         
         .circle { 
             width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); 
             display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; 
-            color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.3); pointer-events: none;
-            position: relative; z-index: 2; /* Dalgalar arkasında kalsın diye */
+            color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5); pointer-events: none;
+            position: relative; z-index: 2; border: 4px solid transparent;
         }
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
         
-        /* Dalga (Ripple) Elementleri */
-        .circle::before, .circle::after {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%; border: 2px solid #3ba55d; opacity: 0; z-index: -1;
-        }
-
-        /* Konuşurken Dalgaları Tetikle */
+        .circle::before, .circle::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; border: 2px solid #3ba55d; opacity: 0; z-index: -1; }
         .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
         .speaking .circle::after { animation: ripple 1.5s infinite ease-out; animation-delay: 0.75s; }
 
@@ -111,7 +139,6 @@
             100% { transform: scale(1.6); opacity: 0; border-width: 0px; box-shadow: 0 0 30px transparent; }
         }
 
-        /* Küçültülmüş Ekran (Ekran Paylaşımı Açıkken) Dalga Ayarı */
         .minimized-participants { flex-grow: 0 !important; padding: 10px 20px !important; background-color: transparent; gap: 20px !important; position: absolute; top: 10px; left: 10px; z-index: 5; }
         .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; }
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; }
@@ -123,7 +150,6 @@
         .minimized-participants .speaking .circle::before { animation: ripple-minimized 1.5s infinite ease-out; }
         .minimized-participants .speaking .circle::after { animation: ripple-minimized 1.5s infinite ease-out; animation-delay: 0.75s; }
 
-        /* SOHBETİ BOYUTLANDIRMA */
         #resizer { width: 6px; background-color: var(--border); cursor: ew-resize; display: none; z-index: 20; transition: 0.2s; }
         #resizer:hover, #resizer.resizing { background-color: var(--accent); }
 
@@ -224,7 +250,7 @@
     <!-- SOHBET EKRANI -->
     <div id="call-screen">
         <div id="call-header">
-            <div id="brand-container">
+            <div class="header-left">
                 <svg class="brand-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <defs><linearGradient id="gradHeader" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#FF3CAC" /><stop offset="50%" stop-color="#784BA0" /><stop offset="100%" stop-color="#2B86C5" /></linearGradient></defs>
                     <path d="M 30 15 C 30 15, 45 50, 30 85" stroke="url(#gradHeader)" stroke-width="12" stroke-linecap="round" />
@@ -236,14 +262,25 @@
                     <span class="brand-slogan">KESİNTİSİZ İLETİŞİM SANATI</span>
                 </div>
             </div>
-            <div class="header-divider"></div>
-            <h2 id="current-room-title">Bekleme Odası</h2>
+            
+            <div class="header-center">
+                <div class="header-divider"></div>
+                <h2 id="current-room-title">Bekleme Odası</h2>
+                <div class="header-divider"></div>
+            </div>
+            
+            <div class="header-right">
+                <div id="call-timer">⏳ 00:00</div>
+            </div>
         </div>
         
         <div id="call-body">
             <div id="main-content">
                 <div id="video-container"><video id="screen-video" autoplay playsinline></video></div>
                 <div id="participants-area"></div>
+                
+                <!-- GÜNCEL SAAT (Sağ Alt Köşe) -->
+                <div id="floating-clock">🕒 00:00:00</div>
                 
                 <div id="controls-wrapper">
                     <div id="controls-bar">
@@ -314,6 +351,38 @@
         const ROOM_PREFIX = "gizli_lobi_";
         let peer = null, myStream = null, currentAudioCall = null, dataConnection = null, remotePeerId = null, audioContext = null;
         let localUsername = "", isMuted = false, isCameraOn = false, cameraStream = null, cameraCall = null, isScreenSharing = false, screenStream = null, screenCall = null;
+        
+        let callStartTime = null;
+        let timerInterval = null;
+
+        // --- SAAT (CLOCK) GÜNCELLEMESİ ---
+        setInterval(() => {
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute:'2-digit', second:'2-digit' });
+            document.getElementById('floating-clock').innerText = '🕒 ' + timeStr;
+        }, 1000);
+
+        // --- SÜRE SAYAÇ (TIMER) FONKSİYONLARI ---
+        function startTimer() {
+            callStartTime = Date.now();
+            clearInterval(timerInterval);
+            document.getElementById('call-timer').style.display = 'block';
+            document.getElementById('floating-clock').style.display = 'block';
+            
+            timerInterval = setInterval(() => {
+                const diff = Math.floor((Date.now() - callStartTime) / 1000);
+                const m = String(Math.floor(diff / 60)).padStart(2, '0');
+                const s = String(diff % 60).padStart(2, '0');
+                document.getElementById('call-timer').innerText = `⏳ ${m}:${s}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            document.getElementById('call-timer').style.display = 'none';
+            document.getElementById('floating-clock').style.display = 'none';
+            document.getElementById('call-timer').innerText = `⏳ 00:00`;
+        }
 
         function setTheme(themeName) { document.body.className = themeName; localStorage.setItem('chat_theme', themeName); }
         window.addEventListener('DOMContentLoaded', () => { setTheme(localStorage.getItem('chat_theme') || 'theme-dark'); });
@@ -453,9 +522,11 @@
             document.getElementById('auth-container').style.display = 'none'; document.getElementById('call-screen').style.display = 'flex';
             document.getElementById('current-room-title').innerText = titleText; document.getElementById('participants-area').innerHTML = "";
             addParticipant(localUsername, localUsername.charAt(0).toUpperCase(), 'local-user'); monitorSpeech(myStream, 'local-user');
+            startTimer();
         }
 
         function leaveRoom() {
+            stopTimer();
             if(isScreenSharing) toggleScreenShare(); if(isCameraOn) toggleCamera();
             if(currentAudioCall) currentAudioCall.close(); if(dataConnection) dataConnection.close(); if(peer) peer.destroy();
             hideVideo(); document.getElementById('chat-messages').innerHTML = "";
