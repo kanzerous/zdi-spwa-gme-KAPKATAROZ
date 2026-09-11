@@ -81,27 +81,43 @@
 
         #floating-clock { position: absolute; bottom: 25px; right: 25px; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 20px; color: rgba(255, 255, 255, 0.7); font-family: 'Poppins', monospace; font-size: 13px; font-weight: 600; z-index: 10; border: 1px solid rgba(255,255,255,0.1); pointer-events: none; display: none; }
 
-        /* VİDEO KONTEYNERİ: Kırpılmayı önlemek için flex yapısı düzeltildi */
         #video-container { flex-grow: 1; display: none; background-color: transparent; padding: 20px; justify-content: center; align-items: center; overflow: hidden; }
         #screen-video { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
 
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 50px; padding: 40px; transition: all 0.3s ease; }
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
         
-        .circle { width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5); pointer-events: none; position: relative; z-index: 2; border: 4px solid transparent; }
+        .circle { 
+            width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; 
+            font-size: 36px; font-weight: bold; color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5); pointer-events: none; 
+            position: relative; z-index: 2; border: 4px solid transparent; 
+        }
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
         
-        .circle::before, .circle::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; border: 2px solid #3ba55d; opacity: 0; z-index: -1; }
+        /* OPTİMİZE EDİLMİŞ CSS ANİMASYONLARI (GPU HIZLANDIRMALI) */
+        .circle::before, .circle::after { 
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
+            border-radius: 50%; border: 2px solid #3ba55d; box-shadow: 0 0 15px #3ba55d; 
+            opacity: 0; z-index: -1; 
+            will-change: transform, opacity; /* Tarayıcıya performans uyarısı */
+        }
         .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
         .speaking .circle::after { animation: ripple 1.5s infinite ease-out; animation-delay: 0.75s; }
 
-        @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; border-width: 4px; box-shadow: 0 0 15px #3ba55d; } 100% { transform: scale(1.6); opacity: 0; border-width: 0px; box-shadow: 0 0 30px transparent; } }
+        @keyframes ripple { 
+            0% { transform: scale(1); opacity: 0.8; } 
+            100% { transform: scale(1.6); opacity: 0; } 
+        }
 
         .minimized-participants { flex-grow: 0 !important; padding: 10px 20px !important; background-color: transparent; gap: 20px !important; position: absolute; top: 10px; left: 10px; z-index: 5; flex-wrap: nowrap !important; overflow-x: auto; max-width: 90%; }
         .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; }
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; }
         .minimized-participants .name-tag { font-size: 12px; padding: 0; background: none; }
-        @keyframes ripple-minimized { 0% { transform: scale(1); opacity: 0.8; border-width: 2px; } 100% { transform: scale(1.8); opacity: 0; border-width: 0px; } }
+        
+        @keyframes ripple-minimized { 
+            0% { transform: scale(1); opacity: 0.8; } 
+            100% { transform: scale(1.8); opacity: 0; } 
+        }
         .minimized-participants .speaking .circle::before { animation: ripple-minimized 1.5s infinite ease-out; }
         .minimized-participants .speaking .circle::after { animation: ripple-minimized 1.5s infinite ease-out; animation-delay: 0.75s; }
 
@@ -139,7 +155,6 @@
         #leave-btn { width: auto; padding: 0 20px; border-radius: 25px; background-color: #ed4245; color: white; }
         #leave-btn:hover { background-color: #c9383b; }
 
-        /* SAĞ TIK MENÜSÜ */
         #context-menu { display: none; position: absolute; background-color: var(--bg-ter); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); padding: 15px; z-index: 1000; width: 200px; color: var(--text-main); }
         #context-menu h4 { margin: 0 0 12px 0; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
         .context-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
@@ -149,7 +164,6 @@
         #context-mute-btn:hover { background-color: var(--input-bg); }
         #context-mute-btn.muted { background-color: #ed4245; color: white; }
 
-        /* MODAL EKRANI VE ARKA PLAN KARARTMASI */
         .overlay { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); z-index: 998; backdrop-filter: blur(3px); }
         #share-modal { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: var(--bg-ter); padding: 25px; border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.7); z-index: 1000; text-align: center; border: 1px solid var(--border); width: 280px; }
         #share-modal h3 { margin-top: 0; margin-bottom: 20px; color: var(--text-main); font-family: 'Poppins', sans-serif; font-size: 16px; }
@@ -241,7 +255,6 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                         </button>
                         
-                        <!-- YENİ: Gürültü Engelleme Butonu -->
                         <button id="noise-btn" onclick="toggleNoiseFilter()" class="ctrl-btn" title="Gürültü Engelleme Aç/Kapat">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m14.485-6.364l-2.121 2.121M7.636 17.657l-2.121 2.121M16.485 17.657l2.121 2.121M7.636 6.364l2.121 2.121"></path></svg>
                         </button>
@@ -249,8 +262,6 @@
                         <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn" title="Kamera Aç/Kapat">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </button>
-                        
-                        <!-- Kalite Seçici Buradan Kaldırıldı -->
                         
                         <button id="share-btn" onclick="openShareModal()" class="ctrl-btn" title="Ekran Paylaş">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
@@ -324,7 +335,7 @@
         let isNoiseFilterActive = false;
         
         // MESH NETWORK DATA
-        let peers = {}; // id -> { call, conn, username, streamActive, screenCall, cameraCall }
+        let peers = {};
         let isHost = false;
 
         setInterval(() => {
@@ -405,14 +416,47 @@
         }
 
         async function toggleNoiseFilter() {
-            isNoiseFilterActive = !isNoiseFilterActive;
             const btn = document.getElementById('noise-btn');
-            const audioTrack = myStream.getAudioTracks()[0];
-            if (audioTrack) { await audioTrack.applyConstraints({ noiseSuppression: isNoiseFilterActive, echoCancellation: true, autoGainControl: true }); }
-            if(isNoiseFilterActive) btn.classList.add('active-green'); else btn.classList.remove('active-green');
-        }
+            isNoiseFilterActive = !isNoiseFilterActive;
 
-        // --- MESH NETWORK MİMARİSİ ---
+            try {
+                const newStream = await navigator.mediaDevices.getUserMedia({
+                    audio: {
+                        echoCancellation: true,
+                        noiseSuppression: isNoiseFilterActive,
+                        autoGainControl: true
+                    },
+                    video: false
+                });
+
+                const newAudioTrack = newStream.getAudioTracks()[0];
+                const oldAudioTrack = myStream.getAudioTracks()[0];
+
+                newAudioTrack.enabled = !isMuted;
+
+                Object.values(peers).forEach(p => {
+                    if (p.call && p.call.peerConnection) {
+                        const senders = p.call.peerConnection.getSenders();
+                        const audioSender = senders.find(s => s.track && s.track.kind === 'audio');
+                        if (audioSender) {
+                            audioSender.replaceTrack(newAudioTrack);
+                        }
+                    }
+                });
+
+                myStream.removeTrack(oldAudioTrack);
+                myStream.addTrack(newAudioTrack);
+                oldAudioTrack.stop();
+
+                if(isNoiseFilterActive) btn.classList.add('active-green');
+                else btn.classList.remove('active-green');
+
+            } catch (error) {
+                console.error("Gürültü filtresi uygulanırken hata:", error);
+                isNoiseFilterActive = !isNoiseFilterActive;
+                alert("Mikrofon ayarlarına erişilemedi!");
+            }
+        }
         
         function setupPeerEvents() {
             peer.on('connection', conn => {
@@ -442,7 +486,6 @@
             const conn = peer.connect(targetId); setupDataConn(conn, targetId);
             const call = peer.call(targetId, myStream, { metadata: { type: 'audio' } }); setupCall(call, targetId);
             
-            // Eğer o an ekran veya kamera paylaşıyorsak, yeni gelene de yollayalım
             if(isScreenSharing && screenStream) { peers[targetId].screenCall = peer.call(targetId, screenStream, { metadata: { type: 'screen' } }); }
             if(isCameraOn && cameraStream) { peers[targetId].cameraCall = peer.call(targetId, cameraStream, { metadata: { type: 'camera' } }); }
         }
@@ -633,15 +676,43 @@
             monitorSpeech(stream, 'user-' + id); updateRoomTitle();
         }
 
+        /* --- OPTİMİZE EDİLMİŞ SES ANALİZ FONKSİYONU --- */
         function monitorSpeech(stream, elementId) {
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const source = audioContext.createMediaStreamSource(stream), analyser = audioContext.createAnalyser(); 
-            analyser.fftSize = 512; source.connect(analyser); const dataArray = new Uint8Array(analyser.frequencyBinCount);
-            setInterval(() => {
-                analyser.getByteFrequencyData(dataArray); let sum = 0; for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-                let average = sum / dataArray.length, el = document.getElementById(elementId);
-                if(el) { if (average > 15 && !(elementId === 'user-local-user' && isMuted)) el.classList.add('speaking'); else el.classList.remove('speaking'); }
-            }, 100);
+            const source = audioContext.createMediaStreamSource(stream);
+            const analyser = audioContext.createAnalyser(); 
+            analyser.fftSize = 256; // İşlem yükünü azaltmak için düşürüldü
+            source.connect(analyser); 
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            
+            let lastTime = 0;
+            let isCurrentlySpeaking = false;
+            
+            function checkAudioLevel(time) {
+                requestAnimationFrame(checkAudioLevel);
+                
+                // Saniyede 10-15 kez kontrol et (performans tasarrufu)
+                if (time - lastTime < 80) return;
+                lastTime = time;
+
+                const el = document.getElementById(elementId);
+                if(!el) return;
+
+                analyser.getByteFrequencyData(dataArray); 
+                let sum = 0; 
+                for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
+                let average = sum / dataArray.length;
+                
+                const shouldBeSpeaking = average > 15 && !(elementId === 'user-local-user' && isMuted);
+                
+                // DOM manipülasyonunu sadece durum değiştiğinde yap
+                if (shouldBeSpeaking !== isCurrentlySpeaking) {
+                    isCurrentlySpeaking = shouldBeSpeaking;
+                    if (isCurrentlySpeaking) el.classList.add('speaking');
+                    else el.classList.remove('speaking');
+                }
+            }
+            requestAnimationFrame(checkAudioLevel);
         }
     </script>
 </body>
