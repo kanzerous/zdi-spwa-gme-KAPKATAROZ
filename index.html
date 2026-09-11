@@ -85,34 +85,34 @@
 
         #floating-clock { position: absolute; bottom: 25px; right: 25px; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 20px; color: rgba(255, 255, 255, 0.7); font-family: 'Poppins', monospace; font-size: 13px; font-weight: 600; z-index: 10; border: 1px solid rgba(255,255,255,0.1); pointer-events: none; display: none; }
 
-        #video-gallery { display: none; flex-wrap: wrap; justify-content: center; gap: 15px; padding: 20px; flex-grow: 1; align-content: center; overflow-y: auto; transition: 0.3s; }
-        .video-wrapper { position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex: 1 1 45%; max-width: 100%; max-height: 45vh; display: flex; align-items: center; justify-content: center; transition: all 0.4s ease; border: 2px solid transparent; }
-        .video-wrapper video { width: 100%; height: 100%; object-fit: contain; border-radius: 10px; }
+        /* --- 16:9 GALERİ & YAYIN KUTULARI --- */
+        #video-gallery { display: none; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; flex-grow: 1; align-content: center; overflow-y: auto; transition: 0.3s; }
+        .video-wrapper { position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex: 0 1 auto; width: 45%; max-height: 50vh; display: flex; align-items: center; justify-content: center; transition: all 0.4s ease; border: 2px solid #ffffff; aspect-ratio: 16 / 9; }
+        .video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
         
-        .video-wrapper.pinned { flex: 1 1 100%; max-height: 75vh; order: -1; border-color: var(--accent); }
-        .video-wrapper:not(.pinned).has-pinned-sibling { flex: 0 1 250px; max-height: 180px; }
+        .video-wrapper.pinned { width: 100%; max-height: 70vh; order: -1; }
+        .video-wrapper:not(.pinned).has-pinned-sibling { width: 250px; }
 
-        /* YENİ MİNİMAL PİN BUTONU (KÖŞEDE İĞNE) */
+        /* MİNİMAL PİN (İĞNE) */
         .pin-btn { position: absolute; top: 15px; left: 15px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.6); color: white; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-size: 18px; backdrop-filter: blur(5px); transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); padding: 0; outline: none;}
         .pin-btn:hover { background: var(--accent); transform: scale(1.1); }
         .pinned .pin-btn { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
+        /* YAYIN İSİMLİĞİ VE SES DENETİMİ */
+        .stream-label { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none; z-index: 10; white-space: nowrap; font-family: 'Poppins', sans-serif; border: 1px solid rgba(255,255,255,0.1); }
+        
+        .stream-volume-container { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; z-index: 10; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
+        .stream-volume-container svg { color: white; }
+        .stream-volume { width: 70px; accent-color: var(--accent); cursor: pointer; margin: 0; }
+
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 50px; padding: 40px; transition: all 0.3s ease; }
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
         
-        .circle { 
-            width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; 
-            font-size: 36px; font-weight: bold; color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5); pointer-events: none; 
-            position: relative; z-index: 2; border: 4px solid transparent; 
-        }
+        .circle { width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: var(--text-main); transition: 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.5); pointer-events: none; position: relative; z-index: 2; border: 4px solid transparent; }
         .circle img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; border-radius: 50%; background-color: #e3e5e8; padding: 8px; box-sizing: border-box; }
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
         
-        .circle::before, .circle::after { 
-            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; 
-            border-radius: 50%; border: 2px solid #3ba55d; box-shadow: 0 0 15px #3ba55d; 
-            opacity: 0; z-index: -1; will-change: transform, opacity; 
-        }
+        .circle::before, .circle::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; border: 2px solid #3ba55d; box-shadow: 0 0 15px #3ba55d; opacity: 0; z-index: -1; will-change: transform, opacity; }
         .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
         .speaking .circle::after { animation: ripple 1.5s infinite ease-out; animation-delay: 0.75s; }
 
@@ -331,11 +331,12 @@
     <div id="overlay" class="overlay" onclick="closeShareModal()"></div>
     <div id="share-modal">
         <h3>Ekran Kalitesi Seçin</h3>
+        <!-- WebRTC'de işlemciyi kasmaması için maksimum 60 FPS sınırlandı -->
         <button class="btn-dark" onclick="startScreenShare(360)">360p (30 FPS)</button>
         <button class="btn-dark" onclick="startScreenShare(480)">480p (30 FPS)</button>
-        <button class="btn-dark" onclick="startScreenShare(720)">720p (144 FPS)</button>
-        <button class="btn-dark" onclick="startScreenShare(1080)">1080p (144 FPS)</button>
-        <button class="btn-dark" onclick="startScreenShare(1440)">2K (144 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(720)">720p (60 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(1080)">1080p (60 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(1440)">2K (60 FPS)</button>
         <hr style="border-color: var(--border); margin: 15px 0;">
         <button class="btn-green" onclick="startAudioOnlyShare()" style="background-color: #3ba55d;">🎧 Sadece Ses Paylaş (Sekme)</button>
         <button style="background-color: #ed4245; margin-top: 10px;" onclick="closeShareModal()">İptal</button>
@@ -352,19 +353,19 @@
         
         let peers = {};
         let isHost = false;
+        let speechMonitors = {}; // Performanslı ses dinleyicileri için
 
-        // --- TAMAMEN HAM VE GÜVENİLİR WIKIPEDIA ORİJİNAL LİNKLERİ (THUMBNAIL YOK) ---
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
         const AVATARS = [
-            "https://upload.wikimedia.org/wikipedia/tr/6/6f/Red_Kit.png", // Red Kit
-            "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png", // Fred Çakmaktaş
-            "https://upload.wikimedia.org/wikipedia/en/3/3b/SpongeBob_SquarePants_character.svg", // SpongeBob
-            "https://upload.wikimedia.org/wikipedia/en/3/33/Patrick_Star.svg", // Patrick
-            "https://upload.wikimedia.org/wikipedia/en/1/16/Phineas_Flynn.png", // Phineas
-            "https://upload.wikimedia.org/wikipedia/en/3/32/Ferb_Fletcher.png", // Ferb
-            "https://upload.wikimedia.org/wikipedia/en/0/05/Ben_Tennyson.png", // Ben 10
-            "https://upload.wikimedia.org/wikipedia/en/4/4e/Gumball_Watterson_character.png", // Gumball
-            "https://upload.wikimedia.org/wikipedia/en/1/13/Darwin_Watterson.png" // Darwin
+            "https://upload.wikimedia.org/wikipedia/tr/6/6f/Red_Kit.png",
+            "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png",
+            "https://upload.wikimedia.org/wikipedia/en/3/3b/SpongeBob_SquarePants_character.svg",
+            "https://upload.wikimedia.org/wikipedia/en/3/33/Patrick_Star.svg",
+            "https://upload.wikimedia.org/wikipedia/en/1/16/Phineas_Flynn.png",
+            "https://upload.wikimedia.org/wikipedia/en/3/32/Ferb_Fletcher.png",
+            "https://upload.wikimedia.org/wikipedia/en/0/05/Ben_Tennyson.png",
+            "https://upload.wikimedia.org/wikipedia/en/4/4e/Gumball_Watterson_character.png",
+            "https://upload.wikimedia.org/wikipedia/en/1/13/Darwin_Watterson.png"
         ];
 
         function initAvatars() {
@@ -503,12 +504,17 @@
             catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
         }
 
+        // --- GÜRÜLTÜ ENGELLEME DÜZELTİLDİ VE HALKA ANİMASYONU TEKRAR BAĞLANDI ---
         async function toggleNoiseFilter() {
             const btn = document.getElementById('noise-btn');
             isNoiseFilterActive = !isNoiseFilterActive;
 
             try {
-                const newStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: isNoiseFilterActive, autoGainControl: true }, video: false });
+                const newStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { echoCancellation: true, noiseSuppression: isNoiseFilterActive, autoGainControl: true }, 
+                    video: false 
+                });
+                
                 const newAudioTrack = newStream.getAudioTracks()[0];
                 const oldAudioTrack = myStream.getAudioTracks()[0];
                 newAudioTrack.enabled = !isMuted;
@@ -524,6 +530,9 @@
                 myStream.removeTrack(oldAudioTrack);
                 myStream.addTrack(newAudioTrack);
                 oldAudioTrack.stop();
+
+                // YENİ SES AKIŞINI HALKALARA TEKRAR BAĞLA (SORUNUN ÇÖZÜMÜ)
+                monitorSpeech(myStream, 'user-local-user');
 
                 if(isNoiseFilterActive) btn.classList.add('active-green');
                 else btn.classList.remove('active-green');
@@ -555,22 +564,16 @@
             peer.on('call', call => {
                 const id = call.peer;
                 if (call.metadata && call.metadata.type === 'tab-audio') {
-                    // Sadece ses paylaşımı alımı
                     call.answer();
                     call.on('stream', stream => {
-                        if(document.getElementById('tab-audio-' + stream.id)) return;
-                        const audio = document.createElement('audio');
-                        audio.id = 'tab-audio-' + stream.id;
-                        audio.srcObject = stream;
-                        audio.autoplay = true;
-                        document.body.appendChild(audio);
-                        stream.getAudioTracks()[0].onended = () => audio.remove();
+                        if(document.getElementById('vid-wrap-' + stream.id)) return;
+                        addMediaElement(stream, id, false, 'tab-audio');
                     });
                 } else if (call.metadata && (call.metadata.type === 'screen' || call.metadata.type === 'camera')) {
                     call.answer(); 
                     call.on('stream', stream => {
                         if(document.getElementById('vid-wrap-' + stream.id)) return;
-                        addVideoElement(stream, id, false);
+                        addMediaElement(stream, id, false, call.metadata.type);
                     });
                 } else {
                     if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0] };
@@ -648,6 +651,7 @@
                 el.remove();
                 if (!isLeavingLobby) playLeaveSound(); 
             }
+            if (speechMonitors['user-' + id]) clearInterval(speechMonitors['user-' + id]); // Temizle
             const aud = document.getElementById('audio-' + id); if (aud) aud.remove();
             
             document.querySelectorAll(`.video-wrapper[data-peer-id="${id}"]`).forEach(vid => vid.remove());
@@ -734,6 +738,7 @@
             Object.keys(peers).forEach(id => handlePeerDisconnect(id)); peers = {};
             if(peer) peer.destroy(); document.getElementById('video-gallery').innerHTML = ""; checkGalleryEmpty();
             document.getElementById('chat-messages').innerHTML = "";
+            Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; // Bellek temizliği
             document.getElementById('call-screen').style.display = 'none'; document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan";
             isLeavingLobby = false;
@@ -745,8 +750,8 @@
             else { btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; }
         }
 
-        /* --- ÇOKLU EKRAN/KAMERA İŞLEYİCİLERİ --- */
-        function addVideoElement(stream, peerId, isLocal = false) {
+        /* --- MEDYA YAYIN İŞLEYİCİSİ (VİDEO VE SES ORTAK) --- */
+        function addMediaElement(stream, peerId, isLocal = false, type = 'screen') {
             document.getElementById('video-gallery').style.display = 'flex';
             document.getElementById('participants-area').classList.add('minimized-participants');
             
@@ -755,28 +760,56 @@
             wrapper.id = 'vid-wrap-' + stream.id;
             wrapper.setAttribute('data-peer-id', peerId);
             
-            const video = document.createElement('video');
-            video.srcObject = stream;
-            video.autoplay = true;
-            video.playsInline = true;
-            video.muted = isLocal;
+            const sharerName = isLocal ? localUsername + " (Sen)" : (peers[peerId] ? peers[peerId].username : "Bilinmeyen");
+
+            let mediaEl;
+            if (type === 'tab-audio') {
+                wrapper.innerHTML = `<div style="font-size: 60px; color: var(--accent); filter: drop-shadow(0 0 15px var(--accent));">🎧</div>`;
+                mediaEl = document.createElement('audio');
+            } else {
+                mediaEl = document.createElement('video');
+                mediaEl.playsInline = true;
+            }
+
+            mediaEl.id = 'media-' + stream.id;
+            mediaEl.srcObject = stream;
+            mediaEl.autoplay = true;
+            mediaEl.muted = isLocal;
             
+            if (type !== 'tab-audio') wrapper.appendChild(mediaEl);
+            else document.body.appendChild(mediaEl);
+
             const pinBtn = document.createElement('button');
             pinBtn.className = 'pin-btn';
             pinBtn.innerHTML = '📌';
             pinBtn.title = 'Büyük Ekrana Sabitle';
             pinBtn.onclick = () => togglePin(wrapper.id);
             
-            wrapper.appendChild(video);
+            const label = document.createElement('div');
+            label.className = 'stream-label';
+            label.innerText = sharerName;
+
+            const volContainer = document.createElement('div');
+            volContainer.className = 'stream-volume-container';
+            volContainer.innerHTML = `
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                <input type="range" class="stream-volume" min="0" max="1" step="0.05" value="${isLocal ? 0 : 1}" oninput="document.getElementById('media-${stream.id}').volume = this.value; document.getElementById('media-${stream.id}').muted = false;" title="Yayın Sesi">
+            `;
+            
             wrapper.appendChild(pinBtn);
+            wrapper.appendChild(label);
+            wrapper.appendChild(volContainer);
             document.getElementById('video-gallery').appendChild(wrapper);
             
-            stream.getVideoTracks()[0].onended = () => removeVideoElement(stream.id);
+            const track = stream.getVideoTracks()[0] || stream.getAudioTracks()[0];
+            if(track) track.onended = () => removeMediaElement(stream.id);
         }
 
-        function removeVideoElement(streamId) {
+        function removeMediaElement(streamId) {
             const el = document.getElementById('vid-wrap-' + streamId);
+            const mediaEl = document.getElementById('media-' + streamId);
             if(el) el.remove();
+            if(mediaEl) mediaEl.remove();
             checkGalleryEmpty();
         }
 
@@ -808,12 +841,12 @@
             const btn = document.getElementById('camera-btn');
             if (isCameraOn) {
                 Object.values(peers).forEach(p => { if(p.cameraCall) p.cameraCall.close(); });
-                if (cameraStream) { removeVideoElement(cameraStream.id); cameraStream.getTracks().forEach(t => t.stop()); }
+                if (cameraStream) { removeMediaElement(cameraStream.id); cameraStream.getTracks().forEach(t => t.stop()); }
                 isCameraOn = false; btn.classList.remove('active-green');
             } else {
                 try {
                     cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
-                    addVideoElement(cameraStream, 'local', true);
+                    addMediaElement(cameraStream, 'local', true, 'camera');
                     Object.keys(peers).forEach(id => { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); });
                     isCameraOn = true; btn.classList.add('active-green');
                 } catch (err) { alert("Kamera izni alınamadı!"); }
@@ -825,62 +858,58 @@
         }
         function closeShareModal() { document.getElementById('share-modal').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
 
-        // --- SADECE SES PAYLAŞMA ---
         async function startAudioOnlyShare() {
             closeShareModal();
             try {
-                // Tarayıcı sekme sesi alabilmek için genelde video iznini de zorunlu tutar
-                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-                if (stream.getAudioTracks().length === 0) {
-                    alert("Ses bulunamadı! Sekme paylaşırken 'Sekme sesini paylaş' seçeneğini işaretlediğinizden emin olun.");
-                    stream.getTracks().forEach(t => t.stop());
-                    return;
-                }
-                
-                // Görüntü track'lerini hemen durdurup yok ediyoruz
-                stream.getVideoTracks().forEach(t => t.stop());
-                
-                // Sadece sesten oluşan yeni bir stream yaratıyoruz
-                screenStream = new MediaStream([stream.getAudioTracks()[0]]);
-                
-                Object.keys(peers).forEach(id => { 
-                    peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: 'tab-audio' } }); 
+                const stream = await navigator.mediaDevices.getDisplayMedia({ 
+                    video: true, 
+                    audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } 
                 });
                 
+                if (stream.getAudioTracks().length === 0) {
+                    alert("Ses bulunamadı! Sekme paylaşırken 'Sekme sesini paylaş' seçeneğini işaretlediğinizden emin olun.");
+                    stream.getTracks().forEach(t => t.stop()); return;
+                }
+                
+                stream.getVideoTracks().forEach(t => t.stop());
+                screenStream = new MediaStream([stream.getAudioTracks()[0]]);
+                
+                addMediaElement(screenStream, 'local', true, 'tab-audio');
+                Object.keys(peers).forEach(id => { peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: 'tab-audio' } }); });
+                
                 screenStream.getAudioTracks()[0].onended = () => { if(isScreenSharing) stopScreenShare(); };
-                isScreenSharing = true; 
-                document.getElementById('share-btn').classList.add('active-green');
+                isScreenSharing = true; document.getElementById('share-btn').classList.add('active-green');
             } catch (err) { console.error(err); }
         }
 
         async function startScreenShare(quality) {
             closeShareModal();
+            // FPS DROP ÇÖZÜMÜ: Sınırlar webrtc kapasitesine uygun 60 fps'ye çekildi
             const res = { 
-                360: {w: 640, h: 360, fps: 30}, 
-                480: {w: 854, h: 480, fps: 30}, 
-                720: {w: 1280, h: 720, fps: 144}, 
-                1080: {w: 1920, h: 1080, fps: 144}, 
-                1440: {w: 2560, h: 1440, fps: 144} 
+                360: {w: 640, h: 360, fps: 30}, 480: {w: 854, h: 480, fps: 30}, 
+                720: {w: 1280, h: 720, fps: 60}, 1080: {w: 1920, h: 1080, fps: 60}, 1440: {w: 2560, h: 1440, fps: 60} 
             }[quality];
 
             try {
                 screenStream = await navigator.mediaDevices.getDisplayMedia({ 
-                    video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: res.fps, max: res.fps } }, audio: true 
+                    video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: res.fps, max: res.fps } }, 
+                    audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false } 
                 });
                 
-                addVideoElement(screenStream, 'local', true);
+                const isAudioOnly = screenStream.getVideoTracks().length === 0;
+                addMediaElement(screenStream, 'local', true, isAudioOnly ? 'tab-audio' : 'screen');
                 
-                Object.keys(peers).forEach(id => { peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: 'screen' } }); });
+                Object.keys(peers).forEach(id => { peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); });
                 
-                screenStream.getVideoTracks()[0].onended = () => { if(isScreenSharing) stopScreenShare(); };
+                const track = screenStream.getVideoTracks()[0] || screenStream.getAudioTracks()[0];
+                track.onended = () => { if(isScreenSharing) stopScreenShare(); };
                 isScreenSharing = true; document.getElementById('share-btn').classList.add('active-green');
             } catch (err) { console.error(err); }
         }
 
         function stopScreenShare() {
             if (screenStream) {
-                const isAudioOnly = screenStream.getVideoTracks().length === 0;
-                if (!isAudioOnly) removeVideoElement(screenStream.id);
+                removeMediaElement(screenStream.id);
                 screenStream.getTracks().forEach(t => t.stop());
             }
             Object.values(peers).forEach(p => { if(p.screenCall) p.screenCall.close(); });
@@ -904,7 +933,10 @@
             updateRoomTitle();
         }
 
+        // --- FPS OPTİMİZASYONLU SES DİNLEYİCİSİ (REQUESTANIMATIONFRAME KALDIRILDI) ---
         function monitorSpeech(stream, elementId) {
+            if (speechMonitors[elementId]) clearInterval(speechMonitors[elementId]); // Eskisi varsa kapat
+
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioContext.createMediaStreamSource(stream);
             const analyser = audioContext.createAnalyser(); 
@@ -912,21 +944,21 @@
             source.connect(analyser); 
             const dataArray = new Uint8Array(analyser.frequencyBinCount);
             
-            let lastTime = 0;
             let isCurrentlySpeaking = false;
             
-            function checkAudioLevel(time) {
-                requestAnimationFrame(checkAudioLevel);
-                if (time - lastTime < 80) return;
-                lastTime = time;
-
+            // FPS düşüşünü önlemek için 100ms interval ile çalışacak (1 saniyede 10 kontrol)
+            speechMonitors[elementId] = setInterval(() => {
                 const el = document.getElementById(elementId);
-                if(!el) return;
+                if(!el) {
+                    clearInterval(speechMonitors[elementId]);
+                    return;
+                }
 
                 analyser.getByteFrequencyData(dataArray); 
                 let sum = 0; 
-                for(let i = 0; i < dataArray.length; i++) sum += dataArray[i];
-                let average = sum / dataArray.length;
+                // Performans için sadece her 4. frekans bandına bakıyoruz
+                for(let i = 0; i < dataArray.length; i+=4) sum += dataArray[i];
+                let average = sum / (dataArray.length / 4);
                 
                 const shouldBeSpeaking = average > 15 && !(elementId === 'user-local-user' && isMuted);
                 
@@ -935,8 +967,7 @@
                     if (isCurrentlySpeaking) el.classList.add('speaking');
                     else el.classList.remove('speaking');
                 }
-            }
-            requestAnimationFrame(checkAudioLevel);
+            }, 100);
         }
     </script>
 </body>
