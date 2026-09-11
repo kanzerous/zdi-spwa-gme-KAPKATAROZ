@@ -59,34 +59,11 @@
         .btn-green { background-color: #3ba55d; } .btn-green:hover { background-color: #2d7d46; }
         .btn-dark { background-color: var(--input-bg); color: var(--text-main); } .btn-dark:hover { filter: brightness(1.2); }
 
-        /* --- ÖZEL SES BARI (SLIDER) DÜZELTMESİ --- */
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            background: transparent;
-            margin: 0;
-            padding: 0;
-            cursor: pointer;
-        }
+        input[type="range"] { -webkit-appearance: none; width: 100%; background: transparent; margin: 0; padding: 0; cursor: pointer; }
         input[type="range"]:focus { outline: none; }
-        input[type="range"]::-webkit-slider-runnable-track {
-            width: 100%;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 3px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            height: 16px;
-            width: 16px;
-            border-radius: 50%;
-            background: var(--accent);
-            margin-top: -5px; /* (16 - 6) / 2 */
-            box-shadow: 0 0 5px rgba(0,0,0,0.5);
-            transition: transform 0.1s;
-        }
+        input[type="range"]::-webkit-slider-runnable-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; height: 16px; width: 16px; border-radius: 50%; background: var(--accent); margin-top: -5px; box-shadow: 0 0 5px rgba(0,0,0,0.5); transition: transform 0.1s; }
         input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
-        /* Firefox desteği */
         input[type="range"]::-moz-range-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
         input[type="range"]::-moz-range-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--accent); border: none; box-shadow: 0 0 5px rgba(0,0,0,0.5); cursor: pointer; }
 
@@ -296,9 +273,7 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                         </button>
                         
-                        <button id="noise-btn" onclick="toggleNoiseFilter()" class="ctrl-btn" title="Gürültü Engelleme Aç/Kapat">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m14.485-6.364l-2.121 2.121M7.636 17.657l-2.121 2.121M16.485 17.657l2.121 2.121M7.636 6.364l2.121 2.121"></path></svg>
-                        </button>
+                        <!-- Gürültü engelleme butonu kaldırıldı -->
                         
                         <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn" title="Kamera Aç/Kapat">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -375,7 +350,6 @@
         let localUsername = "", localAvatar = "", isMuted = false, isCameraOn = false, cameraStream = null, isScreenSharing = false, screenStream = null;
         
         let callStartTime = null, timerInterval = null;
-        let isNoiseFilterActive = false;
         let isLeavingLobby = false;
         
         let peers = {};
@@ -384,17 +358,17 @@
 
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
         
-        // --- TAMAMEN FANDOM WIKIA (static.wikia.nocookie.net) BAĞLANTILARI ---
+        // --- CDN/PROXY İLE HOTLINK KORUMASI AŞILDI ---
         const AVATARS = [
-            "https://static.wikia.nocookie.net/spongebob/images/a/ac/SpongeBob_SquarePants_Render.png", // SpongeBob
-            "https://static.wikia.nocookie.net/spongebob/images/7/7e/Patrick_Star_Render.png", // Patrick
-            "https://static.wikia.nocookie.net/flintstones/images/a/a2/Fred_Flintstone.png", // Fred Çakmaktaş
-            "https://static.wikia.nocookie.net/phineasandferb/images/a/a3/Phineas_Flynn.png", // Phineas
-            "https://static.wikia.nocookie.net/phineasandferb/images/1/13/Ferb_Fletcher_promo.png", // Ferb
-            "https://static.wikia.nocookie.net/ben10/images/6/6b/Ben_Omniverse_Render.png", // Ben 10
-            "https://static.wikia.nocookie.net/theamazingworldofgumball/images/1/18/Gumball_Season_3_design.png", // Gumball
-            "https://static.wikia.nocookie.net/theamazingworldofgumball/images/9/90/Darwin_Watterson_Season_3_design.png", // Darwin
-            "https://static.wikia.nocookie.net/looneytunes/images/b/b5/Bugs_Bunny.png" // Bugs Bunny
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/spongebob/images/a/ac/SpongeBob_SquarePants_Render.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/spongebob/images/7/7e/Patrick_Star_Render.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/flintstones/images/a/a2/Fred_Flintstone.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/phineasandferb/images/a/a3/Phineas_Flynn.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/phineasandferb/images/1/13/Ferb_Fletcher_promo.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/ben10/images/6/6b/Ben_Omniverse_Render.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/theamazingworldofgumball/images/1/18/Gumball_Season_3_design.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/theamazingworldofgumball/images/9/90/Darwin_Watterson_Season_3_design.png",
+            "https://wsrv.nl/?url=static.wikia.nocookie.net/looneytunes/images/b/b5/Bugs_Bunny.png"
         ];
 
         function initAvatars() {
@@ -534,44 +508,11 @@
         
         async function setupMicrophone() {
             if(myStream) return true;
-            try { myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: false, autoGainControl: true }, video: false }); return true; } 
-            catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
-        }
-
-        async function toggleNoiseFilter() {
-            const btn = document.getElementById('noise-btn');
-            isNoiseFilterActive = !isNoiseFilterActive;
-
-            try {
-                const newStream = await navigator.mediaDevices.getUserMedia({ 
-                    audio: { echoCancellation: true, noiseSuppression: isNoiseFilterActive, autoGainControl: true }, 
-                    video: false 
-                });
-                
-                const newAudioTrack = newStream.getAudioTracks()[0];
-                const oldAudioTrack = myStream.getAudioTracks()[0];
-                newAudioTrack.enabled = !isMuted;
-
-                Object.values(peers).forEach(p => {
-                    if (p.call && p.call.peerConnection) {
-                        const senders = p.call.peerConnection.getSenders();
-                        const audioSender = senders.find(s => s.track && s.track.kind === 'audio');
-                        if (audioSender) { audioSender.replaceTrack(newAudioTrack); }
-                    }
-                });
-
-                myStream.removeTrack(oldAudioTrack);
-                myStream.addTrack(newAudioTrack);
-                oldAudioTrack.stop();
-
-                monitorSpeech(myStream, 'user-local-user');
-
-                if(isNoiseFilterActive) btn.classList.add('active-green');
-                else btn.classList.remove('active-green');
-            } catch (error) {
-                isNoiseFilterActive = !isNoiseFilterActive;
-                alert("Mikrofon ayarlarına erişilemedi!");
-            }
+            try { 
+                // Tarayıcının varsayılan en stabil ses kalitesi ayarları eklendi, gürültü engelleme otomatik devrede
+                myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); 
+                return true; 
+            } catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
         }
         
         function setupPeerEvents() {
