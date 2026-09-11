@@ -52,12 +52,43 @@
         
         .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); width: 340px; text-align: center; transition: background-color 0.3s; }
         .auth-box h2 { color: var(--text-main); margin-top: 0; margin-bottom: 25px; font-weight: 600; }
-        input { width: 90%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; box-sizing: border-box; width: 100%;}
-        input:focus { border-color: var(--accent); }
+        input[type="text"], input[type="password"] { width: 90%; padding: 12px; border-radius: 6px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; box-sizing: border-box; width: 100%;}
+        input[type="text"]:focus, input[type="password"]:focus { border-color: var(--accent); }
         button { background-color: var(--accent); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-bottom: 10px; font-size: 14px; }
         button:hover { background-color: var(--accent-hover); }
         .btn-green { background-color: #3ba55d; } .btn-green:hover { background-color: #2d7d46; }
         .btn-dark { background-color: var(--input-bg); color: var(--text-main); } .btn-dark:hover { filter: brightness(1.2); }
+
+        /* --- ÖZEL SES BARI (SLIDER) DÜZELTMESİ --- */
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            background: transparent;
+            margin: 0;
+            padding: 0;
+            cursor: pointer;
+        }
+        input[type="range"]:focus { outline: none; }
+        input[type="range"]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 16px;
+            width: 16px;
+            border-radius: 50%;
+            background: var(--accent);
+            margin-top: -5px; /* (16 - 6) / 2 */
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transition: transform 0.1s;
+        }
+        input[type="range"]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        /* Firefox desteği */
+        input[type="range"]::-moz-range-track { width: 100%; height: 6px; background: rgba(255, 255, 255, 0.2); border-radius: 3px; }
+        input[type="range"]::-moz-range-thumb { height: 16px; width: 16px; border-radius: 50%; background: var(--accent); border: none; box-shadow: 0 0 5px rgba(0,0,0,0.5); cursor: pointer; }
 
         .avatar-selection { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; padding: 0 5px; }
         .avatar-option { width: 45px; height: 45px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; opacity: 0.5; background-color: #e3e5e8; padding: 4px; object-fit: contain; box-sizing: border-box; }
@@ -85,7 +116,6 @@
 
         #floating-clock { position: absolute; bottom: 25px; right: 25px; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); padding: 8px 16px; border-radius: 20px; color: rgba(255, 255, 255, 0.7); font-family: 'Poppins', monospace; font-size: 13px; font-weight: 600; z-index: 10; border: 1px solid rgba(255,255,255,0.1); pointer-events: none; display: none; }
 
-        /* --- 16:9 GALERİ & YAYIN KUTULARI --- */
         #video-gallery { display: none; flex-wrap: wrap; justify-content: center; gap: 20px; padding: 20px; flex-grow: 1; align-content: center; overflow-y: auto; transition: 0.3s; }
         .video-wrapper { position: relative; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); flex: 0 1 auto; width: 45%; max-height: 50vh; display: flex; align-items: center; justify-content: center; transition: all 0.4s ease; border: 2px solid #ffffff; aspect-ratio: 16 / 9; }
         .video-wrapper video { width: 100%; height: 100%; object-fit: contain; }
@@ -93,17 +123,15 @@
         .video-wrapper.pinned { width: 100%; max-height: 70vh; order: -1; }
         .video-wrapper:not(.pinned).has-pinned-sibling { width: 250px; }
 
-        /* MİNİMAL PİN (İĞNE) */
         .pin-btn { position: absolute; top: 15px; left: 15px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.6); color: white; border: 1px solid rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 10; font-size: 18px; backdrop-filter: blur(5px); transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.5); padding: 0; outline: none;}
         .pin-btn:hover { background: var(--accent); transform: scale(1.1); }
         .pinned .pin-btn { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 15px var(--accent); }
 
-        /* YAYIN İSİMLİĞİ VE SES DENETİMİ */
         .stream-label { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none; z-index: 10; white-space: nowrap; font-family: 'Poppins', sans-serif; border: 1px solid rgba(255,255,255,0.1); }
         
-        .stream-volume-container { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 8px; z-index: 10; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
-        .stream-volume-container svg { color: white; }
-        .stream-volume { width: 70px; accent-color: var(--accent); cursor: pointer; margin: 0; }
+        .stream-volume-container { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 10px; z-index: 10; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
+        .stream-volume-container svg { color: white; flex-shrink: 0; }
+        .stream-volume { width: 75px !important; margin: 0; }
 
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 50px; padding: 40px; transition: all 0.3s ease; }
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
@@ -163,10 +191,10 @@
 
         #context-menu { display: none; position: absolute; background-color: var(--bg-ter); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); padding: 15px; z-index: 1000; width: 200px; color: var(--text-main); }
         #context-menu h4 { margin: 0 0 12px 0; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        .context-item { display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px; }
+        .context-item { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .context-item label { font-size: 12px; color: var(--text-muted); font-weight: 600; }
-        .context-item input[type="range"] { width: 100%; accent-color: var(--accent); cursor: pointer; }
-        #context-mute-btn { background-color: var(--bg-sec); color: var(--text-main); padding: 10px; font-size: 13px; margin-bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px; border-radius: 6px; }
+        .context-item input[type="range"] { width: 100%; }
+        #context-mute-btn { background-color: var(--bg-sec); color: var(--text-main); padding: 10px; font-size: 13px; margin-bottom: 0; display: flex; justify-content: center; align-items: center; gap: 8px; border-radius: 6px; cursor: pointer; border: none; width: 100%; transition: 0.2s;}
         #context-mute-btn:hover { background-color: var(--input-bg); }
         #context-mute-btn.muted { background-color: #ed4245; color: white; }
 
@@ -331,7 +359,6 @@
     <div id="overlay" class="overlay" onclick="closeShareModal()"></div>
     <div id="share-modal">
         <h3>Ekran Kalitesi Seçin</h3>
-        <!-- WebRTC'de işlemciyi kasmaması için maksimum 60 FPS sınırlandı -->
         <button class="btn-dark" onclick="startScreenShare(360)">360p (30 FPS)</button>
         <button class="btn-dark" onclick="startScreenShare(480)">480p (30 FPS)</button>
         <button class="btn-dark" onclick="startScreenShare(720)">720p (60 FPS)</button>
@@ -353,19 +380,21 @@
         
         let peers = {};
         let isHost = false;
-        let speechMonitors = {}; // Performanslı ses dinleyicileri için
+        let speechMonitors = {}; 
 
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
+        
+        // --- TAMAMEN FANDOM WIKIA (static.wikia.nocookie.net) BAĞLANTILARI ---
         const AVATARS = [
-            "https://upload.wikimedia.org/wikipedia/tr/6/6f/Red_Kit.png",
-            "https://upload.wikimedia.org/wikipedia/en/a/ad/Fred_Flintstone.png",
-            "https://upload.wikimedia.org/wikipedia/en/3/3b/SpongeBob_SquarePants_character.svg",
-            "https://upload.wikimedia.org/wikipedia/en/3/33/Patrick_Star.svg",
-            "https://upload.wikimedia.org/wikipedia/en/1/16/Phineas_Flynn.png",
-            "https://upload.wikimedia.org/wikipedia/en/3/32/Ferb_Fletcher.png",
-            "https://upload.wikimedia.org/wikipedia/en/0/05/Ben_Tennyson.png",
-            "https://upload.wikimedia.org/wikipedia/en/4/4e/Gumball_Watterson_character.png",
-            "https://upload.wikimedia.org/wikipedia/en/1/13/Darwin_Watterson.png"
+            "https://static.wikia.nocookie.net/spongebob/images/a/ac/SpongeBob_SquarePants_Render.png", // SpongeBob
+            "https://static.wikia.nocookie.net/spongebob/images/7/7e/Patrick_Star_Render.png", // Patrick
+            "https://static.wikia.nocookie.net/flintstones/images/a/a2/Fred_Flintstone.png", // Fred Çakmaktaş
+            "https://static.wikia.nocookie.net/phineasandferb/images/a/a3/Phineas_Flynn.png", // Phineas
+            "https://static.wikia.nocookie.net/phineasandferb/images/1/13/Ferb_Fletcher_promo.png", // Ferb
+            "https://static.wikia.nocookie.net/ben10/images/6/6b/Ben_Omniverse_Render.png", // Ben 10
+            "https://static.wikia.nocookie.net/theamazingworldofgumball/images/1/18/Gumball_Season_3_design.png", // Gumball
+            "https://static.wikia.nocookie.net/theamazingworldofgumball/images/9/90/Darwin_Watterson_Season_3_design.png", // Darwin
+            "https://static.wikia.nocookie.net/looneytunes/images/b/b5/Bugs_Bunny.png" // Bugs Bunny
         ];
 
         function initAvatars() {
@@ -470,7 +499,12 @@
             menu.style.display = 'block'; menu.style.left = e.pageX + 'px'; menu.style.top = e.pageY + 'px';
         }
 
-        document.addEventListener('click', () => { document.getElementById('context-menu').style.display = 'none'; });
+        document.addEventListener('click', (e) => { 
+            if(!e.target.closest('#context-menu') && !e.target.closest('.participant')) {
+                document.getElementById('context-menu').style.display = 'none'; 
+            }
+        });
+        
         function changeRemoteVolume(val) { if(currentContextMenuPeerId) { const el = document.getElementById('audio-' + currentContextMenuPeerId); if(el) el.volume = val; } }
         function toggleRemoteMute() {
             if(!currentContextMenuPeerId) return; const audioEl = document.getElementById('audio-' + currentContextMenuPeerId); if(!audioEl) return;
@@ -504,7 +538,6 @@
             catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
         }
 
-        // --- GÜRÜLTÜ ENGELLEME DÜZELTİLDİ VE HALKA ANİMASYONU TEKRAR BAĞLANDI ---
         async function toggleNoiseFilter() {
             const btn = document.getElementById('noise-btn');
             isNoiseFilterActive = !isNoiseFilterActive;
@@ -531,7 +564,6 @@
                 myStream.addTrack(newAudioTrack);
                 oldAudioTrack.stop();
 
-                // YENİ SES AKIŞINI HALKALARA TEKRAR BAĞLA (SORUNUN ÇÖZÜMÜ)
                 monitorSpeech(myStream, 'user-local-user');
 
                 if(isNoiseFilterActive) btn.classList.add('active-green');
@@ -651,7 +683,7 @@
                 el.remove();
                 if (!isLeavingLobby) playLeaveSound(); 
             }
-            if (speechMonitors['user-' + id]) clearInterval(speechMonitors['user-' + id]); // Temizle
+            if (speechMonitors['user-' + id]) clearInterval(speechMonitors['user-' + id]);
             const aud = document.getElementById('audio-' + id); if (aud) aud.remove();
             
             document.querySelectorAll(`.video-wrapper[data-peer-id="${id}"]`).forEach(vid => vid.remove());
@@ -738,7 +770,7 @@
             Object.keys(peers).forEach(id => handlePeerDisconnect(id)); peers = {};
             if(peer) peer.destroy(); document.getElementById('video-gallery').innerHTML = ""; checkGalleryEmpty();
             document.getElementById('chat-messages').innerHTML = "";
-            Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; // Bellek temizliği
+            Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; 
             document.getElementById('call-screen').style.display = 'none'; document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan";
             isLeavingLobby = false;
@@ -750,7 +782,6 @@
             else { btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; }
         }
 
-        /* --- MEDYA YAYIN İŞLEYİCİSİ (VİDEO VE SES ORTAK) --- */
         function addMediaElement(stream, peerId, isLocal = false, type = 'screen') {
             document.getElementById('video-gallery').style.display = 'flex';
             document.getElementById('participants-area').classList.add('minimized-participants');
@@ -884,7 +915,6 @@
 
         async function startScreenShare(quality) {
             closeShareModal();
-            // FPS DROP ÇÖZÜMÜ: Sınırlar webrtc kapasitesine uygun 60 fps'ye çekildi
             const res = { 
                 360: {w: 640, h: 360, fps: 30}, 480: {w: 854, h: 480, fps: 30}, 
                 720: {w: 1280, h: 720, fps: 60}, 1080: {w: 1920, h: 1080, fps: 60}, 1440: {w: 2560, h: 1440, fps: 60} 
@@ -933,9 +963,8 @@
             updateRoomTitle();
         }
 
-        // --- FPS OPTİMİZASYONLU SES DİNLEYİCİSİ (REQUESTANIMATIONFRAME KALDIRILDI) ---
         function monitorSpeech(stream, elementId) {
-            if (speechMonitors[elementId]) clearInterval(speechMonitors[elementId]); // Eskisi varsa kapat
+            if (speechMonitors[elementId]) clearInterval(speechMonitors[elementId]); 
 
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
             const source = audioContext.createMediaStreamSource(stream);
@@ -946,7 +975,6 @@
             
             let isCurrentlySpeaking = false;
             
-            // FPS düşüşünü önlemek için 100ms interval ile çalışacak (1 saniyede 10 kontrol)
             speechMonitors[elementId] = setInterval(() => {
                 const el = document.getElementById(elementId);
                 if(!el) {
@@ -956,7 +984,6 @@
 
                 analyser.getByteFrequencyData(dataArray); 
                 let sum = 0; 
-                // Performans için sadece her 4. frekans bandına bakıyoruz
                 for(let i = 0; i < dataArray.length; i+=4) sum += dataArray[i];
                 let average = sum / (dataArray.length / 4);
                 
