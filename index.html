@@ -691,7 +691,6 @@
                         }
                     });
                 } else if (data.type === 'text') {
-                    // Sadece aynı odadakilerin mesajını gör
                     if(peers[id] && peers[id].roomId === localVoiceRoomId) {
                         renderMessage(data.sender, data.content, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat();
                     }
@@ -1154,13 +1153,12 @@
         }
         function closeShareModal() { document.getElementById('share-modal').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
 
-        // YANKI ÇÖZÜMÜ: echoCancellation: true eklendi.
         async function startAudioOnlyShare() {
             closeShareModal();
             try {
                 const stream = await navigator.mediaDevices.getDisplayMedia({ 
                     video: true, 
-                    audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: true } 
+                    audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: false } 
                 });
                 
                 if (stream.getAudioTracks().length === 0) {
@@ -1179,7 +1177,6 @@
             } catch (err) { console.error(err); }
         }
 
-        // YANKI ÇÖZÜMÜ: echoCancellation: true eklendi.
         async function startScreenShare(quality) {
             closeShareModal();
             const res = { 
@@ -1190,7 +1187,7 @@
             try {
                 screenStream = await navigator.mediaDevices.getDisplayMedia({ 
                     video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: res.fps, max: res.fps } }, 
-                    audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: true } 
+                    audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: false } 
                 });
                 
                 const isAudioOnly = screenStream.getVideoTracks().length === 0;
@@ -1223,7 +1220,6 @@
                 const audio = document.createElement('audio'); audio.id = 'audio-' + id; audio.srcObject = stream; audio.autoplay = true; document.body.appendChild(audio);
             }
             
-            // Susturma rozetini dairenin içine ekledik.
             div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"><div id="badge-${id}" class="mute-badge" style="display:none;"></div></div><div class="name-tag">${name}</div>`; 
             area.appendChild(div);
             
@@ -1233,7 +1229,6 @@
             applyRoomIsolations();
         }
 
-        // FPS OPTİMİZASYONU: Hesaplama aralığı 100ms'den 300ms'ye çıkarıldı ve odada olmayanlar hesaplamadan dışlandı.
         function monitorSpeech(stream, elementId) {
             if (speechMonitors[elementId]) clearInterval(speechMonitors[elementId]); 
 
@@ -1254,7 +1249,6 @@
                         return;
                     }
 
-                    // ERKEN ÇIKIŞ: Kullanıcı aynı odada değilse (ekranda gizliyse) yeşil halka hesaplaması yapma, FPS koru.
                     if(el.style.display === 'none') {
                         if (isCurrentlySpeaking) { isCurrentlySpeaking = false; el.classList.remove('speaking'); }
                         return; 
