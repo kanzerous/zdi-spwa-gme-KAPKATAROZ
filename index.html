@@ -38,7 +38,7 @@
             --call-bg: #1a0b0b;
         }
 
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; display: flex; transition: background-color 0.3s, color 0.3s; }
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100vh; background-color: var(--bg-main); color: var(--text-main); overflow: hidden; display: flex; transition: background-color 0.3s, color 0.3s; user-select: none; }
         
         .theme-switcher { position: absolute; top: 22px; right: 25px; display: flex; gap: 10px; z-index: 100; }
         .theme-dot { width: 18px; height: 18px; border-radius: 50%; cursor: pointer; border: 2px solid rgba(255,255,255,0.2); transition: 0.2s; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
@@ -60,9 +60,9 @@
         .btn-green { background-color: #3ba55d; } .btn-green:hover { background-color: #2d7d46; }
         .btn-dark { background-color: var(--input-bg); color: var(--text-main); } .btn-dark:hover { filter: brightness(1.2); }
         
-        /* Estetik ve küçük buton düzeltmeleri */
         .btn-icon { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
         .btn-icon:hover { color: var(--text-main); transform: scale(1.15); }
+        .btn-icon svg { width: 14px; height: 14px; }
 
         #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: var(--call-bg); position: relative; transition: background-color 0.3s; }
         #call-header { position: relative; padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); }
@@ -81,7 +81,6 @@
 
         #call-body { flex-grow: 1; display: flex; flex-direction: row; overflow: hidden; position: relative; }
         
-        /* SES ODALARI SOL MENÜSÜ & DRAG DROP */
         #room-sidebar { width: 250px; min-width: 200px; max-width: 400px; background-color: var(--bg-sec); display: flex; flex-direction: column; border-right: 1px solid var(--border); z-index: 15; }
         #room-header { padding: 15px; background-color: var(--bg-ter); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #rooms-list { flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
@@ -96,7 +95,7 @@
         .room-user-item { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px 5px 12px; border-radius: 4px; font-size: 13px; color: var(--text-main); transition: 0.2s; cursor: grab; }
         .room-user-item:active { cursor: grabbing; }
         .room-user-item:hover { background-color: rgba(255,255,255,0.08); }
-        .room-user-left { display: flex; align-items: center; gap: 8px; }
+        .room-user-left { display: flex; align-items: center; gap: 8px; pointer-events: none; }
         .room-user-item img { width: 22px; height: 22px; border-radius: 50%; background-color: #fff; padding: 2px; object-fit: contain; }
 
         #room-resizer { width: 6px; background-color: var(--border); cursor: ew-resize; display: block; z-index: 20; transition: 0.2s; }
@@ -123,12 +122,14 @@
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
         
         .circle { width: 120px; height: 120px; border-radius: 50%; background-color: var(--bg-sec); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: bold; color: var(--text-main); box-shadow: 0 8px 20px rgba(0,0,0,0.5); position: relative; z-index: 2; border: 4px solid transparent; }
-        
-        /* KRİTİK DÜZELTME: Avatarların patlamasını ve ekrandan taşmasını önleyen kesin sınır ayarı */
         .circle img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; background-color: #e3e5e8; padding: 8px; box-sizing: border-box; }
-        
         .name-tag { background-color: rgba(0, 0, 0, 0.85); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; z-index: 3; }
         
+        /* Susturma İşaretleri */
+        .mute-badge { position: absolute; bottom: 0; right: 0; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5; border: 2px solid var(--bg-main); box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .self-muted-badge { background-color: #f1c40f; color: #000; } /* Sarı/Turuncu: Kendi kendini susturdu (herkes görür) */
+        .remote-muted-badge { background-color: #e53935; color: #fff; } /* Kırmızı: Senin tarafından susturuldu (sadece sen görürsün) */
+
         .circle::before, .circle::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; border: 2px solid #3ba55d; opacity: 0; z-index: -1; }
         .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
         .speaking .circle::after { animation: ripple 1.5s infinite ease-out; animation-delay: 0.75s; }
@@ -138,6 +139,7 @@
         .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; }
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.85); padding: 5px 15px 5px 5px; border-radius: 30px; }
         .minimized-participants .name-tag { font-size: 12px; padding: 0; background: none; }
+        .minimized-participants .mute-badge { width: 20px; height: 20px; font-size: 10px; }
 
         #resizer { width: 6px; background-color: var(--border); cursor: ew-resize; display: none; z-index: 20; }
         #resizer:hover { background-color: var(--accent); }
@@ -150,10 +152,17 @@
         .msg.local { background-color: var(--msg-local); margin-left: 20px; }
         .msg.remote { margin-right: 20px; }
         
-        #chat-input-area { padding: 15px; background-color: var(--bg-ter); display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); }
-        #chat-input-area input[type="text"] { width: 100%; margin: 0; padding: 12px 15px; background-color: var(--input-bg); border-radius: 24px; font-size: 13px; border: none; color: var(--text-main); }
-        .chat-btn { background: none; border: none; cursor: pointer; padding: 6px; color: var(--text-muted); }
+        #chat-input-area { padding: 15px; background-color: var(--bg-ter); display: flex; align-items: center; gap: 10px; border-top: 1px solid var(--border); position: relative; }
+        #chat-input-area input[type="text"] { width: 100%; margin: 0; padding: 10px 40px 10px 15px; background-color: var(--input-bg); border-radius: 20px; font-size: 13px; border: none; color: var(--text-main); }
+        
+        .chat-btn { background: none; border: none; cursor: pointer; padding: 6px; color: var(--text-muted); display: inline-flex; align-items: center; justify-content: center; }
         .chat-btn:hover { color: var(--text-main); transform: scale(1.1); }
+        .chat-btn svg { width: 18px; height: 18px; }
+
+        #emoji-btn { position: absolute; right: 55px; top: 50%; transform: translateY(-50%); }
+        #emoji-picker { display: none; position: absolute; bottom: 65px; right: 15px; background: var(--bg-ter); border: 1px solid var(--border); border-radius: 8px; padding: 10px; grid-template-columns: repeat(4, 1fr); gap: 8px; z-index: 100; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .emoji-item { font-size: 20px; cursor: pointer; text-align: center; padding: 4px; border-radius: 4px; }
+        .emoji-item:hover { background: var(--input-bg); }
 
         #controls-wrapper { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 10; }
         #controls-bar { background-color: rgba(47, 49, 54, 0.95); padding: 10px 20px; border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); border: 1px solid var(--border); pointer-events: auto; }
@@ -161,7 +170,7 @@
         .ctrl-btn:hover { background-color: var(--input-bg); transform: translateY(-3px); }
         .ctrl-btn.active-red { background-color: #ed4245 !important; color: white !important; }
         .ctrl-btn.active-green { background-color: #3ba55d !important; color: white !important; }
-        #leave-btn { width: auto; padding: 0 20px; border-radius: 25px; background-color: #ed4245; color: white; }
+        #leave-btn { width: auto; padding: 0 20px; border-radius: 25px; background-color: #ed4245; color: white; display: flex; align-items: center; gap: 8px; font-weight: bold; }
 
         #context-menu { display: none; position: absolute; background-color: var(--bg-ter); border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.5); padding: 15px; z-index: 1000; width: 200px; color: var(--text-main); }
         #context-menu h4 { margin: 0 0 12px 0; font-size: 14px; color: var(--accent); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
@@ -262,7 +271,7 @@
                 <div id="room-header">
                     <span>🎙️ Ses Odaları</span>
                     <button id="add-room-btn" class="btn-icon" onclick="hostAddRoom()" style="display:none;" title="Yeni Oda Ekle">
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
                     </button>
                 </div>
                 <div id="rooms-list"></div>
@@ -277,19 +286,20 @@
                 <div id="controls-wrapper">
                     <div id="controls-bar">
                         <button id="mute-btn" onclick="toggleMute()" class="ctrl-btn" title="Sustur">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
                         </button>
                         <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn" title="Kamera Aç/Kapat">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </button>
                         <button id="share-btn" onclick="openShareModal()" class="ctrl-btn" title="Ekran Paylaş">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                         </button>
                         <button id="chat-toggle-btn" onclick="toggleChat()" class="ctrl-btn" title="Sohbeti Aç">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </button>
                         <button id="leave-btn" onclick="leaveRoom()" class="ctrl-btn active-red" title="Odadan Çık">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"></path></svg>
+                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M10.68 13.31a16 16 0 0 0 3.41 2.6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7 2 2 0 0 1 1.72 2v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.42 19.42 0 0 1-3.33-2.67m-2.67-3.34a19.79 19.79 0 0 1-3.07-8.63A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91"></path></svg>
+                            <span>Ayrıl</span>
                         </button>
                     </div>
                 </div>
@@ -305,6 +315,17 @@
                 <div id="chat-messages"></div>
                 <div id="chat-input-area">
                     <input type="text" id="chat-input" placeholder="Mesaj yaz..." onkeypress="if(event.key === 'Enter') sendMessage()">
+                    <button class="chat-btn" id="emoji-btn" onclick="toggleEmojiPicker()" title="Emoji Seç">😊</button>
+                    <div id="emoji-picker">
+                        <span class="emoji-item" onclick="insertEmoji('😀')">😀</span>
+                        <span class="emoji-item" onclick="insertEmoji('😂')">😂</span>
+                        <span class="emoji-item" onclick="insertEmoji('🔥')">🔥</span>
+                        <span class="emoji-item" onclick="insertEmoji('👍')">👍</span>
+                        <span class="emoji-item" onclick="insertEmoji('🎉')">🎉</span>
+                        <span class="emoji-item" onclick="insertEmoji('❤️')">❤️</span>
+                        <span class="emoji-item" onclick="insertEmoji('😎')">😎</span>
+                        <span class="emoji-item" onclick="insertEmoji('🚀')">🚀</span>
+                    </div>
                     <button class="chat-btn" onclick="sendMessage()" style="color: var(--accent);" title="Gönder">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
                     </button>
@@ -327,8 +348,10 @@
     <div id="overlay" class="overlay" onclick="closeShareModal()"></div>
     <div id="share-modal">
         <h3>Ekran Kalitesi Seçin</h3>
-        <button class="btn-dark" onclick="startScreenShare(720)">720p (60 FPS)</button>
-        <button class="btn-dark" onclick="startScreenShare(1080)">1080p (60 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(720, 60)">720p (60 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(720, 144)">720p (144 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(1080, 60)">1080p (60 FPS)</button>
+        <button class="btn-dark" onclick="startScreenShare(1080, 144)">1080p (144 FPS)</button>
         <hr style="border-color: var(--border); margin: 15px 0;">
         <button class="btn-green" onclick="startAudioOnlyShare()" style="background-color: #3ba55d;">🎧 Sadece Ses Paylaş (Sekme)</button>
         <button style="background-color: #ed4245; margin-top: 10px;" onclick="closeShareModal()">İptal</button>
@@ -347,7 +370,7 @@
         let isHost = false;
         let speechMonitors = {}; 
 
-        let voiceRooms = { 'main': 'Ana Lobi' };
+        let voiceRooms = { 'main': { name: 'Ana Lobi', locked: false } };
         let localVoiceRoomId = 'main';
 
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
@@ -383,6 +406,25 @@
             container.querySelectorAll('.avatar-option').forEach(img => img.classList.remove('selected'));
             container.querySelector(`#${containerId === 'create-avatars' ? 'create' : 'join'}-av-${index}`).classList.add('selected');
         }
+
+        function toggleEmojiPicker() {
+            const picker = document.getElementById('emoji-picker');
+            picker.style.display = picker.style.display === 'grid' ? 'none' : 'grid';
+        }
+
+        function insertEmoji(emoji) {
+            const input = document.getElementById('chat-input');
+            input.value += emoji;
+            document.getElementById('emoji-picker').style.display = 'none';
+            input.focus();
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#emoji-picker') && !e.target.closest('#emoji-btn')) {
+                const picker = document.getElementById('emoji-picker');
+                if(picker) picker.style.display = 'none';
+            }
+        });
 
         async function initAudioSystem() {
             if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -448,10 +490,10 @@
             if(!currentContextMenuPeerId || !peers[currentContextMenuPeerId]) return;
             peers[currentContextMenuPeerId].manualMute = !peers[currentContextMenuPeerId].manualMute;
             applyRoomAudioRules();
+            updateParticipantBadges(currentContextMenuPeerId);
             document.getElementById('context-menu').style.display = 'none';
         }
 
-        // Resizers
         const resizer = document.getElementById('resizer'); const chatSidebar = document.getElementById('chat-sidebar'); let isResizing = false;
         resizer.addEventListener('mousedown', () => { isResizing = true; resizer.classList.add('resizing'); });
         
@@ -474,12 +516,12 @@
         
         function broadcastData(data) { Object.values(peers).forEach(p => { if(p.conn && p.conn.open) p.conn.send(data); }); }
 
-        /* SES ODALARI VE DRAG & DROP YÖNETİMİ */
         function renderVoiceRooms() {
             document.getElementById('add-room-btn').style.display = isHost ? 'inline-flex' : 'none';
             const list = document.getElementById('rooms-list'); list.innerHTML = '';
             
             for (let rId in voiceRooms) {
+                const roomData = voiceRooms[rId];
                 const roomDiv = document.createElement('div');
                 roomDiv.className = `voice-room ${localVoiceRoomId === rId ? 'active' : ''}`;
                 roomDiv.setAttribute('data-room-id', rId);
@@ -502,12 +544,14 @@
                 const titleDiv = document.createElement('div');
                 titleDiv.className = 'voice-room-title';
                 
-                let titleHTML = `<span>🔊 ${voiceRooms[rId]}</span>`;
+                let lockIcon = roomData.locked ? '🔒 ' : '';
+                let titleHTML = `<span>🔊 ${lockIcon}${roomData.name}</span>`;
                 if (isHost) {
                     let controlsHTML = `<div style="display:flex; gap:4px; align-items:center;">`;
+                    controlsHTML += `<button class="btn-icon" onclick="event.stopPropagation(); hostToggleLock('${rId}')" title="${roomData.locked ? 'Kilidi Kaldır' : 'Odayı Kilitle'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="${roomData.locked ? 'M19 11H5a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7a2 2 0 0 0-2-2zm-5 0V7a4 4 0 0 0-8 0v4' : 'M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.77 7.77 5.5 5.5 0 0 1 7.77-7.77zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4'}"></path></svg></button>`;
                     if (rId !== 'main') {
-                        controlsHTML += `<button class="btn-icon" onclick="event.stopPropagation(); hostEditRoom('${rId}')" title="Düzenle"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>`;
-                        controlsHTML += `<button class="btn-icon" onclick="event.stopPropagation(); hostDeleteRoom('${rId}')" title="Sil"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>`;
+                        controlsHTML += `<button class="btn-icon" onclick="event.stopPropagation(); hostEditRoom('${rId}')" title="Düzenle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg></button>`;
+                        controlsHTML += `<button class="btn-icon" onclick="event.stopPropagation(); hostDeleteRoom('${rId}')" title="Sil"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></button>`;
                     }
                     controlsHTML += `</div>`;
                     titleHTML += controlsHTML;
@@ -547,7 +591,7 @@
             const roomName = prompt("Yeni ses odası için bir isim girin:", "Özel Oda");
             if (roomName && roomName.trim() !== "") {
                 const newId = 'room-' + Date.now();
-                voiceRooms[newId] = roomName.trim();
+                voiceRooms[newId] = { name: roomName.trim(), locked: false };
                 broadcastData({ type: 'sync-rooms', rooms: voiceRooms });
                 renderVoiceRooms();
             }
@@ -555,12 +599,19 @@
 
         function hostEditRoom(rId) {
             if (!isHost) return;
-            const newName = prompt("Oda ismini düzenle:", voiceRooms[rId]);
+            const newName = prompt("Oda ismini düzenle:", voiceRooms[rId].name);
             if (newName && newName.trim() !== "") {
-                voiceRooms[rId] = newName.trim();
+                voiceRooms[rId].name = newName.trim();
                 broadcastData({ type: 'sync-rooms', rooms: voiceRooms });
                 renderVoiceRooms();
             }
+        }
+
+        function hostToggleLock(rId) {
+            if (!isHost) return;
+            voiceRooms[rId].locked = !voiceRooms[rId].locked;
+            broadcastData({ type: 'sync-rooms', rooms: voiceRooms });
+            renderVoiceRooms();
         }
 
         function hostDeleteRoom(rId) {
@@ -581,17 +632,20 @@
 
         function userJoinRoom(rId) {
             if (localVoiceRoomId === rId) return;
+            if (voiceRooms[rId] && voiceRooms[rId].locked && !isHost) {
+                alert("Bu oda kilitli! Sadece lobi kurucusu veya kurucunun çektiği kişiler girebilir.");
+                return;
+            }
             localVoiceRoomId = rId;
             broadcastData({ type: 'room-change', roomId: rId, sender: peer.id });
             renderVoiceRooms();
             applyRoomAudioRules();
         }
 
-        // TAM İZOLASYON KURALI (Sesler, Kameralar ve Ekran Paylaşımları dahil)
         function applyRoomAudioRules() {
             Object.keys(peers).forEach(pId => {
                 const inSameRoom = peers[pId].roomId === localVoiceRoomId;
-                const shouldBeMuted = !inSameRoom || peers[pId].manualMute;
+                const shouldBeMuted = !inSameRoom || peers[pId].manualMute || peers[pId].isMuted;
                 
                 const aud = document.getElementById('audio-' + pId);
                 if (aud) aud.muted = shouldBeMuted;
@@ -619,7 +673,7 @@
 
             peer.on('connection', conn => {
                 const id = conn.peer;
-                if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', manualMute: false };
+                if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', manualMute: false, isMuted: false };
                 setupDataConn(conn, id);
             });
 
@@ -630,7 +684,7 @@
                 } else if (call.metadata && (call.metadata.type === 'screen' || call.metadata.type === 'camera')) {
                     call.answer(); call.on('stream', stream => { if(!document.getElementById('vid-wrap-' + stream.id)) addMediaElement(stream, id, false, call.metadata.type); });
                 } else {
-                    if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', manualMute: false };
+                    if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', manualMute: false, isMuted: false };
                     peers[id].call = call; call.answer(myStream); setupCall(call, id);
                 }
             });
@@ -638,7 +692,7 @@
 
         function connectToPeer(targetId, targetName = "Katılımcı", targetAvatar = AVATARS[0]) {
             if (peers[targetId] || targetId === peer.id) return;
-            peers[targetId] = { username: targetName, avatar: targetAvatar, roomId: 'main', manualMute: false };
+            peers[targetId] = { username: targetName, avatar: targetAvatar, roomId: 'main', manualMute: false, isMuted: false };
             
             const conn = peer.connect(targetId); setupDataConn(conn, targetId);
             const call = peer.call(targetId, myStream, { metadata: { type: 'audio' } }); setupCall(call, targetId);
@@ -653,9 +707,9 @@
         function setupDataConn(conn, id) {
             peers[id].conn = conn;
             conn.on('open', () => {
-                conn.send({ type: 'handshake', username: localUsername, avatar: localAvatar, roomId: localVoiceRoomId });
+                conn.send({ type: 'handshake', username: localUsername, avatar: localAvatar, roomId: localVoiceRoomId, isMuted: isMuted });
                 if (isHost) {
-                    const existing = Object.keys(peers).filter(k => k !== id).map(k => ({ id: k, username: peers[k].username, avatar: peers[k].avatar, roomId: peers[k].roomId }));
+                    const existing = Object.keys(peers).filter(k => k !== id).map(k => ({ id: k, username: peers[k].username, avatar: peers[k].avatar, roomId: peers[k].roomId, isMuted: peers[k].isMuted }));
                     if (existing.length > 0) conn.send({ type: 'peer-list', list: existing });
                     conn.send({ type: 'sync-rooms', rooms: voiceRooms });
                 }
@@ -663,15 +717,15 @@
 
             conn.on('data', data => {
                 if (data.type === 'handshake') {
-                    peers[id].username = data.username; if(data.avatar) peers[id].avatar = data.avatar; peers[id].roomId = data.roomId || 'main';
-                    updateParticipantUI(id, data.username, peers[id].avatar); renderVoiceRooms(); applyRoomAudioRules();
+                    peers[id].username = data.username; if(data.avatar) peers[id].avatar = data.avatar; peers[id].roomId = data.roomId || 'main'; peers[id].isMuted = !!data.isMuted;
+                    updateParticipantUI(id, data.username, peers[id].avatar); renderVoiceRooms(); applyRoomAudioRules(); updateParticipantBadges(id);
                     
                     if (isScreenSharing && screenStream) { const isAudioOnly = screenStream.getVideoTracks().length === 0; peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); }
                     if (isCameraOn && cameraStream) { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); }
                 } else if (data.type === 'peer-list') {
                     data.list.forEach(p => {
                         connectToPeer(p.id, p.username, p.avatar);
-                        if(peers[p.id]) peers[p.id].roomId = p.roomId || 'main';
+                        if(peers[p.id]) { peers[p.id].roomId = p.roomId || 'main'; peers[p.id].isMuted = !!p.isMuted; updateParticipantBadges(p.id); }
                     });
                     renderVoiceRooms();
                 } else if (data.type === 'text') {
@@ -685,6 +739,12 @@
                     localVoiceRoomId = data.roomId;
                     renderVoiceRooms();
                     applyRoomAudioRules();
+                } else if (data.type === 'mute-status') {
+                    if (peers[data.sender]) {
+                        peers[data.sender].isMuted = data.isMuted;
+                        applyRoomAudioRules();
+                        updateParticipantBadges(data.sender);
+                    }
                 }
             });
             conn.on('close', () => handlePeerDisconnect(id));
@@ -740,7 +800,7 @@
 
         function updateParticipantUI(id, name, avatarUrl) {
             const el = document.getElementById('user-' + id);
-            if (el) { el.querySelector('.name-tag').innerText = name; if (avatarUrl) el.querySelector('.circle').innerHTML = `<img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';">`; }
+            if (el) { el.querySelector('.name-tag').innerText = name; if (avatarUrl) el.querySelector('.circle').innerHTML = `<img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"><div id="badge-${id}" class="mute-badge" style="display:none;"></div>`; }
             updateRoomTitle();
         }
         function updateRoomTitle() { document.getElementById('current-room-title').innerText = `Lobi (${Object.keys(peers).length + 1} Kişi)`; }
@@ -799,13 +859,45 @@
             Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; 
             document.getElementById('call-screen').style.display = 'none'; document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan";
-            currentRoomPassword = ""; voiceRooms = { 'main': 'Ana Lobi' }; localVoiceRoomId = 'main'; isLeavingLobby = false;
+            currentRoomPassword = ""; voiceRooms = { 'main': { name: 'Ana Lobi', locked: false } }; localVoiceRoomId = 'main'; isLeavingLobby = false;
         }
 
         function toggleMute() {
             isMuted = !isMuted; myStream.getAudioTracks()[0].enabled = !isMuted; const btn = document.getElementById('mute-btn');
-            if (isMuted) { btn.classList.add('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; } 
-            else { btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; }
+            if (isMuted) { btn.classList.add('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; } 
+            else { btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; }
+            
+            broadcastData({ type: 'mute-status', sender: peer.id, isMuted: isMuted });
+            updateParticipantBadges('local-user');
+        }
+
+        function updateParticipantBadges(id) {
+            const badge = document.getElementById('badge-' + id);
+            if (!badge) return;
+
+            let selfMuted = false;
+            let remoteMuted = false;
+
+            if (id === 'local-user') {
+                selfMuted = isMuted;
+            } else if (peers[id]) {
+                selfMuted = peers[id].isMuted;
+                remoteMuted = peers[id].manualMute;
+            }
+
+            if (selfMuted) {
+                badge.style.display = 'flex';
+                badge.className = 'mute-badge self-muted-badge';
+                badge.innerHTML = '🔇';
+                badge.title = "Kullanıcı kendini susturdu";
+            } else if (remoteMuted) {
+                badge.style.display = 'flex';
+                badge.className = 'mute-badge remote-muted-badge';
+                badge.innerHTML = '🔇';
+                badge.title = "Bu kullanıcıyı kendinde susturdun";
+            } else {
+                badge.style.display = 'none';
+            }
         }
 
         function addMediaElement(stream, peerId, isLocal = false, type = 'screen') {
@@ -887,12 +979,12 @@
             } catch (err) { console.error(err); }
         }
 
-        async function startScreenShare(quality) {
+        async function startScreenShare(resolution, fps) {
             closeShareModal();
-            const res = { 720: {w: 1280, h: 720, fps: 60}, 1080: {w: 1920, h: 1080, fps: 60} }[quality];
+            const res = { 720: {w: 1280, h: 720}, 1080: {w: 1920, h: 1080} }[resolution];
             try {
                 const stream = await navigator.mediaDevices.getDisplayMedia({ 
-                    video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: res.fps, max: res.fps } }, 
+                    video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: fps, max: fps } }, 
                     audio: { suppressLocalAudioPlayback: true, echoCancellation: true, noiseSuppression: false, autoGainControl: false } 
                 });
                 screenStream = stream;
@@ -916,8 +1008,8 @@
                 div.setAttribute('oncontextmenu', `handleRightClick(event, '${id}', '${name}')`);
                 const audio = document.createElement('audio'); audio.id = 'audio-' + id; audio.srcObject = stream; audio.autoplay = true; document.body.appendChild(audio);
             }
-            div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"></div><div class="name-tag">${name}</div>`; area.appendChild(div);
-            monitorSpeech(stream, 'user-' + id); updateRoomTitle(); applyRoomAudioRules();
+            div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"><div id="badge-${id}" class="mute-badge" style="display:none;"></div></div><div class="name-tag">${name}</div>`; area.appendChild(div);
+            monitorSpeech(stream, 'user-' + id); updateRoomTitle(); applyRoomAudioRules(); updateParticipantBadges(id);
         }
 
         function monitorSpeech(stream, elementId) {
