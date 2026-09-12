@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- FANDOM VE WIKIPEDIA GÖRSELLERİNİN BOZULMAMASI İÇİN GİZLİLİK ZIRHI -->
     <meta name="referrer" content="no-referrer">
     
     <title>KAPKATAROZ | Kesintisiz İletişim Sanatı</title>
@@ -99,7 +97,7 @@
         
         .voice-room { display: flex; flex-direction: column; gap: 5px; background: rgba(0,0,0,0.1); border-radius: 8px; padding: 5px; border: 2px dashed transparent; }
         .voice-room.drag-over { border-color: var(--accent); background: rgba(88, 101, 242, 0.15); }
-        .room-title-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background-color: var(--bg-ter); border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 13px; font-weight: bold; }
+        .room-title-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 10px; background-color: var(--bg-ter); border-radius: 6px; cursor: pointer; transition: 0.2s; font-size: 13px; font-weight: bold; user-select: none; }
         .room-title-bar:hover { filter: brightness(1.2); }
         .active-room-bar { border-left: 4px solid var(--accent); color: var(--accent); }
         
@@ -131,9 +129,12 @@
 
         .stream-label { position: absolute; bottom: 15px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.7); color: white; padding: 6px 16px; border-radius: 20px; font-size: 13px; font-weight: 600; backdrop-filter: blur(5px); pointer-events: none; z-index: 10; white-space: nowrap; font-family: 'Poppins', sans-serif; border: 1px solid rgba(255,255,255,0.1); }
         
-        .stream-volume-container { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); padding: 6px 12px; border-radius: 20px; display: flex; align-items: center; gap: 10px; z-index: 10; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); }
-        .stream-volume-container svg { color: white; flex-shrink: 0; }
-        .stream-volume { width: 75px !important; margin: 0; }
+        /* YENİ DİNAMİK SES BARI */
+        .stream-volume-container { position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.6); padding: 6px; border-radius: 20px; display: flex; align-items: center; gap: 0; z-index: 10; backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.2); transition: all 0.3s ease; }
+        .stream-volume-container svg { color: white; flex-shrink: 0; cursor: pointer; padding: 0 6px; transition: color 0.2s; }
+        .stream-volume-container svg:hover { color: var(--accent); }
+        .stream-volume { width: 0px !important; opacity: 0; pointer-events: none; margin: 0; transition: all 0.3s ease; }
+        .stream-volume-container:hover .stream-volume { width: 75px !important; opacity: 1; pointer-events: auto; margin-left: 10px; margin-right: 6px; }
 
         #participants-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; flex-wrap: wrap; gap: 50px; padding: 40px; transition: all 0.3s ease; }
         .participant { display: flex; flex-direction: column; align-items: center; gap: 15px; cursor: context-menu; position: relative; }
@@ -142,10 +143,9 @@
         .circle img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; border-radius: 50%; background-color: #e3e5e8; padding: 8px; box-sizing: border-box; }
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
         
-        /* MUTE (SUSTURMA) ROZETLERİ */
         .mute-badge { position: absolute; bottom: 0; right: 0; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5; border: 3px solid var(--bg-main); box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 16px; }
-        .self-muted-badge { background-color: #f1c40f; color: #000; } /* Sarı/Turuncu: Kendini susturdu (herkes görür) */
-        .remote-muted-badge { background-color: #e53935; color: #fff; } /* Kırmızı: Senin tarafından susturuldu (sadece sen görürsün) */
+        .self-muted-badge { background-color: #f1c40f; color: #000; } 
+        .remote-muted-badge { background-color: #e53935; color: #fff; } 
 
         .circle::before, .circle::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; border: 2px solid #3ba55d; box-shadow: 0 0 15px #3ba55d; opacity: 0; z-index: -1; will-change: transform, opacity; }
         .speaking .circle::before { animation: ripple 1.5s infinite ease-out; }
@@ -153,7 +153,16 @@
 
         @keyframes ripple { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(1.6); opacity: 0; } }
 
-        .minimized-participants { flex-grow: 0 !important; padding: 10px 20px !important; background-color: transparent; gap: 20px !important; position: absolute; bottom: 90px; left: 10px; z-index: 5; flex-wrap: nowrap !important; overflow-x: auto; max-width: 90%; align-items: flex-end; }
+        /* SCROLLBAR DÜZELTMESİ (Görseldeki hata fixi) */
+        .minimized-participants { 
+            flex-grow: 0 !important; padding: 10px 20px !important; background-color: transparent; gap: 20px !important; 
+            position: absolute; bottom: 90px; left: 10px; z-index: 5; flex-wrap: nowrap !important; max-width: 90%; align-items: flex-end;
+            overflow-x: auto; 
+            overflow-y: hidden !important; /* Dikey scroll engellendi */
+            scrollbar-width: none; /* Firefox için scrollbar gizleme */
+        }
+        .minimized-participants::-webkit-scrollbar { display: none; /* Chrome/Safari için scrollbar gizleme */ }
+        
         .minimized-participants .circle { width: 50px; height: 50px; font-size: 18px; }
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; }
         .minimized-participants .name-tag { font-size: 12px; padding: 0; background: none; }
@@ -406,7 +415,6 @@
 
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
         
-        // --- MEDIAWIKI SPECIAL:FILEPATH KULLANIMI (TAM KADRO) ---
         const AVATARS = [
             "https://en.wikipedia.org/wiki/Special:FilePath/Lucky_Luke.png", 
             "https://en.wikipedia.org/wiki/Special:FilePath/Fred_Flintstone.png", 
@@ -444,48 +452,32 @@
         function playJoinSound() {
             if (!audioContext) return; 
             try {
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(600, audioContext.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
-                gain.gain.setValueAtTime(0, audioContext.currentTime);
-                gain.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                osc.start(audioContext.currentTime);
-                osc.stop(audioContext.currentTime + 0.2);
+                const osc = audioContext.createOscillator(); const gain = audioContext.createGain();
+                osc.connect(gain); gain.connect(audioContext.destination); osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioContext.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, audioContext.currentTime + 0.1);
+                gain.gain.setValueAtTime(0, audioContext.currentTime); gain.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc.start(audioContext.currentTime); osc.stop(audioContext.currentTime + 0.2);
             } catch(e) {}
         }
 
         function playLeaveSound() {
             if (!audioContext) return; 
             try {
-                const osc = audioContext.createOscillator();
-                const gain = audioContext.createGain();
-                osc.connect(gain);
-                gain.connect(audioContext.destination);
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, audioContext.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.15);
-                gain.gain.setValueAtTime(0, audioContext.currentTime);
-                gain.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                osc.start(audioContext.currentTime);
-                osc.stop(audioContext.currentTime + 0.2);
+                const osc = audioContext.createOscillator(); const gain = audioContext.createGain();
+                osc.connect(gain); gain.connect(audioContext.destination); osc.type = 'triangle';
+                osc.frequency.setValueAtTime(400, audioContext.currentTime); osc.frequency.exponentialRampToValueAtTime(150, audioContext.currentTime + 0.15);
+                gain.gain.setValueAtTime(0, audioContext.currentTime); gain.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05); gain.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                osc.start(audioContext.currentTime); osc.stop(audioContext.currentTime + 0.2);
             } catch(e) {}
         }
 
         window.addEventListener('DOMContentLoaded', () => { 
-            setTheme(localStorage.getItem('chat_theme') || 'theme-dark'); 
-            initAvatars();
+            setTheme(localStorage.getItem('chat_theme') || 'theme-dark'); initAvatars();
         });
 
         setInterval(() => {
             const now = new Date();
-            const timeStr = now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute:'2-digit', second:'2-digit' });
-            document.getElementById('floating-clock').innerText = '🕒 ' + timeStr;
+            document.getElementById('floating-clock').innerText = '🕒 ' + now.toLocaleTimeString('tr-TR', { hour: '2-digit', minute:'2-digit', second:'2-digit' });
         }, 1000);
 
         function startTimer() {
@@ -493,9 +485,7 @@
             document.getElementById('call-timer').style.display = 'block'; document.getElementById('floating-clock').style.display = 'block';
             timerInterval = setInterval(() => {
                 const diff = Math.floor((Date.now() - callStartTime) / 1000);
-                const m = String(Math.floor(diff / 60)).padStart(2, '0');
-                const s = String(diff % 60).padStart(2, '0');
-                document.getElementById('call-timer').innerText = `⏳ ${m}:${s}`;
+                document.getElementById('call-timer').innerText = `⏳ ${String(Math.floor(diff / 60)).padStart(2, '0')}:${String(diff % 60).padStart(2, '0')}`;
             }, 1000);
         }
 
@@ -517,7 +507,6 @@
             document.getElementById('cm-volume').value = audioEl.volume;
             const muteBtn = document.getElementById('context-mute-btn');
             
-            // Eğer manuel olarak susturulduysa
             if (peers[id] && peers[id].manualMute) { 
                 muteBtn.classList.add('muted'); muteBtn.innerHTML = "🔊 Sesi Geri Aç"; 
             } else { 
@@ -536,119 +525,68 @@
         
         function toggleRemoteMute() {
             if(!currentContextMenuPeerId || !peers[currentContextMenuPeerId]) return; 
-            
             peers[currentContextMenuPeerId].manualMute = !peers[currentContextMenuPeerId].manualMute;
-            const muteBtn = document.getElementById('context-mute-btn'); 
-            
-            if (peers[currentContextMenuPeerId].manualMute) { 
-                muteBtn.classList.add('muted'); muteBtn.innerHTML = "🔊 Sesi Geri Aç"; 
-            } else { 
-                muteBtn.classList.remove('muted'); muteBtn.innerHTML = "🔇 Kendimde Sustur"; 
-            }
-            
-            applyRoomIsolations();
-            updateMuteBadgeUI(currentContextMenuPeerId);
-            document.getElementById('context-menu').style.display = 'none';
+            applyRoomIsolations(); updateMuteBadgeUI(currentContextMenuPeerId); document.getElementById('context-menu').style.display = 'none';
         }
 
-        // --- SOL MENÜ VE ODA YÖNETİMİ ---
-        const roomResizer = document.getElementById('room-resizer');
-        const roomSidebar = document.getElementById('room-sidebar');
-        let isResizingRoom = false;
-        
+        const roomResizer = document.getElementById('room-resizer'); const roomSidebar = document.getElementById('room-sidebar'); let isResizingRoom = false;
         roomResizer.addEventListener('mousedown', () => { isResizingRoom = true; document.body.style.cursor = 'ew-resize'; roomResizer.classList.add('resizing'); });
         
         const resizer = document.getElementById('resizer'); const chatSidebar = document.getElementById('chat-sidebar'); let isResizing = false;
         resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'ew-resize'; resizer.classList.add('resizing'); });
         
         document.addEventListener('mousemove', (e) => {
-            if (isResizing) { 
-                const newWidth = document.body.clientWidth - e.clientX;
-                if (newWidth > 250 && newWidth < 600) chatSidebar.style.width = newWidth + 'px';
-            }
-            if (isResizingRoom) {
-                if (e.clientX > 150 && e.clientX < 400) roomSidebar.style.width = e.clientX + 'px';
-            }
+            if (isResizing) { const newWidth = document.body.clientWidth - e.clientX; if (newWidth > 250 && newWidth < 600) chatSidebar.style.width = newWidth + 'px'; }
+            if (isResizingRoom) { if (e.clientX > 150 && e.clientX < 400) roomSidebar.style.width = e.clientX + 'px'; }
         });
         document.addEventListener('mouseup', () => { 
             if (isResizing) { isResizing = false; resizer.classList.remove('resizing'); } 
-            if (isResizingRoom) { isResizingRoom = false; roomResizer.classList.remove('resizing'); }
-            document.body.style.cursor = 'default';
+            if (isResizingRoom) { isResizingRoom = false; roomResizer.classList.remove('resizing'); } document.body.style.cursor = 'default';
         });
 
         const emojis = ["😀","😂","🤣","😍","😎","😭","😡","👍","👎","👏","🙏","👀","🔥","💯","❤️","🎉","✨","🤔"];
         window.onload = () => {
             const picker = document.getElementById('emoji-picker');
-            emojis.forEach(e => {
-                let span = document.createElement('span'); span.className = 'emoji-item'; span.innerText = e;
-                span.onclick = () => { document.getElementById('chat-input').value += e; toggleEmojiPicker(); };
-                picker.appendChild(span);
-            });
+            emojis.forEach(e => { let span = document.createElement('span'); span.className = 'emoji-item'; span.innerText = e; span.onclick = () => { document.getElementById('chat-input').value += e; toggleEmojiPicker(); }; picker.appendChild(span); });
         };
 
         function showMenu(menuId) { document.querySelectorAll('.auth-box').forEach(b => b.style.display = 'none'); document.getElementById(menuId).style.display = 'block'; }
         
         async function setupMicrophone() {
             if(myStream) return true;
-            try { 
-                myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); 
-                return true; 
-            } catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
+            try { myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); return true; } 
+            catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
         }
         
         function setupPeerEvents() {
             peer.on('error', function(err) {
-                if (err.type === 'unavailable-id') {
-                    alert("Bu şifre kullanımda! (Eğer düştüyseniz 'Lobiye Katıl' butonunu kullanarak yeniden giriş yapın)");
-                    if(document.getElementById('call-screen').style.display !== 'flex') leaveRoom();
-                } else if (err.type === 'peer-unavailable' || err.type === 'network' || err.type === 'browser-incompatible') {
-                } else {
-                    if (document.getElementById('auth-container').style.display !== 'none') {
-                        alert("Bağlantı Hatası: " + err.type); leaveRoom();
-                    }
-                }
+                if (err.type === 'unavailable-id') { alert("Bu şifre kullanımda!"); if(document.getElementById('call-screen').style.display !== 'flex') leaveRoom(); } 
+                else if (err.type !== 'peer-unavailable' && err.type !== 'network' && err.type !== 'browser-incompatible') { if (document.getElementById('auth-container').style.display !== 'none') { alert("Bağlantı Hatası: " + err.type); leaveRoom(); } }
             });
 
             peer.on('connection', conn => {
-                const id = conn.peer;
-                if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false };
-                setupDataConn(conn, id);
+                const id = conn.peer; if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false }; setupDataConn(conn, id);
             });
 
             peer.on('call', call => {
                 const id = call.peer;
                 if (call.metadata && call.metadata.type === 'tab-audio') {
-                    call.answer();
-                    call.on('stream', stream => {
-                        if(document.getElementById('vid-wrap-' + stream.id)) return;
-                        addMediaElement(stream, id, false, 'tab-audio');
-                    });
+                    call.answer(); call.on('stream', stream => { if(document.getElementById('vid-wrap-' + stream.id)) return; addMediaElement(stream, id, false, 'tab-audio'); });
                 } else if (call.metadata && (call.metadata.type === 'screen' || call.metadata.type === 'camera')) {
-                    call.answer(); 
-                    call.on('stream', stream => {
-                        if(document.getElementById('vid-wrap-' + stream.id)) return;
-                        addMediaElement(stream, id, false, call.metadata.type);
-                    });
+                    call.answer(); call.on('stream', stream => { if(document.getElementById('vid-wrap-' + stream.id)) return; addMediaElement(stream, id, false, call.metadata.type); });
                 } else {
                     if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false };
-                    peers[id].call = call;
-                    call.answer(myStream);
-                    setupCall(call, id);
+                    peers[id].call = call; call.answer(myStream); setupCall(call, id);
                 }
             });
         }
 
         function connectToPeer(targetId, targetName = "Katılımcı", targetAvatar = AVATARS[0]) {
-            if (peers[targetId] || targetId === peer.id) return;
-            peers[targetId] = { username: targetName, avatar: targetAvatar, roomId: 'main', isMuted: false, manualMute: false };
-            
+            if (peers[targetId] || targetId === peer.id) return; peers[targetId] = { username: targetName, avatar: targetAvatar, roomId: 'main', isMuted: false, manualMute: false };
             const conn = peer.connect(targetId); setupDataConn(conn, targetId);
             const call = peer.call(targetId, myStream, { metadata: { type: 'audio' } }); setupCall(call, targetId);
             
-            if (isScreenSharing && screenStream) { 
-                const isAudioOnly = screenStream.getVideoTracks().length === 0;
-                peers[targetId].screenCall = peer.call(targetId, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); 
-            }
+            if (isScreenSharing && screenStream) { const isAudioOnly = screenStream.getVideoTracks().length === 0; peers[targetId].screenCall = peer.call(targetId, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); }
             if (isCameraOn && cameraStream) { peers[targetId].cameraCall = peer.call(targetId, cameraStream, { metadata: { type: 'camera' } }); }
         }
 
@@ -665,57 +603,25 @@
 
             conn.on('data', data => {
                 if (data.type === 'handshake') {
-                    peers[id].username = data.username; 
-                    if(data.avatar) peers[id].avatar = data.avatar;
-                    peers[id].roomId = data.roomId || 'main';
-                    peers[id].isMuted = data.isMuted || false;
+                    peers[id].username = data.username; if(data.avatar) peers[id].avatar = data.avatar; peers[id].roomId = data.roomId || 'main'; peers[id].isMuted = data.isMuted || false;
+                    updateParticipantUI(id, data.username, peers[id].avatar); applyRoomIsolations(); updateMuteBadgeUI(id); renderRoomSidebar();
                     
-                    updateParticipantUI(id, data.username, peers[id].avatar);
-                    applyRoomIsolations();
-                    updateMuteBadgeUI(id);
-                    renderRoomSidebar();
-                    
-                    if (isScreenSharing && screenStream) {
-                        const isAudioOnly = screenStream.getVideoTracks().length === 0;
-                        peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } });
-                    }
-                    if (isCameraOn && cameraStream) {
-                        peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } });
-                    }
+                    if (isScreenSharing && screenStream) { const isAudioOnly = screenStream.getVideoTracks().length === 0; peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); }
+                    if (isCameraOn && cameraStream) { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); }
                 } else if (data.type === 'peer-list') {
-                    data.list.forEach(p => {
-                        connectToPeer(p.id, p.username, p.avatar);
-                        if(peers[p.id]) {
-                            peers[p.id].roomId = p.roomId || 'main';
-                            peers[p.id].isMuted = p.isMuted || false;
-                        }
-                    });
+                    data.list.forEach(p => { connectToPeer(p.id, p.username, p.avatar); if(peers[p.id]) { peers[p.id].roomId = p.roomId || 'main'; peers[p.id].isMuted = p.isMuted || false; } });
                 } else if (data.type === 'text') {
-                    if(peers[id] && peers[id].roomId === localVoiceRoomId) {
-                        renderMessage(data.sender, data.content, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat();
-                    }
+                    if(peers[id] && peers[id].roomId === localVoiceRoomId) { renderMessage(data.sender, data.content, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat(); }
                 } else if (data.type === 'file') {
-                    if(peers[id] && peers[id].roomId === localVoiceRoomId) {
-                        renderFile(data.sender, data.fileName, data.fileData, data.fileType, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat();
-                    }
+                    if(peers[id] && peers[id].roomId === localVoiceRoomId) { renderFile(data.sender, data.fileName, data.fileData, data.fileType, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat(); }
                 } else if (data.type === 'room-sync') {
-                    voiceRooms = data.rooms;
-                    if(!voiceRooms[localVoiceRoomId]) joinRoom('main');
-                    else renderRoomSidebar();
+                    voiceRooms = data.rooms; if(!voiceRooms[localVoiceRoomId]) joinRoom('main'); else renderRoomSidebar();
                 } else if (data.type === 'room-change') {
-                    if (peers[id]) {
-                        peers[id].roomId = data.roomId;
-                        applyRoomIsolations();
-                        renderRoomSidebar();
-                    }
+                    if (peers[id]) { peers[id].roomId = data.roomId; applyRoomIsolations(); renderRoomSidebar(); }
                 } else if (data.type === 'force-room') {
                     joinRoom(data.roomId);
                 } else if (data.type === 'mute-update') {
-                    if (peers[id]) {
-                        peers[id].isMuted = data.isMuted;
-                        updateMuteBadgeUI(id);
-                        applyRoomIsolations();
-                    }
+                    if (peers[id]) { peers[id].isMuted = data.isMuted; updateMuteBadgeUI(id); applyRoomIsolations(); }
                 }
             });
             conn.on('close', () => handlePeerDisconnect(id));
@@ -724,166 +630,79 @@
         function setupCall(call, id) {
             peers[id].call = call;
             call.on('stream', remoteStream => {
-                if (!peers[id].streamActive) {
-                    peers[id].streamActive = true; 
-                    addParticipant(peers[id].username, id, remoteStream, peers[id].avatar);
-                    playJoinSound(); 
-                }
+                if (!peers[id].streamActive) { peers[id].streamActive = true; addParticipant(peers[id].username, id, remoteStream, peers[id].avatar); playJoinSound(); }
             });
             call.on('close', () => handlePeerDisconnect(id));
         }
 
         function handlePeerDisconnect(id) {
-            if (!peers[id]) return;
-            const el = document.getElementById('user-' + id); 
-            if (el) {
-                el.remove();
-                if (!isLeavingLobby) playLeaveSound(); 
-            }
-            if (speechMonitors['user-' + id]) clearInterval(speechMonitors['user-' + id]);
-            const aud = document.getElementById('audio-' + id); if (aud) aud.remove();
+            if (!peers[id]) return; const el = document.getElementById('user-' + id); if (el) { el.remove(); if (!isLeavingLobby) playLeaveSound(); }
+            if (speechMonitors['user-' + id]) clearInterval(speechMonitors['user-' + id]); const aud = document.getElementById('audio-' + id); if (aud) aud.remove();
             
-            document.querySelectorAll(`.video-wrapper[data-peer-id="${id}"]`).forEach(vid => vid.remove());
-            checkGalleryEmpty();
-
+            document.querySelectorAll(`.video-wrapper[data-peer-id="${id}"]`).forEach(vid => vid.remove()); checkGalleryEmpty();
             delete peers[id]; updateRoomTitle(); renderRoomSidebar();
-
-            if (id === ROOM_PREFIX + currentRoomPassword && !isLeavingLobby) {
-                triggerHostMigration();
-            }
+            if (id === ROOM_PREFIX + currentRoomPassword && !isLeavingLobby) { triggerHostMigration(); }
         }
 
         function triggerHostMigration() {
-            let allIds = Object.keys(peers);
-            allIds.push(peer.id);
-            allIds.sort();
-
-            const hostId = ROOM_PREFIX + currentRoomPassword;
-
+            let allIds = Object.keys(peers); allIds.push(peer.id); allIds.sort(); const hostId = ROOM_PREFIX + currentRoomPassword;
             if (allIds[0] === peer.id) {
                 if(peer) peer.destroy(); 
-                
-                setTimeout(() => {
-                    isHost = true;
-                    peer = new Peer(hostId); 
-                    peer.on('open', function(id) {
-                        setupPeerEvents();
-                        renderRoomSidebar();
-                    });
-                    peer.on('error', function(err) {});
-                }, 1000);
+                setTimeout(() => { isHost = true; peer = new Peer(hostId); peer.on('open', function(id) { setupPeerEvents(); renderRoomSidebar(); }); peer.on('error', function(err) {}); }, 1000);
             } else {
-                if(migrationInterval) clearInterval(migrationInterval);
-                let retries = 0;
-                migrationInterval = setInterval(() => {
-                    if (retries > 6 || peers[hostId] || isLeavingLobby) {
-                        clearInterval(migrationInterval);
-                        return;
-                    }
-                    connectToPeer(hostId, "Lobi Kurucusu (Yeni)", AVATARS[0]);
-                    retries++;
-                }, 2500);
+                if(migrationInterval) clearInterval(migrationInterval); let retries = 0;
+                migrationInterval = setInterval(() => { if (retries > 6 || peers[hostId] || isLeavingLobby) { clearInterval(migrationInterval); return; } connectToPeer(hostId, "Lobi Kurucusu (Yeni)", AVATARS[0]); retries++; }, 2500);
             }
         }
 
         function updateParticipantUI(id, name, avatarUrl) {
-            const el = document.getElementById('user-' + id);
-            if (el) { 
-                el.querySelector('.name-tag').innerText = name; 
-                if (avatarUrl) {
-                    el.querySelector('img').src = avatarUrl;
-                }
-            }
-            updateRoomTitle();
+            const el = document.getElementById('user-' + id); if (el) { el.querySelector('.name-tag').innerText = name; if (avatarUrl) { el.querySelector('img').src = avatarUrl; } } updateRoomTitle();
         }
 
         function updateRoomTitle() { document.getElementById('current-room-title').innerText = `Lobi (${Object.keys(peers).length + 1} Kişi)`; }
 
         // --- ODA FONKSİYONLARI ---
         function renderRoomSidebar() {
-            const container = document.getElementById('room-list-container');
-            container.innerHTML = '';
-            document.getElementById('add-room-btn').style.display = isHost ? 'flex' : 'none';
+            const container = document.getElementById('room-list-container'); container.innerHTML = ''; document.getElementById('add-room-btn').style.display = isHost ? 'flex' : 'none';
 
             for (let rId in voiceRooms) {
-                const room = voiceRooms[rId];
-                const roomEl = document.createElement('div');
-                roomEl.className = `voice-room ${localVoiceRoomId === rId ? 'drag-over' : ''}`;
+                const room = voiceRooms[rId]; const roomEl = document.createElement('div'); roomEl.className = `voice-room ${localVoiceRoomId === rId ? 'drag-over' : ''}`;
                 
-                let titleHtml = `<div class="room-title-bar ${localVoiceRoomId === rId ? 'active-room-bar' : ''}" onclick="joinRoom('${rId}')" ondragover="allowDrop(event)" ondrop="dropUser(event, '${rId}')">
+                let titleHtml = `<div class="room-title-bar ${localVoiceRoomId === rId ? 'active-room-bar' : ''}" onclick="joinRoom('${rId}')" ondragover="allowDrop(event)" ondrop="dropUser(event, '${rId}')" ${isHost && rId !== 'main' ? `ondblclick="hostRenameRoom('${rId}')"` : ''}>
                     <span>🔊 ${room.name}</span>`;
                 
-                if (isHost && rId !== 'main') {
-                    titleHtml += `<button class="btn-icon-small" onclick="event.stopPropagation(); hostRenameRoom('${rId}')">✏️</button>`;
-                }
+                if (isHost && rId !== 'main') { titleHtml += `<button class="btn-icon-small" onclick="event.stopPropagation(); hostRenameRoom('${rId}')" title="Yeniden Adlandır">✏️</button>`; }
                 titleHtml += `</div>`;
                 
                 let usersHtml = `<div class="room-user-list">`;
-                
-                if (localVoiceRoomId === rId) {
-                    usersHtml += `<div class="room-user-item" draggable="${isHost}" ondragstart="dragUser(event, 'local-user')"><img src="${localAvatar}"> ${localUsername} (Sen)</div>`;
-                }
-                
-                for (let pId in peers) {
-                    if (peers[pId].roomId === rId) {
-                        usersHtml += `<div class="room-user-item" draggable="${isHost}" ondragstart="dragUser(event, '${pId}')"><img src="${peers[pId].avatar}"> ${peers[pId].username}</div>`;
-                    }
-                }
-                usersHtml += `</div>`;
-                
-                roomEl.innerHTML = titleHtml + usersHtml;
-                container.appendChild(roomEl);
+                if (localVoiceRoomId === rId) { usersHtml += `<div class="room-user-item" draggable="${isHost}" ondragstart="dragUser(event, 'local-user')"><img src="${localAvatar}"> ${localUsername} (Sen)</div>`; }
+                for (let pId in peers) { if (peers[pId].roomId === rId) { usersHtml += `<div class="room-user-item" draggable="${isHost}" ondragstart="dragUser(event, '${pId}')"><img src="${peers[pId].avatar}"> ${peers[pId].username}</div>`; } }
+                usersHtml += `</div>`; roomEl.innerHTML = titleHtml + usersHtml; container.appendChild(roomEl);
             }
         }
 
         function allowDrop(ev) { ev.preventDefault(); }
         function dragUser(ev, userId) { ev.dataTransfer.setData("userId", userId); }
         function dropUser(ev, targetRoomId) {
-            ev.preventDefault();
-            if (!isHost) return;
-            const userId = ev.dataTransfer.getData("userId");
-            if (!userId) return;
-            
-            if (userId === 'local-user') {
-                joinRoom(targetRoomId);
-            } else if (peers[userId]) {
-                peers[userId].roomId = targetRoomId;
-                if(peers[userId].conn && peers[userId].conn.open) peers[userId].conn.send({ type: 'force-room', roomId: targetRoomId });
-                applyRoomIsolations();
-                renderRoomSidebar();
-            }
+            ev.preventDefault(); if (!isHost) return; const userId = ev.dataTransfer.getData("userId"); if (!userId) return;
+            if (userId === 'local-user') { joinRoom(targetRoomId); } 
+            else if (peers[userId]) { peers[userId].roomId = targetRoomId; if(peers[userId].conn && peers[userId].conn.open) peers[userId].conn.send({ type: 'force-room', roomId: targetRoomId }); applyRoomIsolations(); renderRoomSidebar(); }
         }
 
         function hostAddRoom() {
-            if(!isHost) return;
-            const name = prompt("Yeni ses odası için bir isim girin:", "Toplantı Odası");
-            if(name && name.trim()) {
-                const rId = 'room_' + Date.now();
-                voiceRooms[rId] = { id: rId, name: name.trim() };
-                broadcastData({ type: 'room-sync', rooms: voiceRooms });
-                renderRoomSidebar();
-            }
+            if(!isHost) return; const name = prompt("Yeni ses odası için bir isim girin:", "Toplantı Odası");
+            if(name && name.trim()) { const rId = 'room_' + Date.now(); voiceRooms[rId] = { id: rId, name: name.trim() }; broadcastData({ type: 'room-sync', rooms: voiceRooms }); renderRoomSidebar(); }
         }
 
         function hostRenameRoom(rId) {
-            if(!isHost || rId === 'main') return;
-            const name = prompt("Odanın yeni ismini girin:", voiceRooms[rId].name);
-            if(name && name.trim()) {
-                voiceRooms[rId].name = name.trim();
-                broadcastData({ type: 'room-sync', rooms: voiceRooms });
-                renderRoomSidebar();
-            }
+            if(!isHost || rId === 'main') return; const name = prompt("Odanın yeni ismini girin:", voiceRooms[rId].name);
+            if(name && name.trim()) { voiceRooms[rId].name = name.trim(); broadcastData({ type: 'room-sync', rooms: voiceRooms }); renderRoomSidebar(); }
         }
 
         function joinRoom(rId) {
-            if (localVoiceRoomId === rId || !voiceRooms[rId]) return;
-            localVoiceRoomId = rId;
-            broadcastData({ type: 'room-change', roomId: rId });
-            applyRoomIsolations();
-            renderRoomSidebar();
+            if (localVoiceRoomId === rId || !voiceRooms[rId]) return; localVoiceRoomId = rId; broadcastData({ type: 'room-change', roomId: rId }); applyRoomIsolations(); renderRoomSidebar();
         }
 
-        // SES VE GÖRÜNTÜ İZOLASYONU
         function applyRoomIsolations() {
             for (let pId in peers) {
                 const inSameRoom = (peers[pId].roomId === localVoiceRoomId);
@@ -893,44 +712,41 @@
                 
                 if (userEl) userEl.style.display = inSameRoom ? 'flex' : 'none';
                 
-                if (audioEl) {
-                    audioEl.muted = (!inSameRoom || peers[pId].manualMute || peers[pId].isMuted);
-                }
+                const shouldMute = (!inSameRoom || peers[pId].manualMute || peers[pId].isMuted);
+                
+                if (audioEl) audioEl.muted = shouldMute;
                 
                 videoEls.forEach(v => {
                     v.style.display = inSameRoom ? 'flex' : 'none';
+                    // Video veya audio öğelerinin (ekran/sekme paylaşımı) sesi de izole edildi
+                    const mediaEls = v.querySelectorAll('video, audio');
+                    mediaEls.forEach(m => {
+                        if (m.dataset.localMuted === 'true') {
+                            m.muted = true;
+                        } else {
+                            m.muted = shouldMute;
+                        }
+                    });
                 });
             }
             checkGalleryEmpty();
         }
 
-        function broadcastData(data) {
-            Object.values(peers).forEach(p => { if(p.conn && p.conn.open) p.conn.send(data); });
-        }
+        function broadcastData(data) { Object.values(peers).forEach(p => { if(p.conn && p.conn.open) p.conn.send(data); }); }
 
         // --- LOBİ KURULUMU ---
         async function createLobby() {
             const nick = document.getElementById('create-nick').value.trim(), pass = document.getElementById('create-pass').value.trim();
             if(!nick || !pass) return; document.getElementById('create-btn').innerText = "Kuruluyor..."; localUsername = nick;
-            currentRoomPassword = pass; 
-            if(!(await setupMicrophone())) { document.getElementById('create-btn').innerText = "Oluştur ve Başla"; return; }
-            
-            isHost = true; peer = new Peer(ROOM_PREFIX + pass);
-            peer.on('open', function(id) { setupPeerEvents(); switchToCallScreen("Lobi (" + pass + ")"); });
+            currentRoomPassword = pass; if(!(await setupMicrophone())) { document.getElementById('create-btn').innerText = "Oluştur ve Başla"; return; }
+            isHost = true; peer = new Peer(ROOM_PREFIX + pass); peer.on('open', function(id) { setupPeerEvents(); switchToCallScreen("Lobi (" + pass + ")"); });
         }
 
         async function joinLobby() {
             const nick = document.getElementById('join-nick').value.trim(), pass = document.getElementById('join-pass').value.trim();
             if(!nick || !pass) return; document.getElementById('join-btn').innerText = "Bağlanılıyor..."; localUsername = nick;
-            currentRoomPassword = pass; 
-            if(!(await setupMicrophone())) { document.getElementById('join-btn').innerText = "Lobiye Bağlan"; return; }
-            
-            isHost = false; peer = new Peer();
-            peer.on('open', function(id) {
-                setupPeerEvents(); 
-                connectToPeer(ROOM_PREFIX + pass, "Lobi Kurucusu"); 
-                switchToCallScreen("Bağlanılıyor...");
-            });
+            currentRoomPassword = pass; if(!(await setupMicrophone())) { document.getElementById('join-btn').innerText = "Lobiye Bağlan"; return; }
+            isHost = false; peer = new Peer(); peer.on('open', function(id) { setupPeerEvents(); connectToPeer(ROOM_PREFIX + pass, "Lobi Kurucusu"); switchToCallScreen("Bağlanılıyor..."); });
         }
 
         function toggleChat() {
@@ -943,18 +759,13 @@
 
         function sendMessage() {
             const input = document.getElementById('chat-input'), text = input.value.trim(); if (!text) return;
-            Object.values(peers).forEach(p => { 
-                if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) p.conn.send({ type: 'text', sender: localUsername, content: text }); 
-            });
+            Object.values(peers).forEach(p => { if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) p.conn.send({ type: 'text', sender: localUsername, content: text }); });
             renderMessage(localUsername, text, 'local'); input.value = ''; document.getElementById('emoji-picker').style.display = 'none';
         }
 
         function handleFileSelect(event) {
-            const file = event.target.files[0]; if(!file) return;
-            if(file.size > 50 * 1024 * 1024) return alert("Maksimum 50MB gönderebilirsiniz.");
-            Object.values(peers).forEach(p => { 
-                if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) p.conn.send({ type: 'file', sender: localUsername, fileName: file.name, fileType: file.type, fileData: file }); 
-            });
+            const file = event.target.files[0]; if(!file) return; if(file.size > 50 * 1024 * 1024) return alert("Maksimum 50MB gönderebilirsiniz.");
+            Object.values(peers).forEach(p => { if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) p.conn.send({ type: 'file', sender: localUsername, fileName: file.name, fileType: file.type, fileData: file }); });
             renderFile(localUsername, file.name, file, file.type, 'local'); event.target.value = '';
         }
 
@@ -972,304 +783,166 @@
         function switchToCallScreen(titleText) {
             document.getElementById('auth-container').style.display = 'none'; document.getElementById('call-screen').style.display = 'flex';
             document.getElementById('current-room-title').innerText = titleText; document.getElementById('participants-area').innerHTML = "";
-            addParticipant(localUsername, 'local-user', myStream, localAvatar); 
-            renderRoomSidebar();
-            startTimer();
+            addParticipant(localUsername, 'local-user', myStream, localAvatar); renderRoomSidebar(); startTimer();
         }
 
         function leaveRoom() {
-            isLeavingLobby = true;
-            if(migrationInterval) clearInterval(migrationInterval); 
-            stopTimer(); if(isScreenSharing) stopScreenShare(); if(isCameraOn) toggleCamera();
-            Object.keys(peers).forEach(id => handlePeerDisconnect(id)); peers = {};
-            if(peer) peer.destroy(); document.getElementById('video-gallery').innerHTML = ""; checkGalleryEmpty();
-            document.getElementById('chat-messages').innerHTML = "";
-            Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; 
+            isLeavingLobby = true; if(migrationInterval) clearInterval(migrationInterval); stopTimer(); if(isScreenSharing) stopScreenShare(); if(isCameraOn) toggleCamera();
+            Object.keys(peers).forEach(id => handlePeerDisconnect(id)); peers = {}; if(peer) peer.destroy(); document.getElementById('video-gallery').innerHTML = ""; checkGalleryEmpty();
+            document.getElementById('chat-messages').innerHTML = ""; Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; 
             document.getElementById('call-screen').style.display = 'none'; document.getElementById('auth-container').style.display = 'flex';
-            document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan";
-            currentRoomPassword = ""; 
-            voiceRooms = { 'main': { id: 'main', name: 'Ana Lobi' } };
-            localVoiceRoomId = 'main';
-            isLeavingLobby = false;
+            document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan"; currentRoomPassword = ""; 
+            voiceRooms = { 'main': { id: 'main', name: 'Ana Lobi' } }; localVoiceRoomId = 'main'; isLeavingLobby = false;
         }
 
         function toggleMute() {
-            isMuted = !isMuted; 
-            myStream.getAudioTracks()[0].enabled = !isMuted; 
-            const btn = document.getElementById('mute-btn');
+            isMuted = !isMuted; myStream.getAudioTracks()[0].enabled = !isMuted; const btn = document.getElementById('mute-btn');
             
-            if (isMuted) { 
-                btn.classList.add('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; 
-            } else { 
-                btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; 
-            }
+            if (isMuted) { btn.classList.add('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; 
+            } else { btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; }
             
-            broadcastData({ type: 'mute-update', id: localUsername, isMuted: isMuted });
-            updateMuteBadgeUI('local-user');
+            broadcastData({ type: 'mute-update', id: localUsername, isMuted: isMuted }); updateMuteBadgeUI('local-user');
         }
 
         function updateMuteBadgeUI(id) {
-            const badge = document.getElementById('badge-' + id);
-            if (!badge) return;
+            const badge = document.getElementById('badge-' + id); if (!badge) return;
+            let isSelfMuted = false; let isRemoteMuted = false;
 
-            let isSelfMuted = false;
-            let isRemoteMuted = false;
+            if (id === 'local-user') { isSelfMuted = isMuted; } 
+            else if (peers[id]) { isSelfMuted = peers[id].isMuted; isRemoteMuted = peers[id].manualMute; }
 
-            if (id === 'local-user') {
-                isSelfMuted = isMuted;
-            } else if (peers[id]) {
-                isSelfMuted = peers[id].isMuted;
-                isRemoteMuted = peers[id].manualMute;
-            }
-
-            if (isSelfMuted) {
-                badge.style.display = 'flex';
-                badge.className = 'mute-badge self-muted-badge';
-                badge.innerHTML = '🔇';
-                badge.title = "Kullanıcı kendini susturdu";
-            } else if (isRemoteMuted) {
-                badge.style.display = 'flex';
-                badge.className = 'mute-badge remote-muted-badge';
-                badge.innerHTML = '🔇';
-                badge.title = "Bu kullanıcıyı kendinde susturdun";
-            } else {
-                badge.style.display = 'none';
-            }
+            if (isSelfMuted) { badge.style.display = 'flex'; badge.className = 'mute-badge self-muted-badge'; badge.innerHTML = '🔇'; badge.title = "Kullanıcı kendini susturdu"; } 
+            else if (isRemoteMuted) { badge.style.display = 'flex'; badge.className = 'mute-badge remote-muted-badge'; badge.innerHTML = '🔇'; badge.title = "Bu kullanıcıyı kendinde susturdun"; } 
+            else { badge.style.display = 'none'; }
         }
 
         function addMediaElement(stream, peerId, isLocal = false, type = 'screen') {
-            document.getElementById('video-gallery').style.display = 'flex';
-            document.getElementById('participants-area').classList.add('minimized-participants');
+            document.getElementById('video-gallery').style.display = 'flex'; document.getElementById('participants-area').classList.add('minimized-participants');
             
-            const wrapper = document.createElement('div');
-            wrapper.className = 'video-wrapper';
-            wrapper.id = 'vid-wrap-' + stream.id;
-            wrapper.setAttribute('data-peer-id', peerId);
-            
+            const wrapper = document.createElement('div'); wrapper.className = 'video-wrapper'; wrapper.id = 'vid-wrap-' + stream.id; wrapper.setAttribute('data-peer-id', peerId);
             const sharerName = isLocal ? localUsername + " (Sen)" : (peers[peerId] ? peers[peerId].username : "Bilinmeyen");
 
             let mediaEl;
-            if (type === 'tab-audio') {
-                wrapper.innerHTML = `<div style="font-size: 60px; color: var(--accent); filter: drop-shadow(0 0 15px var(--accent));">🎧</div>`;
-                mediaEl = document.createElement('audio');
-            } else {
-                mediaEl = document.createElement('video');
-                mediaEl.playsInline = true;
-            }
+            if (type === 'tab-audio') { wrapper.innerHTML = `<div style="font-size: 60px; color: var(--accent); filter: drop-shadow(0 0 15px var(--accent));">🎧</div>`; mediaEl = document.createElement('audio'); } 
+            else { mediaEl = document.createElement('video'); mediaEl.playsInline = true; }
 
-            mediaEl.id = 'media-' + stream.id;
-            mediaEl.srcObject = stream;
-            mediaEl.autoplay = true;
-            mediaEl.muted = isLocal;
+            mediaEl.id = 'media-' + stream.id; mediaEl.srcObject = stream; mediaEl.autoplay = true; mediaEl.muted = isLocal;
             
-            if (type !== 'tab-audio') wrapper.appendChild(mediaEl);
-            else document.body.appendChild(mediaEl);
+            if (type !== 'tab-audio') wrapper.appendChild(mediaEl); else document.body.appendChild(mediaEl);
 
-            const pinBtn = document.createElement('button');
-            pinBtn.className = 'pin-btn';
-            pinBtn.innerHTML = '📌';
-            pinBtn.title = 'Büyük Ekrana Sabitle';
-            pinBtn.onclick = () => togglePin(wrapper.id);
+            const pinBtn = document.createElement('button'); pinBtn.className = 'pin-btn'; pinBtn.innerHTML = '📌'; pinBtn.title = 'Büyük Ekrana Sabitle'; pinBtn.onclick = () => togglePin(wrapper.id);
+            const label = document.createElement('div'); label.className = 'stream-label'; label.innerText = sharerName;
+
+            const volContainer = document.createElement('div'); volContainer.className = 'stream-volume-container';
             
-            const label = document.createElement('div');
-            label.className = 'stream-label';
-            label.innerText = sharerName;
-
-            const volContainer = document.createElement('div');
-            volContainer.className = 'stream-volume-container';
+            // Dinamik Ses Kontrolü
             volContainer.innerHTML = `
-                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
-                <input type="range" class="stream-volume" min="0" max="1" step="0.05" value="${isLocal ? 0 : 1}" oninput="document.getElementById('media-${stream.id}').volume = this.value; document.getElementById('media-${stream.id}').muted = false;" title="Yayın Sesi">
+                <svg onclick="toggleMediaMute('${stream.id}', this)" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                </svg>
+                <input type="range" class="stream-volume" min="0" max="1" step="0.05" value="${isLocal ? 0 : 1}" oninput="changeMediaVolume('${stream.id}', this.value, this.previousElementSibling)" title="Yayın Sesi">
             `;
             
-            wrapper.appendChild(pinBtn);
-            wrapper.appendChild(label);
-            wrapper.appendChild(volContainer);
-            document.getElementById('video-gallery').appendChild(wrapper);
+            wrapper.appendChild(pinBtn); wrapper.appendChild(label); wrapper.appendChild(volContainer); document.getElementById('video-gallery').appendChild(wrapper);
             
-            const track = stream.getVideoTracks()[0] || stream.getAudioTracks()[0];
-            if(track) track.onended = () => removeMediaElement(stream.id);
+            const track = stream.getVideoTracks()[0] || stream.getAudioTracks()[0]; if(track) track.onended = () => removeMediaElement(stream.id);
             applyRoomIsolations();
         }
 
+        // --- YAYIN SES KONTROL FONKSİYONLARI ---
+        function toggleMediaMute(streamId, svgEl) {
+            const media = document.getElementById('media-' + streamId); if (!media) return;
+            const isNowMuted = !media.muted; media.muted = isNowMuted;
+            media.dataset.localMuted = isNowMuted ? 'true' : 'false';
+            updateVolIcon(svgEl, isNowMuted, media.volume);
+        }
+        
+        function changeMediaVolume(streamId, val, svgEl) {
+            const media = document.getElementById('media-' + streamId); if (!media) return;
+            media.volume = val; 
+            if (val > 0) { media.muted = false; media.dataset.localMuted = 'false'; }
+            updateVolIcon(svgEl, media.muted, val);
+        }
+
+        function updateVolIcon(svg, muted, vol) {
+            if (muted || vol == 0) {
+                svg.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>`;
+            } else if (vol < 0.5) {
+                svg.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>`;
+            } else {
+                svg.innerHTML = `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>`;
+            }
+        }
+
         function removeMediaElement(streamId) {
-            const el = document.getElementById('vid-wrap-' + streamId);
-            const mediaEl = document.getElementById('media-' + streamId);
-            if(el) el.remove();
-            if(mediaEl) mediaEl.remove();
-            checkGalleryEmpty();
+            const el = document.getElementById('vid-wrap-' + streamId); const mediaEl = document.getElementById('media-' + streamId);
+            if(el) el.remove(); if(mediaEl) mediaEl.remove(); checkGalleryEmpty();
         }
 
         function checkGalleryEmpty() {
-            let activeVideos = 0;
-            document.querySelectorAll('.video-wrapper').forEach(w => {
-                if(w.style.display !== 'none') activeVideos++;
-            });
-            
-            if(activeVideos === 0) {
-                document.getElementById('video-gallery').style.display = 'none';
-                document.getElementById('participants-area').classList.remove('minimized-participants');
-            } else {
-                document.getElementById('video-gallery').style.display = 'flex';
-                document.getElementById('participants-area').classList.add('minimized-participants');
-            }
+            let activeVideos = 0; document.querySelectorAll('.video-wrapper').forEach(w => { if(w.style.display !== 'none') activeVideos++; });
+            if(activeVideos === 0) { document.getElementById('video-gallery').style.display = 'none'; document.getElementById('participants-area').classList.remove('minimized-participants'); } 
+            else { document.getElementById('video-gallery').style.display = 'flex'; document.getElementById('participants-area').classList.add('minimized-participants'); }
         }
 
         function togglePin(wrapperId) {
-            const wrapper = document.getElementById(wrapperId);
-            const gallery = document.getElementById('video-gallery');
-            const isCurrentlyPinned = wrapper.classList.contains('pinned');
-            
-            Array.from(gallery.children).forEach(child => {
-                child.classList.remove('pinned', 'has-pinned-sibling');
-            });
-            
-            if (!isCurrentlyPinned) {
-                wrapper.classList.add('pinned');
-                Array.from(gallery.children).forEach(child => {
-                    if(child.id !== wrapperId) child.classList.add('has-pinned-sibling');
-                });
-            }
+            const wrapper = document.getElementById(wrapperId); const gallery = document.getElementById('video-gallery'); const isCurrentlyPinned = wrapper.classList.contains('pinned');
+            Array.from(gallery.children).forEach(child => { child.classList.remove('pinned', 'has-pinned-sibling'); });
+            if (!isCurrentlyPinned) { wrapper.classList.add('pinned'); Array.from(gallery.children).forEach(child => { if(child.id !== wrapperId) child.classList.add('has-pinned-sibling'); }); }
         }
 
         async function toggleCamera() {
             const btn = document.getElementById('camera-btn');
-            if (isCameraOn) {
-                Object.values(peers).forEach(p => { if(p.cameraCall) p.cameraCall.close(); });
-                if (cameraStream) { removeMediaElement(cameraStream.id); cameraStream.getTracks().forEach(t => t.stop()); }
-                isCameraOn = false; btn.classList.remove('active-green');
-            } else {
-                try {
-                    cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false });
-                    addMediaElement(cameraStream, 'local', true, 'camera');
-                    Object.keys(peers).forEach(id => { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); });
-                    isCameraOn = true; btn.classList.add('active-green');
-                } catch (err) { alert("Kamera izni alınamadı!"); }
-            }
+            if (isCameraOn) { Object.values(peers).forEach(p => { if(p.cameraCall) p.cameraCall.close(); }); if (cameraStream) { removeMediaElement(cameraStream.id); cameraStream.getTracks().forEach(t => t.stop()); } isCameraOn = false; btn.classList.remove('active-green'); } 
+            else { try { cameraStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false }); addMediaElement(cameraStream, 'local', true, 'camera'); Object.keys(peers).forEach(id => { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); }); isCameraOn = true; btn.classList.add('active-green'); } catch (err) { alert("Kamera izni alınamadı!"); } }
         }
 
-        function openShareModal() {
-            if (isScreenSharing) stopScreenShare(); else { document.getElementById('share-modal').style.display = 'block'; document.getElementById('overlay').style.display = 'block'; }
-        }
+        function openShareModal() { if (isScreenSharing) stopScreenShare(); else { document.getElementById('share-modal').style.display = 'block'; document.getElementById('overlay').style.display = 'block'; } }
         function closeShareModal() { document.getElementById('share-modal').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
 
         async function startAudioOnlyShare() {
             closeShareModal();
             try {
-                const stream = await navigator.mediaDevices.getDisplayMedia({ 
-                    video: true, 
-                    audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: false } 
-                });
-                
-                if (stream.getAudioTracks().length === 0) {
-                    alert("Ses bulunamadı! Sekme paylaşırken 'Sekme sesini paylaş' seçeneğini işaretlediğinizden emin olun.");
-                    stream.getTracks().forEach(t => t.stop()); return;
-                }
-                
-                stream.getVideoTracks().forEach(t => t.stop());
-                screenStream = new MediaStream([stream.getAudioTracks()[0]]);
-                
-                addMediaElement(screenStream, 'local', true, 'tab-audio');
-                Object.keys(peers).forEach(id => { peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: 'tab-audio' } }); });
-                
-                screenStream.getAudioTracks()[0].onended = () => { if(isScreenSharing) stopScreenShare(); };
-                isScreenSharing = true; document.getElementById('share-btn').classList.add('active-green');
+                const stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: false } });
+                if (stream.getAudioTracks().length === 0) { alert("Ses bulunamadı! Sekme paylaşırken 'Sekme sesini paylaş' seçeneğini işaretlediğinizden emin olun."); stream.getTracks().forEach(t => t.stop()); return; }
+                stream.getVideoTracks().forEach(t => t.stop()); screenStream = new MediaStream([stream.getAudioTracks()[0]]);
+                addMediaElement(screenStream, 'local', true, 'tab-audio'); Object.keys(peers).forEach(id => { peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: 'tab-audio' } }); });
+                screenStream.getAudioTracks()[0].onended = () => { if(isScreenSharing) stopScreenShare(); }; isScreenSharing = true; document.getElementById('share-btn').classList.add('active-green');
             } catch (err) { console.error(err); }
         }
 
         async function startScreenShare(quality) {
-            closeShareModal();
-            const res = { 
-                360: {w: 640, h: 360, fps: 30}, 480: {w: 854, h: 480, fps: 30}, 
-                720: {w: 1280, h: 720, fps: 60}, 1080: {w: 1920, h: 1080, fps: 60}, 1440: {w: 2560, h: 1440, fps: 60} 
-            }[quality];
-
+            closeShareModal(); const res = { 360: {w: 640, h: 360, fps: 30}, 480: {w: 854, h: 480, fps: 30}, 720: {w: 1280, h: 720, fps: 60}, 1080: {w: 1920, h: 1080, fps: 60}, 1440: {w: 2560, h: 1440, fps: 60} }[quality];
             try {
-                screenStream = await navigator.mediaDevices.getDisplayMedia({ 
-                    video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: res.fps, max: res.fps } }, 
-                    audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: false } 
-                });
-                
-                const isAudioOnly = screenStream.getVideoTracks().length === 0;
-                addMediaElement(screenStream, 'local', true, isAudioOnly ? 'tab-audio' : 'screen');
-                
+                screenStream = await navigator.mediaDevices.getDisplayMedia({ video: { width: { ideal: res.w }, height: { ideal: res.h }, frameRate: { ideal: res.fps, max: res.fps } }, audio: { echoCancellation: true, noiseSuppression: true, suppressLocalAudioPlayback: false } });
+                const isAudioOnly = screenStream.getVideoTracks().length === 0; addMediaElement(screenStream, 'local', true, isAudioOnly ? 'tab-audio' : 'screen');
                 Object.keys(peers).forEach(id => { peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); });
-                
-                const track = screenStream.getVideoTracks()[0] || screenStream.getAudioTracks()[0];
-                track.onended = () => { if(isScreenSharing) stopScreenShare(); };
-                isScreenSharing = true; document.getElementById('share-btn').classList.add('active-green');
+                const track = screenStream.getVideoTracks()[0] || screenStream.getAudioTracks()[0]; track.onended = () => { if(isScreenSharing) stopScreenShare(); }; isScreenSharing = true; document.getElementById('share-btn').classList.add('active-green');
             } catch (err) { console.error(err); }
         }
 
-        function stopScreenShare() {
-            if (screenStream) {
-                removeMediaElement(screenStream.id);
-                screenStream.getTracks().forEach(t => t.stop());
-            }
-            Object.values(peers).forEach(p => { if(p.screenCall) p.screenCall.close(); });
-            isScreenSharing = false; document.getElementById('share-btn').classList.remove('active-green');
-        }
+        function stopScreenShare() { if (screenStream) { removeMediaElement(screenStream.id); screenStream.getTracks().forEach(t => t.stop()); } Object.values(peers).forEach(p => { if(p.screenCall) p.screenCall.close(); }); isScreenSharing = false; document.getElementById('share-btn').classList.remove('active-green'); }
 
         function addParticipant(name, id, stream, avatarUrl = AVATARS[0]) {
-            if(document.getElementById('user-' + id)) return;
-            const area = document.getElementById('participants-area');
-            const div = document.createElement('div'); div.className = 'participant'; div.id = 'user-' + id;
-            
-            if (id !== 'local-user') {
-                div.setAttribute('oncontextmenu', `handleRightClick(event, '${id}', '${name}')`);
-                const audio = document.createElement('audio'); audio.id = 'audio-' + id; audio.srcObject = stream; audio.autoplay = true; document.body.appendChild(audio);
-            }
-            
-            div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"><div id="badge-${id}" class="mute-badge" style="display:none;"></div></div><div class="name-tag">${name}</div>`; 
-            area.appendChild(div);
-            
-            monitorSpeech(stream, 'user-' + id); 
-            updateRoomTitle();
-            updateMuteBadgeUI(id);
-            applyRoomIsolations();
+            if(document.getElementById('user-' + id)) return; const area = document.getElementById('participants-area'); const div = document.createElement('div'); div.className = 'participant'; div.id = 'user-' + id;
+            if (id !== 'local-user') { div.setAttribute('oncontextmenu', `handleRightClick(event, '${id}', '${name}')`); const audio = document.createElement('audio'); audio.id = 'audio-' + id; audio.srcObject = stream; audio.autoplay = true; document.body.appendChild(audio); }
+            div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"><div id="badge-${id}" class="mute-badge" style="display:none;"></div></div><div class="name-tag">${name}</div>`; area.appendChild(div);
+            monitorSpeech(stream, 'user-' + id); updateRoomTitle(); updateMuteBadgeUI(id); applyRoomIsolations();
         }
 
         function monitorSpeech(stream, elementId) {
-            if (speechMonitors[elementId]) clearInterval(speechMonitors[elementId]); 
-
-            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            if (speechMonitors[elementId]) clearInterval(speechMonitors[elementId]); if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
             try {
-                const source = audioContext.createMediaStreamSource(stream);
-                const analyser = audioContext.createAnalyser(); 
-                analyser.fftSize = 256; 
-                source.connect(analyser); 
-                const dataArray = new Uint8Array(analyser.frequencyBinCount);
-                
+                const source = audioContext.createMediaStreamSource(stream); const analyser = audioContext.createAnalyser(); analyser.fftSize = 256; source.connect(analyser); const dataArray = new Uint8Array(analyser.frequencyBinCount);
                 let isCurrentlySpeaking = false;
-                
                 speechMonitors[elementId] = setInterval(() => {
-                    const el = document.getElementById(elementId);
-                    if(!el) {
-                        clearInterval(speechMonitors[elementId]);
-                        return;
-                    }
-
-                    if(el.style.display === 'none') {
-                        if (isCurrentlySpeaking) { isCurrentlySpeaking = false; el.classList.remove('speaking'); }
-                        return; 
-                    }
-
-                    analyser.getByteFrequencyData(dataArray); 
-                    let sum = 0; 
-                    for(let i = 0; i < dataArray.length; i+=4) sum += dataArray[i];
-                    let average = sum / (dataArray.length / 4);
-                    
+                    const el = document.getElementById(elementId); if(!el) { clearInterval(speechMonitors[elementId]); return; }
+                    if(el.style.display === 'none') { if (isCurrentlySpeaking) { isCurrentlySpeaking = false; el.classList.remove('speaking'); } return; }
+                    analyser.getByteFrequencyData(dataArray); let sum = 0; for(let i = 0; i < dataArray.length; i+=4) sum += dataArray[i]; let average = sum / (dataArray.length / 4);
                     const shouldBeSpeaking = average > 15 && !(elementId === 'user-local-user' && isMuted);
-                    
-                    if (shouldBeSpeaking !== isCurrentlySpeaking) {
-                        isCurrentlySpeaking = shouldBeSpeaking;
-                        if (isCurrentlySpeaking) el.classList.add('speaking');
-                        else el.classList.remove('speaking');
-                    }
+                    if (shouldBeSpeaking !== isCurrentlySpeaking) { isCurrentlySpeaking = shouldBeSpeaking; if (isCurrentlySpeaking) el.classList.add('speaking'); else el.classList.remove('speaking'); }
                 }, 300);
-            } catch(e) {
-                console.error("Speech monitor error", e);
-            }
+            } catch(e) { console.error("Speech monitor error", e); }
         }
     </script>
 </body>
