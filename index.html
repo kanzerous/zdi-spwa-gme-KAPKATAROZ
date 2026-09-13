@@ -46,18 +46,26 @@
         .theme-dot:hover { transform: scale(1.2); }
         .dot-dark { background-color: #2f3136; } .dot-light { background-color: #f2f3f5; } .dot-yellow { background-color: #d4a017; } .dot-red { background-color: #e53935; }
 
-        #auth-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--bg-sec); position: absolute; z-index: 50; transition: background-color 0.3s; flex-direction: column; gap: 30px; }
-        .auth-logo-container { display: flex; flex-direction: column; align-items: center; gap: 10px; animation: fadeIn 1s ease; }
+        #auth-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background-color: var(--bg-sec); position: absolute; z-index: 50; transition: background-color 0.3s; flex-direction: column; gap: 25px; }
         
-        .brand-logo-img { width: 80px; height: 80px; border-radius: 20px; object-fit: cover; box-shadow: 0 8px 25px rgba(0, 210, 255, 0.4); border: 2px solid rgba(255,255,255,0.1); }
-        .header-left .brand-logo-img { width: 40px; height: 40px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0, 210, 255, 0.3); border: 1px solid rgba(255,255,255,0.1); }
+        .brand-header-custom { display: flex; flex-direction: column; align-items: center; gap: 8px; animation: fadeIn 1s ease; text-align: center; }
+        .brand-logo-svg { width: 75px; height: 75px; filter: drop-shadow(0 6px 20px rgba(0, 210, 255, 0.45)); transition: transform 0.3s; }
+        .brand-logo-svg:hover { transform: scale(1.05); }
+        
+        .header-left .brand-header-inline { display: flex; align-items: center; gap: 10px; }
+        .header-left .brand-logo-svg-small { width: 38px; height: 38px; filter: drop-shadow(0 3px 10px rgba(0, 210, 255, 0.3)); }
 
-        .auth-logo-container .brand-name { font-size: 38px; font-family: 'Poppins', sans-serif; font-weight: 800; background: linear-gradient(45deg, #00d2ff, #3a7bd5, #00ff87); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 3px; line-height: 1;}
-        .auth-logo-container .brand-slogan { font-size: 14px; letter-spacing: 5px; font-family: 'Poppins', sans-serif; color: var(--text-muted); font-weight: 600; text-transform: uppercase;}
+        .brand-title-group { display: flex; flex-direction: column; align-items: center; }
+        .brand-name-stylish { font-size: 34px; font-family: 'Poppins', sans-serif; font-weight: 800; background: linear-gradient(135deg, #00d2ff, #7f00ff, #3a7bd5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: 4px; line-height: 1.1; border-radius: 12px; }
+        .brand-slogan-stylish { font-size: 11px; letter-spacing: 4.5px; font-family: 'Poppins', sans-serif; color: var(--text-muted); font-weight: 600; text-transform: lowercase; margin-top: 4px; opacity: 0.85; }
         
-        .auth-box { background-color: var(--bg-ter); padding: 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); width: 340px; text-align: center; transition: background-color 0.3s; border: 1px solid var(--border); }
+        .header-left .brand-title-group-inline { align-items: flex-start; }
+        .header-left .brand-name-stylish { font-size: 20px; letter-spacing: 2px; }
+        .header-left .brand-slogan-stylish { font-size: 8px; letter-spacing: 2px; margin-top: 1px; }
+
+        .auth-box { background-color: var(--bg-ter); padding: 35px 40px; border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); width: 340px; text-align: center; transition: background-color 0.3s; border: 1px solid var(--border); }
         .auth-box h2 { color: var(--text-main); margin-top: 0; margin-bottom: 25px; font-weight: 600; font-family: 'Poppins', sans-serif; }
-        input[type="text"], input[type="password"] { width: 90%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; box-sizing: border-box; width: 100%;}
+        input[type="text"], input[type="password"] { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--border); background-color: var(--input-bg); color: var(--text-main); margin-bottom: 15px; outline: none; font-size: 14px; transition: 0.2s; box-sizing: border-box; }
         input[type="text"]:focus, input[type="password"]:focus { border-color: var(--accent); box-shadow: 0 0 8px rgba(0, 210, 255, 0.3); }
         button { background-color: var(--accent); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; margin-bottom: 10px; font-size: 14px; display: flex; justify-content: center; align-items: center; gap: 8px; font-family: 'Poppins', sans-serif;}
         button:hover { filter: brightness(1.1); transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4); }
@@ -84,12 +92,9 @@
         .modal-error { border-color: #e74c3c; color: #e74c3c; }
 
         #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: var(--call-bg); position: relative; transition: background-color 0.3s; }
-        #call-header { position: relative; padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; }
+        #call-header { position: relative; padding: 10px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; }
         
         .header-left { display: flex; align-items: center; gap: 12px; }
-        .brand-text-block { display: flex; flex-direction: column; justify-content: center; margin-top: 2px; }
-        .brand-name { font-family: 'Poppins', sans-serif; font-size: 24px; font-weight: 800; letter-spacing: 2px; background: linear-gradient(45deg, #00d2ff, #3a7bd5, #00ff87); -webkit-background-clip: text; -webkit-text-fill-color: transparent; line-height: 1; }
-        .brand-slogan { font-family: 'Poppins', sans-serif; font-size: 9px; font-weight: 600; color: var(--text-muted); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 4px; line-height: 1; }
         
         .header-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 15px; }
         .header-divider { width: 2px; height: 28px; background-color: var(--border); border-radius: 2px; }
@@ -130,17 +135,16 @@
         .btn-icon-small:hover { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
         .btn-icon-small.delete-btn:hover { color: #ed4245; background-color: rgba(237, 66, 69, 0.1); }
 
-        #room-resizer { width: 6px; background-color: var(--border); cursor: ew-resize; z-index: 20; transition: 0.2s; }
-        #room-resizer:hover, #room-resizer.resizing { background-color: var(--accent); }
+        /* RESIZER ÇİZGİLERİ İNCELTİLDİ (2px) */
+        #room-resizer { width: 2px; background-color: var(--border); cursor: ew-resize; z-index: 20; transition: 0.2s; }
+        #room-resizer:hover, #room-resizer.resizing { background-color: var(--accent); width: 4px; }
 
         #main-content { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; position: relative; padding-bottom: 90px; }
         
-        /* GİZLEME / AÇMA BUTONU OK YÖNÜ DÜZELTİLDİ */
         #sidebar-toggle-btn { position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 20px; height: 50px; background: var(--bg-sec); border: 1px solid var(--border); border-left: none; border-radius: 0 10px 10px 0; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 100; opacity: 0; transition: opacity 0.3s, background-color 0.2s; box-shadow: 2px 0 10px rgba(0,0,0,0.3); color: var(--text-muted); }
         #sidebar-toggle-btn.visible { opacity: 1; }
         #sidebar-toggle-btn:hover { background-color: var(--input-bg); color: var(--text-main); opacity: 1 !important; }
         
-        /* Default açık: Ok sola (<) bakar. Kapalıyken ok sağa (>) döner */
         #sidebar-toggle-btn svg { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); transform: rotate(0deg); } 
         #sidebar-toggle-btn.collapsed svg { transform: rotate(180deg); }
 
@@ -206,8 +210,9 @@
         .minimized-participants .speaking .circle::before { animation: ripple-minimized-optimized 1.5s infinite ease-out; }
         .minimized-participants .speaking .circle::after { animation: ripple-minimized-optimized 1.5s infinite ease-out; animation-delay: 0.75s; }
 
-        #resizer { width: 6px; background-color: var(--border); cursor: ew-resize; display: none; z-index: 20; transition: 0.2s; }
-        #resizer:hover, #resizer.resizing { background-color: var(--accent); }
+        /* SOHBET RESIZER ÇİZGİSİ İNCELTİLDİ (2px) */
+        #resizer { width: 2px; background-color: var(--border); cursor: ew-resize; display: none; z-index: 20; transition: 0.2s; }
+        #resizer:hover, #resizer.resizing { background-color: var(--accent); width: 4px; }
 
         #chat-sidebar { width: 340px; min-width: 250px; max-width: 600px; background-color: var(--bg-sec); display: none; flex-direction: column; z-index: 15; transition: background-color 0.3s; position: relative; }
         #chat-header { padding: 15px; background-color: var(--bg-ter); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
@@ -317,13 +322,34 @@
         </div>
     </div>
 
+    <svg width="0" height="0" style="position:absolute;">
+        <defs>
+            <linearGradient id="movoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#00d2ff"/>
+                <stop offset="50%" stop-color="#3a7bd5"/>
+                <stop offset="100%" stop-color="#7f00ff"/>
+            </linearGradient>
+            <linearGradient id="movoGradGlow" x1="0%" y1="100%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#00ff87"/>
+                <stop offset="100%" stop-color="#00d2ff"/>
+            </linearGradient>
+        </defs>
+    </svg>
+
     <div id="auth-container">
-        <div class="auth-logo-container">
-            <!-- LOGO: BURAYA RESIM LINKINI VEYA BASE64 KODUNU YAPISTIR -->
-            <img class="brand-logo-img" src="BURAYA_LOGO_LINKI_GELECEK.png" alt="MOVO Logo" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=MOVO';">
-            <div class="brand-text-block" style="align-items: center; margin-top: 10px;">
-                <span class="brand-name">MOVO</span>
-                <span class="brand-slogan">MOVE YOUR VOICE</span>
+        <div class="brand-header-custom">
+            <svg class="brand-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100" height="100" rx="28" fill="url(#movoGrad)" fill-opacity="0.15"/>
+                <rect x="2" y="2" width="96" height="96" rx="26" stroke="url(#movoGrad)" stroke-width="2" stroke-opacity="0.5"/>
+                <path d="M50 25C40 25 33 33 33 44V56C33 67 40 75 50 75C60 75 67 67 67 56V44C67 33 60 25 50 25Z" fill="url(#movoGrad)" fill-opacity="0.25" stroke="url(#movoGrad)" stroke-width="3"/>
+                <rect x="42" y="38" width="4" height="24" rx="2" fill="url(#movoGradGlow)"/>
+                <rect x="48" y="32" width="4" height="36" rx="2" fill="#fff"/>
+                <rect x="54" y="38" width="4" height="24" rx="2" fill="url(#movoGradGlow)"/>
+                <circle cx="50" cy="50" r="38" stroke="url(#movoGradGlow)" stroke-width="1.5" stroke-dasharray="6 6" opacity="0.6"/>
+            </svg>
+            <div class="brand-title-group">
+                <span class="brand-name-stylish">MOVO</span>
+                <span class="brand-slogan-stylish">move your voice</span>
             </div>
         </div>
         
@@ -354,11 +380,18 @@
     <div id="call-screen">
         <div id="call-header">
             <div class="header-left">
-                <!-- LOGO YERLEŞİMİ -->
-                <img class="brand-logo-img" src="BURAYA_LOGO_LINKI_GELECEK.png" alt="MOVO Logo" onerror="this.src='https://api.dicebear.com/7.x/identicon/svg?seed=MOVO';">
-                <div class="brand-text-block">
-                    <span class="brand-name">MOVO</span>
-                    <span class="brand-slogan">MOVE YOUR VOICE</span>
+                <div class="brand-header-inline">
+                    <svg class="brand-logo-svg-small" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="100" height="100" rx="28" fill="url(#movoGrad)" fill-opacity="0.2"/>
+                        <path d="M50 25C40 25 33 33 33 44V56C33 67 40 75 50 75C60 75 67 67 67 56V44C67 33 60 25 50 25Z" fill="url(#movoGrad)" fill-opacity="0.3" stroke="url(#movoGrad)" stroke-width="4"/>
+                        <rect x="42" y="38" width="4" height="24" rx="2" fill="url(#movoGradGlow)"/>
+                        <rect x="48" y="32" width="4" height="36" rx="2" fill="#fff"/>
+                        <rect x="54" y="38" width="4" height="24" rx="2" fill="url(#movoGradGlow)"/>
+                    </svg>
+                    <div class="brand-title-group brand-title-group-inline">
+                        <span class="brand-name-stylish">MOVO</span>
+                        <span class="brand-slogan-stylish">move your voice</span>
+                    </div>
                 </div>
             </div>
             
@@ -550,11 +583,12 @@
             "https://theamazingworldofgumball.fandom.com/wiki/Special:FilePath/Darwin_Watterson.png" 
         ];
 
+        /* SES EFEKTLERİ DÜZELTİLDİ (BA DUM TSS = TROMBET / SLIDE WHISTLE) */
         const SOUND_EFFECTS = {
             'applause': 'https://actions.google.com/sounds/v1/crowds/light_applause.ogg',
             'laugh': 'https://actions.google.com/sounds/v1/crowds/outside_crowd_laughing_3.ogg',
-            'badumtss': 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg',
-            'fail': 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_comedy_accent.ogg'
+            'badumtss': 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_comedy_accent.ogg',
+            'fail': 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg'
         };
 
         const SOUND_EMOJIS = { 'applause': '👏', 'laugh': '😂', 'badumtss': '🥁', 'fail': '🤦‍♂️' };
@@ -777,19 +811,43 @@
             document.getElementById('context-menu').style.display = 'none';
         }
 
-        const roomResizer = document.getElementById('room-resizer'); const roomSidebar = document.getElementById('room-sidebar'); let isResizingRoom = false;
-        roomResizer.addEventListener('mousedown', () => { isResizingRoom = true; document.body.style.cursor = 'ew-resize'; roomResizer.classList.add('resizing'); });
+        /* SOL MENÜ SÜRÜKLEME (RESIZING) MANTIĞI DÜZELTİLDİ VE GÜÇLENDİRİLDİ */
+        const roomResizer = document.getElementById('room-resizer'); 
+        const roomSidebar = document.getElementById('room-sidebar'); 
+        let isResizingRoom = false;
+
+        roomResizer.addEventListener('mousedown', (e) => { 
+            e.preventDefault();
+            isResizingRoom = true; 
+            document.body.style.cursor = 'ew-resize'; 
+            roomResizer.classList.add('resizing'); 
+        });
         
-        const resizer = document.getElementById('resizer'); const chatSidebar = document.getElementById('chat-sidebar'); let isResizing = false;
-        resizer.addEventListener('mousedown', () => { isResizing = true; document.body.style.cursor = 'ew-resize'; resizer.classList.add('resizing'); });
+        const resizer = document.getElementById('resizer'); 
+        const chatSidebar = document.getElementById('chat-sidebar'); 
+        let isResizing = false;
+        
+        resizer.addEventListener('mousedown', (e) => { 
+            e.preventDefault();
+            isResizing = true; 
+            document.body.style.cursor = 'ew-resize'; 
+            resizer.classList.add('resizing'); 
+        });
         
         document.addEventListener('mousemove', (e) => {
-            if (isResizing) { const newWidth = document.body.clientWidth - e.clientX; if (newWidth > 250 && newWidth < 600) chatSidebar.style.width = newWidth + 'px'; }
-            if (isResizingRoom) { if (e.clientX > 150 && e.clientX < 400) roomSidebar.style.width = e.clientX + 'px'; }
+            if (isResizing) { 
+                const newWidth = document.body.clientWidth - e.clientX; 
+                if (newWidth > 250 && newWidth < 600) chatSidebar.style.width = newWidth + 'px'; 
+            }
+            if (isResizingRoom) { 
+                if (e.clientX > 150 && e.clientX < 400) roomSidebar.style.width = e.clientX + 'px'; 
+            }
         });
+
         document.addEventListener('mouseup', () => { 
             if (isResizing) { isResizing = false; resizer.classList.remove('resizing'); } 
-            if (isResizingRoom) { isResizingRoom = false; roomResizer.classList.remove('resizing'); } document.body.style.cursor = 'default';
+            if (isResizingRoom) { isResizingRoom = false; roomResizer.classList.remove('resizing'); } 
+            document.body.style.cursor = 'default';
         });
 
         let sidebarToggleTimeout;
