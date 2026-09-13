@@ -281,7 +281,6 @@
         #leave-btn { width: auto; padding: 0 20px; border-radius: 25px; background-color: #ed4245; color: white; }
         #leave-btn:hover { background-color: #c9383b; }
 
-        /* MADDE 4: Context Menü (Sağ tık) tasarımı değiştirildi */
         #context-menu { display: none; position: absolute; background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(5px); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; box-shadow: 0 8px 25px rgba(0,0,0,0.6); padding: 15px; z-index: 1000; width: 220px; color: #fff; }
         #context-menu h4 { margin: 0 0 12px 0; font-size: 14px; font-weight: 600; font-family: 'Poppins', sans-serif; color: #fff; border-bottom: 1px solid rgba(255,255,255,0.2); padding-bottom: 8px; }
         .context-item { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
@@ -583,12 +582,12 @@
             "https://theamazingworldofgumball.fandom.com/wiki/Special:FilePath/Darwin_Watterson.png" 
         ];
 
-        /* MADDE 5: Ses efektleri değiştirildi */
+        /* Ses linkleri sağlam mp3'lerle değiştirildi */
         const SOUND_EFFECTS = {
-            'applause': 'https://actions.google.com/sounds/v1/crowds/light_applause.ogg',
-            'sadtrombone': 'https://actions.google.com/sounds/v1/cartoon/cartoon_trombone_decline.ogg',
-            'laugh': 'https://actions.google.com/sounds/v1/crowds/tv_studio_audience_laugh.ogg',
-            'badumtss': 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_comedy_accent.ogg'
+            'applause': 'https://www.myinstants.com/media/sounds/applause_1.mp3',
+            'sadtrombone': 'https://www.myinstants.com/media/sounds/sadtrombone.mp3',
+            'laugh': 'https://www.myinstants.com/media/sounds/laugh.mp3',
+            'badumtss': 'https://www.myinstants.com/media/sounds/badumtss.mp3'
         };
 
         const SOUND_EMOJIS = { 'applause': '👏', 'sadtrombone': '🎺', 'laugh': '😂', 'badumtss': '🥁' };
@@ -767,10 +766,12 @@
             }
         });
 
-        /* MADDE 5: Ses 2 saniyede zorla kesiliyor */
+        /* Sesi oynatır, hata fırlatırsa yakalar */
         function playLocalSound(soundKey) {
             if(!SOUND_EFFECTS[soundKey]) return;
-            const audio = new Audio(SOUND_EFFECTS[soundKey]); audio.volume = 0.6; audio.play();
+            const audio = new Audio(SOUND_EFFECTS[soundKey]); 
+            audio.volume = 0.6; 
+            audio.play().catch(e => console.log("Ses oynatma hatası:", e));
             setTimeout(() => {
                 audio.pause();
                 audio.currentTime = 0;
@@ -788,13 +789,11 @@
             
             const audioEl = document.getElementById('audio-' + id); if(!audioEl) return; document.getElementById('cm-volume').value = audioEl.volume; const muteBtn = document.getElementById('context-mute-btn');
             
-            // MADDE 4: Emojiler metinden kaldırıldı
             if (peers[id] && peers[id].manualMute) { muteBtn.classList.add('muted'); muteBtn.innerHTML = "Sesi Geri Aç"; } else { muteBtn.classList.remove('muted'); muteBtn.innerHTML = "Sadece Kendimde Sustur"; }
             
             const adminPanel = document.getElementById('admin-actions');
             if(isHost) { 
                 adminPanel.style.display = 'flex'; 
-                // MADDE 2: Admin butonunun metni duruma göre değişiyor
                 const forceMuteBtn = document.getElementById('admin-force-mute-btn');
                 if (peers[id] && peers[id].isAdminMuted) {
                     forceMuteBtn.innerText = "Herkese Sesi Aç";
@@ -816,7 +815,6 @@
             applyRoomIsolations(); updateMuteBadgeUI(currentContextMenuPeerId); document.getElementById('context-menu').style.display = 'none';
         }
 
-        /* MADDE 2: Admin sesi aç/kapa mantığı revize edildi */
         function adminForceMute() {
             if(!isHost || !currentContextMenuPeerId) return;
             const targetPeer = peers[currentContextMenuPeerId];
@@ -1027,15 +1025,29 @@
                     if (isCameraOn && cameraStream) { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); }
                 
                 } else if (data.type === 'peer-list') {
-                    /* MADDE 1: Diğer kullanıcıların avatarlarını görememe hatası çözüldü */
+                    /* ÇÖZÜM 1: Katılan kişi listedekiler için connectToPeer emrini sorunsuz gönderip çağrı başlatıyor. */
                     data.list.forEach(p => { 
-                        if(p.id === peer.id) return; 
-                        if (!peers[p.id]) peers[p.id] = { username: p.username, avatar: p.avatar, roomId: p.roomId, isMuted: p.isMuted, isHost: p.isHost };
-                        else { peers[p.id].avatar = p.avatar; peers[p.id].username = p.username; peers[p.id].isMuted = p.isMuted; }
-                        connectToPeer(p.id, p.username, p.avatar); 
+                        if(p.id === peer.id) return;
+                        
+                        let isNew = !peers[p.id];
+                        if (isNew) {
+                            connectToPeer(p.id, p.username, p.avatar);
+                            if(peers[p.id]) {
+                                peers[p.id].roomId = p.roomId;
+                                peers[p.id].isMuted = p.isMuted;
+                                peers[p.id].isHost = p.isHost;
+                            }
+                        } else {
+                            peers[p.id].avatar = p.avatar; 
+                            peers[p.id].username = p.username; 
+                            peers[p.id].isMuted = p.isMuted; 
+                            peers[p.id].roomId = p.roomId;
+                            peers[p.id].isHost = p.isHost;
+                        }
                         updateParticipantUI(p.id, p.username, p.avatar); 
                     });
-                    renderRoomSidebar(); // Listeyi güncellerken avatar yenilemesini tetikliyoruz
+                    renderRoomSidebar();
+                    applyRoomIsolations();
                 
                 } else if (data.type === 'text') {
                     if(peers[id] && peers[id].roomId === localVoiceRoomId) { renderMessage(data.sender, data.content, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat(); }
@@ -1058,15 +1070,14 @@
                     if (peers[id]) { peers[id].isMuted = data.isMuted; updateMuteBadgeUI(id); applyRoomIsolations(); renderRoomSidebar(); }
                 } else if (data.type === 'host-transfer') { 
                     if (peers[id]) { peers[id].isHost = true; updateParticipantUI(id, peers[id].username, peers[id].avatar); renderRoomSidebar(); } 
-                /* MADDE 2: Admin sesi aç/kapa yönetimi veri alışverişine eklendi */
                 } else if (data.type === 'admin-mute-action') {
                     if (peer && data.target === peer.id) {
                         if (data.action === 'mute') {
-                            window.forcedByAdmin = true; // Admin tarafından kilitlendi
+                            window.forcedByAdmin = true;
                             if (!isMuted) toggleMute();
                             showModal('error', 'Admin tarafından mikrofonunuz kapatıldı.');
                         } else if (data.action === 'unmute') {
-                            if (window.forcedByAdmin) { // Yalnızca admin kilitlediyse açılabilir
+                            if (window.forcedByAdmin) {
                                 window.forcedByAdmin = false;
                                 if (isMuted) toggleMute();
                                 showModal('success', 'Admin mikrofonunuzu açtı.');
@@ -1159,7 +1170,6 @@
                 
                 let usersHtml = `<div class="room-user-list">`;
                 
-                /* MADDE 3: Listedeki kişinin isminin yanına mikrofon mute ise ikon getiriliyor */
                 if (localVoiceRoomId === rId) { 
                     let localMuteIcon = isMuted ? ' <span style="font-size:10px;">🔇</span>' : '';
                     usersHtml += `<div class="room-user-item" oncontextmenu="handleRightClick(event, 'local-user', '${localUsername}')" draggable="${isHost}" ondragstart="dragUser(event, 'local-user')"><img src="${localAvatar}"> ${localUsername} (Sen)${localMuteIcon}</div>`; 
@@ -1328,7 +1338,7 @@
         function toggleMute() {
             isMuted = !isMuted; myStream.getAudioTracks()[0].enabled = !isMuted; const btn = document.getElementById('mute-btn');
             
-            if (!isMuted) window.forcedByAdmin = false; // MADDE 2: Kişi kendi açarsa blok kalkar.
+            if (!isMuted) window.forcedByAdmin = false;
             
             if (isMuted) { btn.classList.add('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"></path><path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; 
             } else { btn.classList.remove('active-red'); btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>`; }
