@@ -72,12 +72,13 @@
         .avatar-option:hover { opacity: 0.8; }
         .avatar-option.selected { border-color: var(--accent); opacity: 1; transform: scale(1.15); box-shadow: 0 0 10px var(--accent); }
 
-        /* BAŞARILI BAĞLANTI EKRANI */
-        #success-screen { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(46, 204, 113, 0.95); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; color: white; font-family: 'Poppins', sans-serif; backdrop-filter: blur(10px); transition: opacity 0.5s ease; }
-        #success-screen svg { width: 90px; height: 90px; margin-bottom: 20px; animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        #success-screen h2 { font-size: 28px; font-weight: 800; letter-spacing: 1px; margin: 0; animation: slideUp 0.5s ease; }
-        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
-        @keyframes slideUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+        .notification-overlay { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 9999; flex-direction: column; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .notification-modal { background-color: var(--bg-ter); padding: 30px 40px; border-radius: 16px; box-shadow: 0 15px 50px rgba(0,0,0,0.6); text-align: center; display: flex; flex-direction: column; align-items: center; gap: 15px; border: 2px solid transparent; transform: scale(0.8); opacity: 0; transition: 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); max-width: 320px; width: 80%; }
+        .notification-modal.show { transform: scale(1); opacity: 1; }
+        .notification-modal h2 { margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 700; }
+        .notification-modal svg { width: 50px; height: 50px; }
+        .modal-success { border-color: #2ecc71; color: #2ecc71; }
+        .modal-error { border-color: #e74c3c; color: #e74c3c; }
 
         #call-screen { width: 100%; height: 100%; display: none; flex-direction: column; background-color: var(--call-bg); position: relative; transition: background-color 0.3s; }
         #call-header { position: relative; padding: 12px 25px; background-color: var(--bg-ter); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; z-index: 10; box-shadow: 0 2px 10px rgba(0,0,0,0.2); transition: 0.3s; }
@@ -97,9 +98,13 @@
 
         #call-body { flex-grow: 1; display: flex; flex-direction: row; overflow: hidden; position: relative; }
         
-        /* SOL MENÜ - YÜKSEK KALİTE ODA TASARIMI */
         #room-sidebar { width: 240px; min-width: 200px; background-color: var(--bg-sec); display: flex; flex-direction: column; border-right: 1px solid var(--border); z-index: 15; transition: background-color 0.3s; }
-        #room-header { padding: 15px; background-color: var(--bg-ter); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        /* ODA BAŞLIĞI DÜZENLEMESİ (Tek Satır & Buton Fix) */
+        #room-header { padding: 12px 15px; background-color: var(--bg-ter); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); gap: 10px; flex-wrap: nowrap; }
+        #room-header span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex-grow: 1; }
+        #room-header .btn-icon-small { flex-shrink: 0; width: 26px; height: 26px; padding: 0; }
+        
         #room-list-container { flex-grow: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 10px; }
         
         .voice-room { display: flex; flex-direction: column; gap: 5px; background: rgba(255,255,255,0.03); border-radius: 8px; padding: 5px; border: 1px solid transparent; transition: 0.2s; }
@@ -118,7 +123,7 @@
         .room-user-item:active { cursor: grabbing; }
         .room-user-item img { width: 24px; height: 24px; border-radius: 50%; background-color: #fff; object-fit: contain; }
 
-        .btn-icon-small { background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; justify-content: center; align-items: center; border-radius: 4px; transition: 0.2s; }
+        .btn-icon-small { background: none; border: none; color: var(--text-muted); cursor: pointer; display: flex; justify-content: center; align-items: center; border-radius: 4px; transition: 0.2s; }
         .btn-icon-small:hover { color: var(--text-main); background-color: rgba(255,255,255,0.1); }
         .btn-icon-small.delete-btn:hover { color: #ed4245; background-color: rgba(237, 66, 69, 0.1); }
 
@@ -156,15 +161,14 @@
         .circle img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; border-radius: 50%; background-color: #e3e5e8; padding: 8px; box-sizing: border-box; }
         .name-tag { background-color: rgba(0, 0, 0, 0.7); padding: 6px 16px; border-radius: 12px; font-size: 14px; color: white; backdrop-filter: blur(5px); pointer-events: none; z-index: 3; }
         
-        /* ROZETLER (Mute & Admin) */
         .mute-badge { position: absolute; bottom: 0; right: 0; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; z-index: 5; border: 3px solid var(--bg-main); box-shadow: 0 2px 5px rgba(0,0,0,0.5); font-size: 16px; }
         .self-muted-badge { background-color: #f1c40f; color: #000; } 
         .remote-muted-badge { background-color: #e53935; color: #fff; } 
         
-        .host-badge { position: absolute; top: -5px; right: -5px; width: 34px; height: 34px; background-color: #f1c40f; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.6); z-index: 10; border: 3px solid var(--bg-main); }
+        .host-badge-container { position: absolute; top: -5px; right: -5px; z-index: 10; }
+        .host-badge { width: 34px; height: 34px; background-color: #f1c40f; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 4px 10px rgba(0,0,0,0.6); border: 3px solid var(--bg-main); }
         .host-badge svg { width: 18px; height: 18px; fill: #000; }
 
-        /* FPS İYİLEŞTİRMESİ: Box-shadow animasyonu yerine Hardware Accelerated Transform */
         .circle::before, .circle::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 50%; border: 2px solid #3ba55d; background-color: rgba(59, 165, 93, 0.15); opacity: 0; z-index: -1; will-change: transform, opacity; pointer-events: none; }
         .speaking .circle::before { animation: ripple-optimized 1.5s infinite ease-out; }
         .speaking .circle::after { animation: ripple-optimized 1.5s infinite ease-out; animation-delay: 0.75s; }
@@ -182,7 +186,7 @@
         .minimized-participants .participant { gap: 8px; flex-direction: row; background: rgba(0,0,0,0.6); padding: 5px 15px 5px 5px; border-radius: 30px; }
         .minimized-participants .name-tag { font-size: 12px; padding: 0; background: none; }
         .minimized-participants .mute-badge { width: 20px; height: 20px; font-size: 10px; border-width: 2px; }
-        .minimized-participants .host-badge { width: 20px; height: 20px; top: -2px; right: -2px; border-width: 2px; }
+        .minimized-participants .host-badge { width: 20px; height: 20px; border-width: 2px; }
         .minimized-participants .host-badge svg { width: 12px; height: 12px; }
         
         @keyframes ripple-minimized-optimized { 0% { transform: scale(1); opacity: 1; } 100% { transform: scale(1.7); opacity: 0; } }
@@ -192,9 +196,14 @@
         #resizer { width: 6px; background-color: var(--border); cursor: ew-resize; display: none; z-index: 20; transition: 0.2s; }
         #resizer:hover, #resizer.resizing { background-color: var(--accent); }
 
-        #chat-sidebar { width: 340px; min-width: 250px; max-width: 600px; background-color: var(--bg-sec); display: none; flex-direction: column; z-index: 15; transition: background-color 0.3s; }
+        #chat-sidebar { width: 340px; min-width: 250px; max-width: 600px; background-color: var(--bg-sec); display: none; flex-direction: column; z-index: 15; transition: background-color 0.3s; position: relative; }
         #chat-header { padding: 15px; background-color: var(--bg-ter); font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
         #chat-messages { flex-grow: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; scroll-behavior: smooth; }
+        
+        /* DRAG AND DROP OVERLAY */
+        #drag-overlay { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: rgba(88, 101, 242, 0.85); z-index: 999; color: white; justify-content: center; align-items: center; font-size: 20px; font-weight: bold; flex-direction: column; gap: 15px; backdrop-filter: blur(4px); pointer-events: none; }
+        #drag-overlay.active { display: flex !important; }
+
         .msg { background-color: var(--bg-ter); padding: 10px 14px; border-radius: 8px; font-size: 13.5px; line-height: 1.4; word-break: break-word; box-shadow: 0 1px 3px rgba(0,0,0,0.2); color: var(--text-main); }
         .msg-sender { font-weight: bold; color: #3ba55d; margin-bottom: 5px; display: block; font-size: 12px; }
         .msg.local { background-color: var(--msg-local); border-bottom-right-radius: 0; margin-left: 20px; }
@@ -214,11 +223,31 @@
 
         #controls-wrapper { position: absolute; bottom: 20px; left: 0; right: 0; display: flex; justify-content: center; pointer-events: none; z-index: 10; }
         #controls-bar { background-color: var(--bg-ter); backdrop-filter: blur(10px); padding: 10px 20px; border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: 0 8px 30px rgba(0,0,0,0.5); border: 1px solid var(--border); pointer-events: auto; }
-        .ctrl-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; background-color: var(--bg-sec); color: var(--text-main); transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        
+        /* COMBO BUTON YAPI TAŞLARI */
+        .combo-btn-container { display: flex; align-items: center; background-color: var(--bg-sec); border-radius: 25px; transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); position: relative;}
+        .combo-btn-container:hover { background-color: var(--input-bg); transform: translateY(-3px); }
+        
+        .combo-arrow { width: 30px; height: 50px; display: flex; justify-content: center; align-items: center; border-left: 1px solid var(--border); cursor: pointer; color: var(--text-muted); border-radius: 0 25px 25px 0; }
+        .combo-arrow:hover { color: var(--text-main); background-color: rgba(255,255,255,0.05); }
+        .combo-arrow svg { width: 16px; height: 16px; }
+
+        .dropdown-menu { display: none; position: absolute; bottom: 65px; left: 50%; transform: translateX(-50%); background-color: var(--bg-sec); border: 1px solid var(--border); border-radius: 12px; padding: 15px; min-width: 220px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 100; flex-direction: column; gap: 10px; opacity: 0; transition: opacity 0.2s, bottom 0.2s; }
+        .dropdown-menu.show { display: flex; opacity: 1; bottom: 70px; }
+        .dropdown-menu h4 { margin: 0 0 8px 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+        .dropdown-menu select { width: 100%; background: var(--input-bg); color: var(--text-main); border: 1px solid var(--border); padding: 8px; border-radius: 6px; outline: none; font-size: 12px; cursor: pointer; margin-bottom: 10px; }
+        
+        .sound-item { padding: 10px; background: var(--input-bg); border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .sound-item:hover { background: var(--bg-ter); transform: scale(1.02); }
+        .active-sound { background: var(--accent) !important; color: white !important; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+
+        .ctrl-btn { width: 50px; height: 50px; border-radius: 50%; display: flex; justify-content: center; align-items: center; padding: 0; margin: 0; background-color: var(--bg-sec); color: var(--text-main); transition: all 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.2); border: none; cursor: pointer; }
         .ctrl-btn svg { width: 22px; height: 22px; stroke-width: 2; }
         .ctrl-btn:hover { background-color: var(--input-bg); transform: translateY(-3px); }
         .ctrl-btn.active-red { background-color: #ed4245 !important; color: white !important; }
-        .ctrl-btn.active-red:hover { background-color: #c9383b !important; }
+        .combo-btn-container .ctrl-btn { box-shadow: none; }
+        .combo-btn-container .ctrl-btn:hover { transform: none; background-color: transparent; }
+        .combo-btn-container .ctrl-btn.active-red { border-radius: 25px 0 0 25px; }
         .ctrl-btn.active-green { background-color: #3ba55d !important; color: white !important; }
         #leave-btn { width: auto; padding: 0 20px; border-radius: 25px; background-color: #ed4245; color: white; }
         #leave-btn:hover { background-color: #c9383b; }
@@ -249,15 +278,17 @@
         <div class="theme-dot dot-red" onclick="setTheme('theme-red')"></div>
     </div>
     
-    <!-- BAŞARILI BAĞLANTI EKRANI (Yeni) -->
-    <div id="success-screen">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>
-        </svg>
-        <h2>Bağlantı Başarılı!</h2>
+    <div id="notification-overlay" class="notification-overlay">
+        <div id="modal-success" class="notification-modal modal-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <h2 id="success-text">Bağlantı Başarılı!</h2>
+        </div>
+        <div id="modal-error" class="notification-modal modal-error" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            <h2 id="error-text">Hata Oluştu!</h2>
+        </div>
     </div>
 
-    <!-- GİRİŞ EKRANLARI -->
     <div id="auth-container">
         <div class="auth-logo-container">
             <svg class="brand-logo-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -296,7 +327,6 @@
         </div>
     </div>
 
-    <!-- SOHBET EKRANI -->
     <div id="call-screen">
         <div id="call-header">
             <div class="header-left">
@@ -325,7 +355,6 @@
         
         <div id="call-body">
             
-            <!-- SES ODALARI (LOBİ) YAN MENÜSÜ -->
             <div id="room-sidebar">
                 <div id="room-header">
                     <span>🎙️ Ses Odaları</span>
@@ -339,16 +368,30 @@
 
             <div id="main-content">
                 <div id="video-gallery"></div>
-                
                 <div id="participants-area"></div>
-                
                 <div id="floating-clock">🕒 00:00:00</div>
                 
                 <div id="controls-wrapper">
                     <div id="controls-bar">
-                        <button id="mute-btn" onclick="toggleMute()" class="ctrl-btn" title="Sustur">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
-                        </button>
+                        
+                        <!-- MİKROFON SEÇİM OKU VE MUTE COMBO -->
+                        <div class="combo-btn-container" id="mic-container">
+                            <button id="mute-btn" onclick="toggleMute()" class="ctrl-btn" title="Sustur">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                            </button>
+                            <!-- TIKLANINCA AYGITLARI ZORLA YENİLEYEN OK -->
+                            <div class="combo-arrow" onclick="toggleDeviceMenu()" title="Ses Cihazı Ayarları">
+                                <svg id="device-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.3s; transform: rotate(180deg);">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="dropdown-menu" id="device-menu">
+                                <h4>🎙️ Mikrofon</h4>
+                                <select id="mic-select" onchange="changeAudioInput(this.value)"></select>
+                                <h4>🔊 Hoparlör</h4>
+                                <select id="speaker-select" onchange="changeAudioOutput(this.value)"></select>
+                            </div>
+                        </div>
                         
                         <button id="camera-btn" onclick="toggleCamera()" class="ctrl-btn" title="Kamera Aç/Kapat">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
@@ -357,6 +400,24 @@
                         <button id="share-btn" onclick="openShareModal()" class="ctrl-btn" title="Ekran Paylaş">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                         </button>
+                        
+                        <!-- YENİ SOUNDBOARD MEKANİĞİ -->
+                        <div class="combo-btn-container" id="soundboard-container">
+                            <button class="ctrl-btn" onclick="playSelectedSound()" title="Seçili Sesi Çal">🎵</button>
+                            <div class="combo-arrow" onclick="toggleSoundMenu()" title="Ses Efekti Seç">
+                                <svg id="sound-menu-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="transition: transform 0.3s; transform: rotate(180deg);">
+                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                </svg>
+                            </div>
+                            <div class="dropdown-menu" id="soundboard-menu">
+                                <h4>Ses Efekti Seç</h4>
+                                <div class="sound-item active-sound" onclick="selectSound('applause', this)">👏 Alkış Sesi</div>
+                                <div class="sound-item" onclick="selectSound('laugh', this)">😂 Gülme Krizi</div>
+                                <div class="sound-item" onclick="selectSound('badumtss', this)">🥁 Ba Dum Tıs</div>
+                                <div class="sound-item" onclick="selectSound('fail', this)">🤦‍♂️ Fail (Trompet)</div>
+                            </div>
+                        </div>
+
                         <button id="chat-toggle-btn" onclick="toggleChat()" class="ctrl-btn" title="Sohbeti Aç">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
                         </button>
@@ -370,6 +431,12 @@
             <div id="resizer"></div>
 
             <div id="chat-sidebar">
+                <!-- SÜRÜKLE BIRAK OVERLAY'İ -->
+                <div id="drag-overlay">
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                    Dosyayı Buraya Bırak
+                </div>
+                
                 <div id="chat-header">
                     <span style="display: flex; align-items: center; gap: 8px;">
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Sohbet
@@ -379,7 +446,7 @@
                 <div id="chat-messages"></div>
                 <div id="emoji-picker"></div>
                 <div id="chat-input-area">
-                    <input type="file" id="file-input" style="display: none;" onchange="handleFileSelect(event)">
+                    <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.html,.zip,.rar,.png,.jpg,.jpeg" onchange="handleFileSelect(event)">
                     <button class="chat-btn" onclick="document.getElementById('file-input').click()" title="Dosya Gönder">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
                     </button>
@@ -426,7 +493,6 @@
         
         let callStartTime = null, timerInterval = null;
         let isLeavingLobby = false;
-        
         let currentRoomPassword = "";
         let migrationInterval = null;
         
@@ -434,12 +500,10 @@
         let isHost = false;
         let speechMonitors = {}; 
 
-        // ODA SİSTEMİ DEĞİŞKENLERİ
         let voiceRooms = { 'main': { id: 'main', name: 'Ana Lobi' } };
         let localVoiceRoomId = 'main';
 
         const FALLBACK_IMG = "https://api.dicebear.com/7.x/bottts/svg?seed=Oops";
-        
         const AVATARS = [
             "https://en.wikipedia.org/wiki/Special:FilePath/Lucky_Luke.png", 
             "https://en.wikipedia.org/wiki/Special:FilePath/Fred_Flintstone.png", 
@@ -451,6 +515,15 @@
             "https://theamazingworldofgumball.fandom.com/wiki/Special:FilePath/Gumball_Watterson.png", 
             "https://theamazingworldofgumball.fandom.com/wiki/Special:FilePath/Darwin_Watterson.png" 
         ];
+
+        const SOUND_EFFECTS = {
+            'applause': 'https://actions.google.com/sounds/v1/crowds/light_applause.ogg',
+            'laugh': 'https://actions.google.com/sounds/v1/crowds/outside_crowd_laughing_3.ogg',
+            'badumtss': 'https://actions.google.com/sounds/v1/cartoon/cartoon_boing.ogg',
+            'fail': 'https://actions.google.com/sounds/v1/cartoon/slide_whistle_to_drum_comedy_accent.ogg'
+        };
+
+        window.addEventListener('beforeunload', () => { if(peer) peer.destroy(); });
 
         function initAvatars() {
             const randomIndex = Math.floor(Math.random() * AVATARS.length);
@@ -506,9 +579,125 @@
         function stopTimer() { clearInterval(timerInterval); document.getElementById('call-timer').style.display = 'none'; document.getElementById('floating-clock').style.display = 'none'; document.getElementById('call-timer').innerText = `⏳ 00:00`; }
         function setTheme(themeName) { document.body.className = themeName; localStorage.setItem('chat_theme', themeName); }
 
-        function showSuccessScreen() {
-            const sc = document.getElementById('success-screen'); sc.style.display = 'flex'; sc.style.opacity = '1';
-            setTimeout(() => { sc.style.opacity = '0'; setTimeout(() => { sc.style.display = 'none'; }, 500); }, 1500);
+        function showModal(type, message) {
+            const overlay = document.getElementById('notification-overlay');
+            const successModal = document.getElementById('modal-success');
+            const errorModal = document.getElementById('modal-error');
+            
+            overlay.style.display = 'flex';
+            successModal.style.display = 'none'; successModal.classList.remove('show');
+            errorModal.style.display = 'none'; errorModal.classList.remove('show');
+            
+            if(type === 'success') {
+                document.getElementById('success-text').innerText = message;
+                successModal.style.display = 'flex'; setTimeout(() => successModal.classList.add('show'), 10);
+            } else {
+                document.getElementById('error-text').innerText = message;
+                errorModal.style.display = 'flex'; setTimeout(() => errorModal.classList.add('show'), 10);
+            }
+            setTimeout(() => { successModal.classList.remove('show'); errorModal.classList.remove('show'); setTimeout(() => { overlay.style.display = 'none'; }, 300); }, 2500);
+        }
+
+        // TIKLANDIĞI AN AYGITLARI ZORLA YENİLEYEN FONKSİYON
+        async function loadDevices() {
+            try {
+                // Ön bellek hatasını kırmak için önce aygıt erişimini zorla (Kullanıcı zaten izin vermişti)
+                await navigator.mediaDevices.getUserMedia({ audio: true, video: false }); 
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                const micSelect = document.getElementById('mic-select'); 
+                const speakerSelect = document.getElementById('speaker-select');
+                micSelect.innerHTML = ''; speakerSelect.innerHTML = '';
+                
+                devices.forEach(device => {
+                    if (device.kind === 'audioinput') { 
+                        const option = document.createElement('option'); 
+                        option.value = device.deviceId; 
+                        option.text = device.label || `Mikrofon ${micSelect.length + 1}`; 
+                        micSelect.appendChild(option); 
+                    }
+                    if (device.kind === 'audiooutput') { 
+                        const option = document.createElement('option'); 
+                        option.value = device.deviceId; 
+                        option.text = device.label || `Hoparlör ${speakerSelect.length + 1}`; 
+                        speakerSelect.appendChild(option); 
+                    }
+                });
+            } catch(e) { console.error("Aygıtlar listelenemedi:", e); }
+        }
+
+        async function toggleDeviceMenu() { 
+            await loadDevices(); // Menü açılmadan önce cihazları baştan sorgula
+            const menu = document.getElementById('device-menu');
+            const arrow = document.getElementById('device-menu-arrow');
+            menu.classList.toggle('show'); 
+            if(menu.classList.contains('show')) { arrow.style.transform = 'rotate(0deg)'; } 
+            else { arrow.style.transform = 'rotate(180deg)'; }
+        }
+        
+        document.addEventListener('click', (e) => { 
+            if(!e.target.closest('#mic-container')) { 
+                const menu = document.getElementById('device-menu');
+                if (menu && menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                    document.getElementById('device-menu-arrow').style.transform = 'rotate(180deg)';
+                }
+            } 
+        });
+
+        async function changeAudioInput(deviceId) {
+            if(!myStream) return;
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: { deviceId: { exact: deviceId }, echoCancellation: true, noiseSuppression: true, autoGainControl: false } });
+            const newTrack = stream.getAudioTracks()[0];
+            myStream.getAudioTracks()[0].stop(); myStream.removeTrack(myStream.getAudioTracks()[0]); myStream.addTrack(newTrack);
+            newTrack.enabled = !isMuted;
+            Object.values(peers).forEach(p => { if (p.call && p.call.peerConnection) { const sender = p.call.peerConnection.getSenders().find(s => s.track.kind === 'audio'); if (sender) sender.replaceTrack(newTrack); } });
+        }
+
+        async function changeAudioOutput(deviceId) {
+            const elements = document.querySelectorAll('audio, video');
+            for (let el of elements) { if (typeof el.setSinkId !== 'undefined') { try { await el.setSinkId(deviceId); } catch (e) {} } }
+        }
+
+        // YENİ SOUNDBOARD SEÇİM & ÇALMA MEKANİĞİ
+        let currentSelectedSound = 'applause';
+
+        function selectSound(soundKey, el) {
+            currentSelectedSound = soundKey;
+            document.querySelectorAll('#soundboard-menu .sound-item').forEach(item => item.classList.remove('active-sound'));
+            el.classList.add('active-sound');
+            toggleSoundMenu(); 
+        }
+
+        function playSelectedSound() {
+            broadcastSound(currentSelectedSound);
+        }
+
+        function toggleSoundMenu() {
+            const menu = document.getElementById('soundboard-menu');
+            const arrow = document.getElementById('sound-menu-arrow');
+            menu.classList.toggle('show');
+            if(menu.classList.contains('show')) { arrow.style.transform = 'rotate(0deg)'; } 
+            else { arrow.style.transform = 'rotate(180deg)'; }
+        }
+
+        document.addEventListener('click', (e) => {
+            if(!e.target.closest('#soundboard-container')) {
+                const menu = document.getElementById('soundboard-menu');
+                if(menu && menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                    document.getElementById('sound-menu-arrow').style.transform = 'rotate(180deg)';
+                }
+            }
+        });
+
+        function playLocalSound(soundKey) {
+            if(!SOUND_EFFECTS[soundKey]) return;
+            const audio = new Audio(SOUND_EFFECTS[soundKey]); audio.volume = 0.6; audio.play();
+        }
+        
+        function broadcastSound(soundKey) {
+            playLocalSound(soundKey); 
+            Object.values(peers).forEach(p => { if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) p.conn.send({ type: 'sound', soundKey: soundKey }); });
         }
 
         let currentContextMenuPeerId = null;
@@ -542,6 +731,22 @@
             if (isResizingRoom) { isResizingRoom = false; roomResizer.classList.remove('resizing'); } document.body.style.cursor = 'default';
         });
 
+        // DRAG AND DROP (Sürükle-Bırak) EVENTLERİ EKLENDİ
+        const dragOverlay = document.getElementById('drag-overlay');
+        
+        chatSidebar.addEventListener('dragover', (e) => {
+            e.preventDefault(); 
+            if(document.getElementById('call-screen').style.display === 'flex') dragOverlay.classList.add('active');
+        });
+        chatSidebar.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            if (e.relatedTarget === null || !chatSidebar.contains(e.relatedTarget)) { dragOverlay.classList.remove('active'); }
+        });
+        chatSidebar.addEventListener('drop', (e) => {
+            e.preventDefault(); dragOverlay.classList.remove('active');
+            if(e.dataTransfer.files && e.dataTransfer.files.length > 0) { processFile(e.dataTransfer.files[0]); }
+        });
+
         const emojis = ["😀","😂","🤣","😍","😎","😭","😡","👍","👎","👏","🙏","👀","🔥","💯","❤️","🎉","✨","🤔"];
         window.onload = () => { const picker = document.getElementById('emoji-picker'); emojis.forEach(e => { let span = document.createElement('span'); span.className = 'emoji-item'; span.innerText = e; span.onclick = () => { document.getElementById('chat-input').value += e; toggleEmojiPicker(); }; picker.appendChild(span); }); };
 
@@ -549,28 +754,30 @@
         
         async function setupMicrophone() {
             if(myStream) return true;
-            try { myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }, video: false }); return true; } 
-            catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
+            try { 
+                myStream = await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: false }, video: false }); 
+                return true; 
+            } catch(e) { alert("Mikrofon izni alınamadı!"); return false; }
         }
         
         function setupPeerEvents() {
             peer.on('error', function(err) {
-                // YANLIŞ ŞİFRE VEYA DÜŞEN HOST HATASI (HATA DÜZELTMESİ)
+                document.getElementById('join-btn').innerHTML = "Lobiye Bağlan"; document.getElementById('create-btn').innerHTML = "Oluştur ve Başla";
                 if (err.type === 'peer-unavailable') { 
-                    alert("Bu parolaya ait lobi bulunamadı!"); 
+                    showModal('error', 'Bu parolaya ait lobi bulunamadı!'); 
                     leaveRoom(); 
                 } 
                 else if (err.type === 'unavailable-id') { 
-                    alert("Bu şifre kullanımda veya bağlantı devam ediyor!"); 
+                    showModal('error', 'Bu şifre kullanımda veya bağlantı devam ediyor!'); 
                     if(document.getElementById('call-screen').style.display !== 'flex') leaveRoom(); 
                 } 
                 else if (err.type !== 'network' && err.type !== 'browser-incompatible') { 
-                    if (document.getElementById('auth-container').style.display !== 'none') { alert("Bağlantı Hatası: " + err.type); leaveRoom(); } 
+                    if (document.getElementById('auth-container').style.display !== 'none') { showModal('error', "Bağlantı Hatası: " + err.type); leaveRoom(); } 
                 }
             });
 
             peer.on('connection', conn => {
-                const id = conn.peer; if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false }; setupDataConn(conn, id);
+                const id = conn.peer; if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false, isHost: false }; setupDataConn(conn, id);
             });
 
             peer.on('call', call => {
@@ -580,14 +787,14 @@
                 } else if (call.metadata && (call.metadata.type === 'screen' || call.metadata.type === 'camera')) {
                     call.answer(); call.on('stream', stream => { if(document.getElementById('vid-wrap-' + stream.id)) return; addMediaElement(stream, id, false, call.metadata.type); });
                 } else {
-                    if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false };
+                    if (!peers[id]) peers[id] = { username: "Katılımcı", avatar: AVATARS[0], roomId: 'main', isMuted: false, manualMute: false, isHost: false };
                     peers[id].call = call; call.answer(myStream); setupCall(call, id);
                 }
             });
         }
 
         function connectToPeer(targetId, targetName = "Katılımcı", targetAvatar = AVATARS[0]) {
-            if (peers[targetId] || targetId === peer.id) return; peers[targetId] = { username: targetName, avatar: targetAvatar, roomId: 'main', isMuted: false, manualMute: false };
+            if (peers[targetId] || targetId === peer.id) return; peers[targetId] = { username: targetName, avatar: targetAvatar, roomId: 'main', isMuted: false, manualMute: false, isHost: false };
             const conn = peer.connect(targetId); setupDataConn(conn, targetId);
             const call = peer.call(targetId, myStream, { metadata: { type: 'audio' } }); setupCall(call, targetId);
             
@@ -598,15 +805,14 @@
         function setupDataConn(conn, id) {
             peers[id].conn = conn;
             conn.on('open', () => {
-                // EĞER BAĞLANTI AÇILDIYSA VE BİZ MİSAFİRSEK (Lobi kurucusuyla başarıyla bağlandıysak) BAŞARILI EKRANINI GÖSTER
                 if(!isHost && id === ROOM_PREFIX + currentRoomPassword) {
-                    showSuccessScreen();
+                    showModal('success', 'Bağlantı Başarılı!');
                     switchToCallScreen("Lobi (" + currentRoomPassword + ")");
                 }
 
-                conn.send({ type: 'handshake', username: localUsername, avatar: localAvatar, roomId: localVoiceRoomId, isMuted: isMuted });
+                conn.send({ type: 'handshake', username: localUsername, avatar: localAvatar, roomId: localVoiceRoomId, isMuted: isMuted, isHost: isHost });
                 if (isHost) {
-                    const existing = Object.keys(peers).filter(k => k !== id).map(k => ({ id: k, username: peers[k].username, avatar: peers[k].avatar, roomId: peers[k].roomId, isMuted: peers[k].isMuted }));
+                    const existing = Object.keys(peers).filter(k => k !== id).map(k => ({ id: k, username: peers[k].username, avatar: peers[k].avatar, roomId: peers[k].roomId, isMuted: peers[k].isMuted, isHost: peers[k].isHost }));
                     if (existing.length > 0) conn.send({ type: 'peer-list', list: existing });
                     conn.send({ type: 'room-sync', rooms: voiceRooms });
                 }
@@ -614,17 +820,19 @@
 
             conn.on('data', data => {
                 if (data.type === 'handshake') {
-                    peers[id].username = data.username; if(data.avatar) peers[id].avatar = data.avatar; peers[id].roomId = data.roomId || 'main'; peers[id].isMuted = data.isMuted || false;
-                    updateParticipantUI(id, data.username, peers[id].avatar); applyRoomIsolations(); updateMuteBadgeUI(id); renderRoomSidebar();
+                    peers[id].username = data.username; if(data.avatar) peers[id].avatar = data.avatar; peers[id].roomId = data.roomId || 'main'; peers[id].isMuted = data.isMuted || false; peers[id].isHost = data.isHost || false;
+                    updateParticipantUI(id, peers[id].username, peers[id].avatar); applyRoomIsolations(); updateMuteBadgeUI(id); renderRoomSidebar();
                     
                     if (isScreenSharing && screenStream) { const isAudioOnly = screenStream.getVideoTracks().length === 0; peers[id].screenCall = peer.call(id, screenStream, { metadata: { type: isAudioOnly ? 'tab-audio' : 'screen' } }); }
                     if (isCameraOn && cameraStream) { peers[id].cameraCall = peer.call(id, cameraStream, { metadata: { type: 'camera' } }); }
                 } else if (data.type === 'peer-list') {
-                    data.list.forEach(p => { connectToPeer(p.id, p.username, p.avatar); if(peers[p.id]) { peers[p.id].roomId = p.roomId || 'main'; peers[p.id].isMuted = p.isMuted || false; } });
+                    data.list.forEach(p => { connectToPeer(p.id, p.username, p.avatar); if(peers[p.id]) { peers[p.id].roomId = p.roomId || 'main'; peers[p.id].isMuted = p.isMuted || false; peers[p.id].isHost = p.isHost || false; peers[p.id].avatar = p.avatar; updateParticipantUI(p.id, p.username, p.avatar); } });
                 } else if (data.type === 'text') {
                     if(peers[id] && peers[id].roomId === localVoiceRoomId) { renderMessage(data.sender, data.content, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat(); }
                 } else if (data.type === 'file') {
                     if(peers[id] && peers[id].roomId === localVoiceRoomId) { renderFile(data.sender, data.fileName, data.fileData, data.fileType, 'remote'); if(chatSidebar.style.display !== 'flex') toggleChat(); }
+                } else if (data.type === 'sound') { 
+                    if(peers[id] && peers[id].roomId === localVoiceRoomId) playLocalSound(data.soundKey);
                 } else if (data.type === 'room-sync') {
                     voiceRooms = data.rooms; if(!voiceRooms[localVoiceRoomId]) joinRoom('main'); else renderRoomSidebar();
                 } else if (data.type === 'room-change') {
@@ -633,6 +841,8 @@
                     joinRoom(data.roomId);
                 } else if (data.type === 'mute-update') {
                     if (peers[id]) { peers[id].isMuted = data.isMuted; updateMuteBadgeUI(id); applyRoomIsolations(); }
+                } else if (data.type === 'host-transfer') { 
+                    if (peers[id]) { peers[id].isHost = true; updateParticipantUI(id, peers[id].username, peers[id].avatar); renderRoomSidebar(); } 
                 }
             });
             conn.on('close', () => handlePeerDisconnect(id));
@@ -651,15 +861,24 @@
             if (speechMonitors['user-' + id]) clearInterval(speechMonitors['user-' + id]); const aud = document.getElementById('audio-' + id); if (aud) aud.remove();
             
             document.querySelectorAll(`.video-wrapper[data-peer-id="${id}"]`).forEach(vid => vid.remove()); checkGalleryEmpty();
-            delete peers[id]; updateRoomTitle(); renderRoomSidebar();
-            if (id === ROOM_PREFIX + currentRoomPassword && !isLeavingLobby) { triggerHostMigration(); }
+            const wasHost = peers[id].isHost; delete peers[id]; updateRoomTitle(); renderRoomSidebar();
+            if ((id === ROOM_PREFIX + currentRoomPassword || wasHost) && !isLeavingLobby) { triggerHostMigration(); }
         }
 
         function triggerHostMigration() {
             let allIds = Object.keys(peers); allIds.push(peer.id); allIds.sort(); const hostId = ROOM_PREFIX + currentRoomPassword;
             if (allIds[0] === peer.id) {
                 if(peer) peer.destroy(); 
-                setTimeout(() => { isHost = true; peer = new Peer(hostId); peer.on('open', function(id) { setupPeerEvents(); renderRoomSidebar(); }); peer.on('error', function(err) {}); }, 1000);
+                setTimeout(() => { 
+                    isHost = true; peer = new Peer(hostId); 
+                    peer.on('open', function(id) { 
+                        setupPeerEvents(); 
+                        broadcastData({ type: 'host-transfer' }); 
+                        updateParticipantUI('local-user', localUsername, localAvatar); 
+                        renderRoomSidebar(); 
+                    }); 
+                    peer.on('error', function(err) {}); 
+                }, 1000);
             } else {
                 if(migrationInterval) clearInterval(migrationInterval); let retries = 0;
                 migrationInterval = setInterval(() => { if (retries > 6 || peers[hostId] || isLeavingLobby) { clearInterval(migrationInterval); return; } connectToPeer(hostId, "Lobi Kurucusu (Yeni)", AVATARS[0]); retries++; }, 2500);
@@ -667,19 +886,29 @@
         }
 
         function updateParticipantUI(id, name, avatarUrl) {
-            const el = document.getElementById('user-' + id); if (el) { el.querySelector('.name-tag').innerText = name; if (avatarUrl) { el.querySelector('img').src = avatarUrl; } } updateRoomTitle();
+            const el = document.getElementById('user-' + id); 
+            if (el) { 
+                el.querySelector('.name-tag').innerText = name; 
+                if (avatarUrl) { el.querySelector('img').src = avatarUrl; } 
+                
+                const isUserHost = (id === 'local-user' && isHost) || (peers[id] && peers[id].isHost) || (id === ROOM_PREFIX + currentRoomPassword);
+                const badgeContainer = el.querySelector('.host-badge-container');
+                if (badgeContainer) {
+                    if (isUserHost) { badgeContainer.innerHTML = `<div class="host-badge" title="Lobi Kurucusu"><svg viewBox="0 0 24 24"><path d="M2 22h20v-2H2v2zm19-8l-3-9-4 4-3-6-3 6-4-4-3 9h20z"></path></svg></div>`; } 
+                    else { badgeContainer.innerHTML = ''; }
+                }
+            } 
+            updateRoomTitle();
         }
 
         function updateRoomTitle() { document.getElementById('current-room-title').innerText = `Lobi (${Object.keys(peers).length + 1} Kişi)`; }
 
-        // --- ODA SİLME & YÖNETİMİ ---
         function renderRoomSidebar() {
             const container = document.getElementById('room-list-container'); container.innerHTML = ''; document.getElementById('add-room-btn').style.display = isHost ? 'flex' : 'none';
 
             for (let rId in voiceRooms) {
                 const room = voiceRooms[rId]; const roomEl = document.createElement('div'); roomEl.className = `voice-room ${localVoiceRoomId === rId ? 'drag-over' : ''}`;
                 
-                // KALİTE ARTIŞI: Flexbox ile düzenlenmiş pürüzsüz oda isim barı
                 let titleHtml = `<div class="room-title-bar ${localVoiceRoomId === rId ? 'active-room-bar' : ''}" onclick="joinRoom('${rId}')" ondragover="allowDrop(event)" ondrop="dropUser(event, '${rId}')">
                     <span class="room-name-text">
                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
@@ -748,7 +977,6 @@
                 
                 videoEls.forEach(v => { v.style.display = inSameRoom ? 'flex' : 'none'; });
                 
-                // EKRAN PAYLAŞIMI SES SIZINTISI TAMAMEN FİXLENDİ (data-peer-media seçicisi ile body'deki tab-audiolar da yakalandı)
                 const allPeerMedia = document.querySelectorAll(`[data-peer-media="${pId}"]`);
                 allPeerMedia.forEach(m => {
                     if (m.dataset.localMuted === 'true') { m.muted = true; } else { m.muted = shouldMute; }
@@ -759,12 +987,11 @@
 
         function broadcastData(data) { Object.values(peers).forEach(p => { if(p.conn && p.conn.open) p.conn.send(data); }); }
 
-        // --- LOBİ KURULUMU ---
         async function createLobby() {
             const nick = document.getElementById('create-nick').value.trim(), pass = document.getElementById('create-pass').value.trim();
             if(!nick || !pass) return; document.getElementById('create-btn').innerHTML = "<svg viewBox='0 0 24 24' width='16' height='16' stroke='currentColor' stroke-width='2' fill='none' style='animation:spin 1s linear infinite'><circle cx='12' cy='12' r='10'></circle><path d='M12 2a10 10 0 0 1 10 10'></path></svg> Kuruluyor..."; 
             localUsername = nick; currentRoomPassword = pass; if(!(await setupMicrophone())) { document.getElementById('create-btn').innerText = "Oluştur ve Başla"; return; }
-            isHost = true; peer = new Peer(ROOM_PREFIX + pass); peer.on('open', function(id) { showSuccessScreen(); setupPeerEvents(); switchToCallScreen("Lobi (" + pass + ")"); });
+            isHost = true; peer = new Peer(ROOM_PREFIX + pass); peer.on('open', function(id) { showModal('success', 'Lobi Oluşturuldu!'); setupPeerEvents(); switchToCallScreen("Lobi (" + pass + ")"); });
         }
 
         async function joinLobby() {
@@ -772,7 +999,6 @@
             if(!nick || !pass) return; document.getElementById('join-btn').innerHTML = "<svg viewBox='0 0 24 24' width='16' height='16' stroke='currentColor' stroke-width='2' fill='none' style='animation:spin 1s linear infinite'><circle cx='12' cy='12' r='10'></circle><path d='M12 2a10 10 0 0 1 10 10'></path></svg> Bağlanılıyor...";
             localUsername = nick; currentRoomPassword = pass; if(!(await setupMicrophone())) { document.getElementById('join-btn').innerText = "Lobiye Bağlan"; return; }
             isHost = false; peer = new Peer(); peer.on('open', function(id) { setupPeerEvents(); connectToPeer(ROOM_PREFIX + pass, "Lobi Kurucusu"); });
-            // switchToCallScreen("Bağlanılıyor...") kısmı burdan kaldırıldı, sadece connection başarılı olunca girecek (Hata düzeltmesi).
         }
 
         function toggleChat() {
@@ -789,10 +1015,22 @@
             renderMessage(localUsername, text, 'local'); input.value = ''; document.getElementById('emoji-picker').style.display = 'none';
         }
 
+        // DOSYA İŞLEME MERKEZİLEŞTİRİLDİ (Sürükle bırak ve buton tıklaması aynı yeri kullanıyor)
         function handleFileSelect(event) {
-            const file = event.target.files[0]; if(!file) return; if(file.size > 50 * 1024 * 1024) return alert("Maksimum 50MB gönderebilirsiniz.");
-            Object.values(peers).forEach(p => { if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) p.conn.send({ type: 'file', sender: localUsername, fileName: file.name, fileType: file.type, fileData: file }); });
-            renderFile(localUsername, file.name, file, file.type, 'local'); event.target.value = '';
+            const file = event.target.files[0]; 
+            if(file) processFile(file); 
+            event.target.value = '';
+        }
+
+        async function processFile(file) {
+            if(file.size > 50 * 1024 * 1024) { showModal('error', "Maksimum 50MB gönderebilirsiniz."); return; }
+            const buffer = await file.arrayBuffer();
+            Object.values(peers).forEach(p => { 
+                if(p.conn && p.conn.open && p.roomId === localVoiceRoomId) {
+                    p.conn.send({ type: 'file', sender: localUsername, fileName: file.name, fileType: file.type, fileData: buffer }); 
+                }
+            });
+            renderFile(localUsername, file.name, buffer, file.type, 'local');
         }
 
         function renderMessage(sender, text, type) {
@@ -818,7 +1056,7 @@
             document.getElementById('chat-messages').innerHTML = ""; Object.keys(speechMonitors).forEach(k => clearInterval(speechMonitors[k])); speechMonitors = {}; 
             document.getElementById('call-screen').style.display = 'none'; document.getElementById('auth-container').style.display = 'flex';
             document.getElementById('create-btn').innerText = "Oluştur ve Başla"; document.getElementById('join-btn').innerText = "Lobiye Bağlan"; currentRoomPassword = ""; 
-            voiceRooms = { 'main': { id: 'main', name: 'Ana Lobi' } }; localVoiceRoomId = 'main'; isLeavingLobby = false;
+            voiceRooms = { 'main': { id: 'main', name: 'Ana Lobi' } }; localVoiceRoomId = 'main'; isLeavingLobby = false; isHost = false;
         }
 
         function toggleMute() {
@@ -853,11 +1091,10 @@
             else { mediaEl = document.createElement('video'); mediaEl.playsInline = true; }
 
             mediaEl.id = 'media-' + stream.id; mediaEl.srcObject = stream; mediaEl.autoplay = true; mediaEl.muted = isLocal;
-            mediaEl.setAttribute('data-peer-media', peerId); // ÖNEMLİ KİMLİK: Odalar arası sızıntıyı önlemek için eklendi!
+            mediaEl.setAttribute('data-peer-media', peerId);
             
             if (type !== 'tab-audio') wrapper.appendChild(mediaEl); else document.body.appendChild(mediaEl);
 
-            // KALİTE ARTIŞI: Sabitleme butonu ikonlaştırıldı
             const pinBtn = document.createElement('button'); pinBtn.className = 'pin-btn'; 
             pinBtn.innerHTML = '<svg viewBox="0 0 24 24"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>'; 
             pinBtn.title = 'Büyük Ekrana Sabitle'; pinBtn.onclick = () => togglePin(wrapper.id);
@@ -866,7 +1103,6 @@
 
             const volContainer = document.createElement('div'); volContainer.className = 'stream-volume-container';
             
-            // Dinamik Ses Kontrolü
             volContainer.innerHTML = `
                 <svg onclick="toggleMediaMute('${stream.id}', this)" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
                     <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
@@ -880,7 +1116,6 @@
             applyRoomIsolations();
         }
 
-        // --- YAYIN SES KONTROL FONKSİYONLARI ---
         function toggleMediaMute(streamId, svgEl) {
             const media = document.getElementById('media-' + streamId); if (!media) return;
             const isNowMuted = !media.muted; media.muted = isNowMuted;
@@ -958,15 +1193,11 @@
             if(document.getElementById('user-' + id)) return; const area = document.getElementById('participants-area'); const div = document.createElement('div'); div.className = 'participant'; div.id = 'user-' + id;
             if (id !== 'local-user') { div.setAttribute('oncontextmenu', `handleRightClick(event, '${id}', '${name}')`); const audio = document.createElement('audio'); audio.id = 'audio-' + id; audio.srcObject = stream; audio.autoplay = true; document.body.appendChild(audio); }
             
-            // ADMIN (LOBİ KURUCUSU) ROZETİ MANTIĞI: ID Lobi şifresine eşitse kurucudur.
-            let hostBadgeHtml = "";
-            if(id === ROOM_PREFIX + currentRoomPassword || (id === 'local-user' && isHost)) {
-                hostBadgeHtml = `<div class="host-badge" title="Lobi Kurucusu"><svg viewBox="0 0 24 24"><path d="M2 22h20v-2H2v2zm19-8l-3-9-4 4-3-6-3 6-4-4-3 9h20z"></path></svg></div>`;
-            }
-
-            div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';">${hostBadgeHtml}<div id="badge-${id}" class="mute-badge" style="display:none;"></div></div><div class="name-tag">${name}</div>`; 
+            div.innerHTML = `<div class="circle"><img src="${avatarUrl}" onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"><div class="host-badge-container"></div><div id="badge-${id}" class="mute-badge" style="display:none;"></div></div><div class="name-tag">${name}</div>`; 
             area.appendChild(div);
-            monitorSpeech(stream, 'user-' + id); updateRoomTitle(); updateMuteBadgeUI(id); applyRoomIsolations();
+            
+            updateParticipantUI(id, name, avatarUrl);
+            monitorSpeech(stream, 'user-' + id); updateMuteBadgeUI(id); applyRoomIsolations();
         }
 
         function monitorSpeech(stream, elementId) {
@@ -976,13 +1207,12 @@
                 let isCurrentlySpeaking = false;
                 speechMonitors[elementId] = setInterval(() => {
                     const el = document.getElementById(elementId); if(!el) { clearInterval(speechMonitors[elementId]); return; }
-                    // Ekranda gizliyse hesaplamaya girme (FPS koruması)
                     if(el.style.display === 'none') { if (isCurrentlySpeaking) { isCurrentlySpeaking = false; el.classList.remove('speaking'); } return; }
                     
                     analyser.getByteFrequencyData(dataArray); let sum = 0; for(let i = 0; i < dataArray.length; i+=4) sum += dataArray[i]; let average = sum / (dataArray.length / 4);
                     const shouldBeSpeaking = average > 15 && !(elementId === 'user-local-user' && isMuted);
                     if (shouldBeSpeaking !== isCurrentlySpeaking) { isCurrentlySpeaking = shouldBeSpeaking; if (isCurrentlySpeaking) el.classList.add('speaking'); else el.classList.remove('speaking'); }
-                }, 300); // 100ms'den 300ms'ye ve optimizeli animasyona çekildiği için FPS sorunu yaşatmaz.
+                }, 300); 
             } catch(e) { console.error("Speech monitor error", e); }
         }
     </script>
